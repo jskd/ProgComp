@@ -1,0 +1,70 @@
+#+STARTUP: overview
+#+STARTUP: hidestars
+#+TODO: TODO(t!) FOCUSED (f@/!) STARTED(s@/!) WAITING(w@/!) SOMEDAY(S@/!) URGENT (u!) | DONE(d!) CANCELLED(c@!)
+
+*Programmation comparée 2018*
+
+Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
+
+* Comment lire ce qui suit?
+  À chaque séance, vous *devez* effectuer la liste des tâches.
+  Les tâches préfixées par "Discussion" ou "Cours" sont faites en groupe-classe.
+  Les autres tâches sont faites en petits groupes ou individuellement.
+
+* Séances
+** Séance 1
+*** TODO Cours: Séance 1 "Les paradigmes de programmation"
+*** TODO S'inscrire sur le git moule et sur github
+*** TODO Former les groupes de projet
+*** TODO Faire son choix de contraintes
+*** TODO Discussion: Défi 0
+*** TODO Discussion: Défi 1
+*** TODO Définir un "coding style" pour chaque groupe
+*** TODO Se documenter sur 'Docker'
+*** TODO Se documenter sur 'git' (comment faire une branche, une pull-request, etc)
+*** TODO Lire http://sijinjoseph.com/programmer-competency-matrix/
+*** TODO Lire http://cs.lmu.edu/~ray/notes/pltypes/
+*** TODO Lire https://en.wikipedia.org/wiki/Programming_paradigm
+*** TODO Lire https://en.wikipedia.org/wiki/Comparison_of_programming_languages
+*** TODO Lire doc/little-guide-software-engineering.pdf
+
+* Notes de cours
+
+Ces notes sont à compléter avec vos propres remarques personnelles et
+les lectures conseillées dans la section précédente.
+
+** Introduction
+*** Quel est le sujet de ce cours?
+    Ce cours porte sur la *communication à travers le code
+    source*. Les questions abordées sont les suivantes:
+
+    - Quels sont les critères d'évaluation d'un bon code source?
+    - Quelle influence ont les paradigmes de programmation sur la
+      conception et l'implémentation des systèmes informatiques?
+    - Comment analyser du code?
+    - Comment expliquer du code?
+    - Comment collaborer autour du code?
+
+    Pour répondre à ces questions, nous allons suivre deux grandes méthodes:
+
+    - L'étude comparative des différents paradigmes de programmation
+      et de l'Histoire de la programmation.
+
+    - L'expérimentation de situations de communication autour du code:
+      - Expliquer son code.
+      - Expliquer, modifier, évaluer le code d'un tiers.
+      - Comparer des solutions techniques pour la résolution d'un problème donné.
+      - Exposer une solution technique.
+      - Intégrer un projet logiciel existant.
+
+*** Qu'est-ce que j'attends de vous?
+
+    - Avant tout, de l'ouverture d'esprit, de la curiosité et un
+      comportement actif en cours!
+
+    - Plus "scolairement" : vous serez évalués de façon continue lors
+      des diverses expériences et l'examen final portera sur une
+      analyse du travail de l'ensemble des groupes.
+
+    - Les items marqués TODO dans la section précédente *doivent* être
+      pris au sérieux et effectués conscieusement.
