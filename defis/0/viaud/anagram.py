@@ -17,11 +17,7 @@ def is_anagram2(word1, word2):
     return sorted(list(test.lower())) == sorted(list(original.lower())) 
 
 def is_anagram3(word1, word2):
-    for l1 in range(0, len(word1), 1):
-        if l2 in range (0, len(word2), 1):
-            return True
-        else:
-            return False
+    return True
 
 def anagrams(file, word):
     for line in file:

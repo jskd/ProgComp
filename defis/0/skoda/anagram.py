@@ -1,7 +1,5 @@
 import sys
 
-# Ché pas se ke je kode!
-
 def isAnagram(str1, str2):
     for s in list(str1.lower()):
         if s not in list(str2.lower()):
@@ -9,7 +7,7 @@ def isAnagram(str1, str2):
     return True
 
 if(len(sys.argv) < 2):
-    print("Wesh, usage: anagram mydict foo bar")
+    print("Usage: anagram mydict foo bar")
     sys.exit()
 
 with open(sys.argv[1]) as f:
