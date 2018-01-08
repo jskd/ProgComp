@@ -4,43 +4,35 @@
 import sys
 import os
 
-def hash_string(word):
-	list_string = list(word)
-	total = 0
-	for item in list_string:
-		total += ord(item)
-	return total
+#return a sorted String
+def sort_string(word):
+	sorted_list = list(word.lower())
+	sorted_list.sort()
+	return "".join(sorted_list)
 
-def string_to_map(word_map,word):
-	total = hash_string(word)
-	if total not in word_map:
-		word_map[total] = word
+#add a sorted string into the map
+def add_sorted_string(word_map,word):
+	sortedString = sort_string(word)
+	if sortedString not in word_map:
+		word_map[sortedString] = word
 	else:
-		word_map[total] =  word_map[total] + "," + word
-
-mydict_path = sys.argv[1]
-
-aim_words = []
-
-for i in range(2,len(sys.argv)):
-	aim_words.append(sys.argv[i])
+		word_map[sortedString] += "," + word
 
 mydict_map = {}
-
-for row in open(mydict_path).readlines():
-	string_to_map(mydict_map,row)
-
-
-print(mydict_map)
-
 result = []
 
-for word in aim_words:
-	total = hash_string(word)
-	for item in mydict_map[total].split(","):
-		result.append(item)
+#load dictionnary
+for row in open(sys.argv[1]).readlines():
+	add_sorted_string(mydict_map,row.strip("\n"))
+
+#match each word in parameters
+for i in range(2,len(sys.argv)):
+	sortedString = sort_string(sys.argv[i])
+	if sortedString in mydict_map:
+		for s_string in mydict_map[sortedString].split(","):
+			result.append(s_string)
 
 result.sort()
 
-for item in result:
-	print(item)
+for r in result:
+	print(r)
