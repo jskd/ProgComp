@@ -1,0 +1,46 @@
+#! /usr/bin/python3
+
+
+import sys
+import os
+
+def hash_string(word):
+	list_string = list(word)
+	total = 0
+	for item in list_string:
+		total += ord(item)
+	return total
+
+def string_to_map(word_map,word):
+	total = hash_string(word)
+	if total not in word_map:
+		word_map[total] = word
+	else:
+		word_map[total] =  word_map[total] + "," + word
+
+mydict_path = sys.argv[1]
+
+aim_words = []
+
+for i in range(2,len(sys.argv)):
+	aim_words.append(sys.argv[i])
+
+mydict_map = {}
+
+for row in open(mydict_path).readlines():
+	string_to_map(mydict_map,row)
+
+
+print(mydict_map)
+
+result = []
+
+for word in aim_words:
+	total = hash_string(word)
+	for item in mydict_map[total].split(","):
+		result.append(item)
+
+result.sort()
+
+for item in result:
+	print(item)
