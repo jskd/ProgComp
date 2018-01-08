@@ -1,3 +1,5 @@
+# Usage anagram.py ../american-english foo bar etc...
+
 import sys
 from collections import deque
 
