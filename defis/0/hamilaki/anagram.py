@@ -1,17 +1,20 @@
 import sys
+import os.path
+
+print(sys.argv[1])
 
 # Must contain at least 3 arguments
 if len(sys.argv) < 3 :
 	print("Not enough arguments")
 	sys.exit()
 
-# Dictionairy file
-dictionairy_file = open(sys.argv[1], "r")
-
-
-if dictionairy_file : 
+if not os.path.isfile(sys.argv[1]): 
 	print("Not a dictionairy file")
 	sys.exit()
+
+
+# Dictionairy file
+dictionairy_file = open(sys.argv[1], "r")
 
 
 #Test if a string is annagramm of other
