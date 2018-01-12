@@ -14,7 +14,6 @@ void multiset_fill(struct multiset *ms, const char *str) {
         ms->len++;
     }
     while(*(++str));
-    //printf("%d\n", ms->len);
 }
 
 int multiset_wrdcmp(const struct multiset *ms, const char *str) {
