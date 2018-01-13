@@ -12,9 +12,18 @@
 */
 struct WordParams
 {
+    const int NB_WORDS;
     std::unique_ptr<std::string[]> wparam;
     std::unique_ptr<std::string[]> sorted_wparam;
+    std::map<std::string, std::vector<std::string>> anagrams;
+
+    //WordParams(char ** str, int sz);
 };
+/*
+WordParams::WordParams(char ** str, int sz)
+{
+
+}*/
 
 void wp_init(WordParams& wp, char ** str, int sz);
 
@@ -26,8 +35,8 @@ void readDict(const std::string& file, std::vector<std::string>& v);
 bool areParamOK(int argc, char ** argv) noexcept;
 int  anagrams(int argc, char ** argv);
 
-void generateAnagrams();
-void printAnagrams() noexcept;
+void generateAnagrams(WordParams& wp, const std::string& file);
+void printAnagrams(const WordParams& wp) noexcept;
 
 static const int MIN_ARGC   = 3;
 static const int START_ARGV = 2;
@@ -72,27 +81,64 @@ bool areParamOK(int argc, char ** argv) noexcept
 */
 int anagrams(int argc, char ** argv)
 {
+    const int SZ = argc - START_ARGV;
     WordParams wp {
-        std::unique_ptr<std::string[]>(new std::string[argc - START_ARGV]),
-        std::unique_ptr<std::string[]>(new std::string[argc - START_ARGV])
+        SZ,
+        std::unique_ptr<std::string[]>(new std::string[SZ]),
+        std::unique_ptr<std::string[]>(new std::string[SZ]),
+        std::map<std::string, std::vector<std::string>>()
     };
 
     wp_init(wp, argv, argc);
-    generateAnagrams();
-    printAnagrams();
+    generateAnagrams(wp, argv[1]);
+    printAnagrams(wp);
     return 0;
 }
 
 
-void generateAnagrams()
+void generateAnagrams(WordParams& wp, const std::string& file)
 {
+    std::ifstream _infile(file);
 
+    if(_infile.is_open())
+    {
+        std::string _line;
+
+        while(std::getline(_infile, _line))
+        {
+            std::string _sline(_line);
+
+            // lowercase
+            std::transform(_sline.begin(), _sline.end(), _sline.begin(),
+                           [](unsigned char c){ return std::tolower(c); } );
+
+            std::sort(_sline.begin(), _sline.end());
+
+            for(int i = 0 ; i < wp.NB_WORDS; i++)
+            {
+                auto& _sorted_key = wp.sorted_wparam[i];
+
+                if(_sorted_key == _sline)
+                {
+                    wp.anagrams[wp.wparam[i]].push_back(_line);
+                    break;
+                }
+            }
+        }
+    }
 }
 
 
-void printAnagrams() noexcept
+void printAnagrams(const WordParams& wp) noexcept
 {
-
+    for(auto& item: wp.anagrams)
+    {
+        std::cout << item.first << ":\n";
+        for(const std::string& s: item.second)
+        {
+            std::cout << s << "\n";
+        }
+    }
 }
 
 // WordParams implementation
@@ -103,11 +149,10 @@ void wp_init(WordParams& wp, char ** str, int sz)
     {
         std::string _stmp(str[i]);
         wp.wparam[j] = _stmp;
+        wp.anagrams[_stmp] = std::vector<std::string>();
 
         std::sort(_stmp.begin(), _stmp.end());
         wp.sorted_wparam[j] = _stmp;
-        std::cout << "tmp: " << wp.wparam[j] << "\n";
-        std::cout << "sorted tmp: " << wp.sorted_wparam[j] << "\n";
         ++j;
     }
 }
