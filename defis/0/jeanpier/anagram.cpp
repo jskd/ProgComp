@@ -16,7 +16,7 @@ struct WordParams
     std::unique_ptr<std::string[]> sorted_wparam;
 };
 
-void wp_init(char ** str, int sz);
+void wp_init(WordParams& wp, char ** str, int sz);
 
 // Main macros and functions
 #define ERROR(argv) std::cerr << "usage: " << argv[0] << " dict_file [words]\n"
@@ -35,27 +35,6 @@ static const int START_ARGV = 2;
 
 int main(int argc, char ** argv)
 {
-
-    /*std::vector<std::string> file_content;
-    std::map<std::string, std::vector<std::string> > anagrams;
-
-    readDict(std::string(argv[1]), file_content);
-
-    for(std::string& w: file_content)
-    {
-        std::string key = w;
-        std::sort(key.begin(), key.end());
-        std::vector<std::string> & v = anagrams[key];
-        v.push_back(w);
-    }*/
-
-    /*for(int i = 2; i < argc; i++)
-    {   // TODO
-        std::string word_to_search = argv[i];
-
-        if(anagrams.get())
-    }*/
-
     return areParamOK(argc, argv) ? anagrams(argc, argv) : -1;
 }
 
@@ -98,19 +77,7 @@ int anagrams(int argc, char ** argv)
         std::unique_ptr<std::string[]>(new std::string[argc - START_ARGV])
     };
 
-    int j = 0;
-    for(int i = START_ARGV; i < argc; i++)
-    {
-        std::string _stmp(argv[i]);
-        wp.wparam[j] = _stmp;
-
-        std::sort(_stmp.begin(), _stmp.end());
-        wp.sorted_wparam[j] = _stmp;
-        std::cout << "tmp: " << wp.wparam[j] << "\n";
-        std::cout << "sorted tmp: " << wp.sorted_wparam[j] << "\n";
-        ++j;
-    }
-
+    wp_init(wp, argv, argc);
     generateAnagrams();
     printAnagrams();
     return 0;
@@ -129,9 +96,20 @@ void printAnagrams() noexcept
 }
 
 // WordParams implementation
-void wp_init(char ** str, int sz)
+void wp_init(WordParams& wp, char ** str, int sz)
 {
-    
+    int j = 0;
+    for(int i = START_ARGV; i < sz; i++)
+    {
+        std::string _stmp(str[i]);
+        wp.wparam[j] = _stmp;
+
+        std::sort(_stmp.begin(), _stmp.end());
+        wp.sorted_wparam[j] = _stmp;
+        std::cout << "tmp: " << wp.wparam[j] << "\n";
+        std::cout << "sorted tmp: " << wp.sorted_wparam[j] << "\n";
+        ++j;
+    }
 }
 
 // Dump
