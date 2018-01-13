@@ -1,39 +1,58 @@
-# Code moche
-# Typiquement (si on avait plus de temps...)
-# Je testerai directement tous les mots (argv) pour une line du fichier
-# Plutot que d'iterer
+# Viaud
+# Python 2
 
 import sys
-from collections import Counter
 
 def open_file(filename):
     f = open(filename, 'r')
     return f
 
-def is_anagram(word1, word2):
-    return Counter(word1) == Counter(word2)
+def populate_dict(word, dictionary):
+    for char in word:
+        # On pourrait utiliser une ternaire ici mais je laisse volontairement
+        # comme ca pour la lisibilite !
+        if char in dictionary:
+            dictionary[char] += 1
+        else:
+            dictionary[char] = 1
 
-def is_anagram2(word1, word2):
-    return sorted(list(test.lower())) == sorted(list(original.lower())) 
+def are_anagrams(word1, word2):
+    wd1 = {}
+    wd2 = {}
+    populate_dict(word1, wd1)
+    populate_dict(word2, wd2)
+    return cmp(wd1, wd2) == 0
 
-def is_anagram3(word1, word2):
-    return True
+# Plus lent hehe !
+def are_anagrams_2(word1, word2):
+    return sorted(list(word1.lower())) == sorted(list(word2.lower()))
 
-def anagrams(file, word):
+def compute(file, anagrams):
     for line in file:
-        cleaned_line = line.replace('\n', '')
-        if is_anagram3(word,cleaned_line):
-            print cleaned_line 
+        sanitized = line.replace('\n', '')
+        for word in sys.argv[2:]:
+            if are_anagrams(word.lower(), sanitized.lower()):
+                if word in anagrams:
+                    anagrams[word].append(sanitized)
+                else:
+                    anagrams[word] = [sanitized]
 
-def print_anagrams(file):
-    for word in sys.argv[2:]:
-        print word + ":" 
-        anagrams(file, word)
-        file.seek(0)
+# Affiche les anagrams a partir du dictionnaire
+# Cles = Mots, Valeurs = liste de mots
+def print_anagrams(anagrams):
+    if len(anagrams) == 0:
+        print "No anagrams found!"
+    else:
+        for word in anagrams:
+            print word + ":"
+            for anagram in anagrams[word]:
+                print anagram
 
 try:
     filename = sys.argv[1]
     f = open_file(filename)
-    print_anagrams(f)
+    anagrams = {}
+    compute(f, anagrams)
+    print_anagrams(anagrams)
 except:
-    sys.exit("Please provide a valid dict.")    
+    sys.exit("Please provide a valid dictionary.")
