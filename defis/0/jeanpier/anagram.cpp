@@ -7,6 +7,9 @@
 #include <vector>
 #include <map>
 
+static const int MIN_ARGC   = 3;
+static const int START_ARGV = 2;
+
 /*
 *   I need this structure to store the words I want to use to get their anagrams
 */
@@ -17,29 +20,35 @@ struct WordParams
     std::unique_ptr<std::string[]> sorted_wparam;
     std::map<std::string, std::vector<std::string>> anagrams;
 
-    //WordParams(char ** str, int sz);
+    WordParams(char ** str, int sz);
 };
-/*
+
 WordParams::WordParams(char ** str, int sz)
+    : NB_WORDS(sz), wparam(new std::string[sz]), sorted_wparam(new std::string[sz]),
+    anagrams()
 {
+    int j = 0;
+    std::string _stmp;
+    for(int i = 2; i < sz; i++)
+    {
+        _stmp = str[i];
+        wparam[j] = _stmp;
+        anagrams[_stmp] = std::vector<std::string>();
 
-}*/
-
-void wp_init(WordParams& wp, char ** str, int sz);
+        std::sort(_stmp.begin(), _stmp.end());
+        sorted_wparam[j] = _stmp;
+        ++j;
+    }
+}
 
 // Main macros and functions
 #define ERROR(argv) std::cerr << "usage: " << argv[0] << " dict_file [words]\n"
-
-void readDict(const std::string& file, std::vector<std::string>& v);
 
 bool areParamOK(int argc, char ** argv) noexcept;
 int  anagrams(int argc, char ** argv);
 
 void generateAnagrams(WordParams& wp, const std::string& file);
 void printAnagrams(const WordParams& wp) noexcept;
-
-static const int MIN_ARGC   = 3;
-static const int START_ARGV = 2;
 
 
 int main(int argc, char ** argv)
@@ -81,15 +90,7 @@ bool areParamOK(int argc, char ** argv) noexcept
 */
 int anagrams(int argc, char ** argv)
 {
-    const int SZ = argc - START_ARGV;
-    WordParams wp {
-        SZ,
-        std::unique_ptr<std::string[]>(new std::string[SZ]),
-        std::unique_ptr<std::string[]>(new std::string[SZ]),
-        std::map<std::string, std::vector<std::string>>()
-    };
-
-    wp_init(wp, argv, argc);
+    WordParams wp(argv, argc);
     generateAnagrams(wp, argv[1]);
     printAnagrams(wp);
     return 0;
@@ -114,13 +115,15 @@ void generateAnagrams(WordParams& wp, const std::string& file)
 
             std::sort(_sline.begin(), _sline.end());
 
+            // test if the word is an anagram of on of the keys
             for(int i = 0 ; i < wp.NB_WORDS; i++)
             {
+                auto& _key = wp.wparam[i];
                 auto& _sorted_key = wp.sorted_wparam[i];
 
                 if(_sorted_key == _sline)
                 {
-                    wp.anagrams[wp.wparam[i]].push_back(_line);
+                    wp.anagrams[_key].push_back(_line);
                     break;
                 }
             }
@@ -128,44 +131,15 @@ void generateAnagrams(WordParams& wp, const std::string& file)
     }
 }
 
-
 void printAnagrams(const WordParams& wp) noexcept
 {
-    for(auto& item: wp.anagrams)
+    for(const auto& item: wp.anagrams)
     {
         std::cout << item.first << ":\n";
         for(const std::string& s: item.second)
         {
             std::cout << s << "\n";
         }
-    }
-}
-
-// WordParams implementation
-void wp_init(WordParams& wp, char ** str, int sz)
-{
-    int j = 0;
-    for(int i = START_ARGV; i < sz; i++)
-    {
-        std::string _stmp(str[i]);
-        wp.wparam[j] = _stmp;
-        wp.anagrams[_stmp] = std::vector<std::string>();
-
-        std::sort(_stmp.begin(), _stmp.end());
-        wp.sorted_wparam[j] = _stmp;
-        ++j;
-    }
-}
-
-// Dump
-
-void readDict(const std::string& file, std::vector<std::string>& v)
-{
-    std::ifstream infile(file);
-    std::string line;
-
-    while(std::getline(infile, line))
-    {
-        v.push_back(line);
+        std::cout << "\n";
     }
 }
