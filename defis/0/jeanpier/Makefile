@@ -1,6 +1,6 @@
 
 CC=g++
-FLAGS=-g -Wall -Wextra -std=c++11
+FLAGS=-O3 -Wall -Wextra -std=c++11
 
 
 all: anagram

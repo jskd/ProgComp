@@ -68,3 +68,7 @@ les lectures conseillées dans la section précédente.
 
     - Les items marqués TODO dans la section précédente *doivent* être
       pris au sérieux et effectués conscieusement.
+* Fiches méthodologiques
+** Comment évaluer du code?
+** Comment présenter du code?
+** Comment évaluer efficacement le travail d'un collègue?
