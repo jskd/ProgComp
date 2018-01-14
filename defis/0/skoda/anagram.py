@@ -1,17 +1,29 @@
 import sys
+from collections import Counter
 
 def isAnagram(str1, str2):
-    for s in list(str1.lower()):
-        if s not in list(str2.lower()):
-            return False
-    return True
+    return Counter(str1) == Counter(str2)
+
+def escapeWord(word):
+    return word.lower().strip()
+
+def searchAnagramInDictionary(dictionary, search_word):
+    with open(dictionary) as dictionary_f:
+        for dict_word in dictionary_f.readlines():
+            dict_word= escapeWord(dict_word)
+            search_word= escapeWord(search_word)
+            if isAnagram(dict_word, search_word) and dict_word != search_word:
+                yield dict_word
 
 if(len(sys.argv) < 2):
     print("Usage: anagram mydict foo bar")
     sys.exit()
 
-with open(sys.argv[1]) as f:
-    for word in f.readlines():
-        for anagram in sys.argv[2::]:
-            if isAnagram(word, anagram):
-                print(word)
+l_search_word= sys.argv[2::]
+dictionnary= sys.argv[1]
+
+for search_word in l_search_word:
+    print(search_word + ":")
+    l_anagram_found= searchAnagramInDictionary(dictionnary, search_word)
+    for anagram_found in l_anagram_found:
+        print(anagram_found)
