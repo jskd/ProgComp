@@ -1,0 +1,6 @@
+# Ocamlbuild stuff
+_build/
+*.native
+
+# Executable
+anagram
