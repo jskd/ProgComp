@@ -7,12 +7,12 @@ def read_file(filename):
             res.append(line.strip())
     return res
 
-words = []
+if(len(sys.argv) < 3):
+    print("Erreur")
+    sys.exit(-1)
+
+words = sys.argv[2::] 
 dic = read_file(sys.argv[1])
-
-for a in range(2, len(sys.argv)):
-    words.append(sys.argv[a])
-
 
 for k in dic:
     for g in words:
