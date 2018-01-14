@@ -15,15 +15,18 @@ def searchAnagramInDictionary(dictionary, search_word):
             if isAnagram(dict_word, search_word) and dict_word != search_word:
                 yield dict_word
 
-if(len(sys.argv) < 2):
-    print("Usage: anagram mydict foo bar")
-    sys.exit()
+def main():
+    if(len(sys.argv) < 2):
+        print("Usage: ./anagram mydict foo bar baz")
+        sys.exit()
 
-l_search_word= sys.argv[2::]
-dictionnary= sys.argv[1]
+    l_search_word= sys.argv[2::]
+    dictionnary= sys.argv[1]
 
-for search_word in l_search_word:
-    print(search_word + ":")
-    l_anagram_found= searchAnagramInDictionary(dictionnary, search_word)
-    for anagram_found in l_anagram_found:
-        print(anagram_found)
+    for search_word in l_search_word:
+        print(search_word + ":")
+        l_anagram_found= searchAnagramInDictionary(dictionnary, search_word)
+        for anagram_found in l_anagram_found:
+            print(anagram_found)
+
+if __name__ == "__main__": main()
