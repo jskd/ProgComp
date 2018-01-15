@@ -1,0 +1,12 @@
+Hamilakis Nicolas 
+Oulebsir hocine 
+Lagha Belaid
+
+1) Scala + Spark 
+2) POO
+3) Equipe "intégration continue"
+4) RUST
+5) Go
+6) Programmation GPU
+7) Programmation fonctionnelle pure
+8) Erlang
