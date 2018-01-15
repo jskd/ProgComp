@@ -31,8 +31,10 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 *** TODO Lire doc/little-guide-software-engineering.pdf
 
 ** Séance 2
-*** TODO Nouvelle présentation du défi 0.
-*** TODO Relire doc/little-guide-software-engineering.pdf
+*** DONE Nouvelle présentation du défi 0.
+    - State "DONE"       from "TODO"       [2018-01-15 Mon 11:42]
+*** DONE Relire doc/little-guide-software-engineering.pdf
+    - State "DONE"       from "TODO"       [2018-01-15 Mon 11:42]
 *** TODO Présentations d'analyse du problème du défi 1.
 *** TODO Affectation des contraintes technologiques
 *** TODO Réalisation du défi 1
