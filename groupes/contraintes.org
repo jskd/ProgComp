@@ -1,4 +1,4 @@
-* Programmation GPU : Fector&Promela
+* Programmation GPU : Carmack
 * Rust : Babar
 * Go ou/et PF pure : Nw-group
 * Scala + Spark : Scableur
