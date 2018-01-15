@@ -13,8 +13,10 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 
 * Séances
 ** Séance 1
-*** TODO Cours: Séance 1 "Les paradigmes de programmation"
-*** TODO S'inscrire sur le git moule et sur github
+*** DONE Cours: Séance 1 "Les paradigmes de programmation"
+    - State "DONE"       from "TODO"       [2018-01-08 Mon 12:54]
+*** DONE S'inscrire sur le git moule
+    - State "DONE"       from "TODO"       [2018-01-08 Mon 12:54]
 *** TODO Former les groupes de projet
 *** TODO Faire son choix de contraintes
 *** TODO Discussion: Défi 0
@@ -28,6 +30,13 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 *** TODO Lire https://en.wikipedia.org/wiki/Comparison_of_programming_languages
 *** TODO Lire doc/little-guide-software-engineering.pdf
 
+** Séance 2
+*** TODO Nouvelle présentation du défi 0.
+*** TODO Relire doc/little-guide-software-engineering.pdf
+*** TODO Présentations d'analyse du problème du défi 1.
+*** TODO Affectation des contraintes technologiques
+*** TODO Réalisation du défi 1
+*** TODO Présentation du défi 2
 * Notes de cours
 
 Ces notes sont à compléter avec vos propres remarques personnelles et
