@@ -1,0 +1,8 @@
+1 - Equipe "intégration continue"
+2 - Scala
+3 - POO
+4 - Rust
+5 - Go
+6 - Programmation GPU
+7 - Erlang
+8 - Programmation fonctionnelle pure
