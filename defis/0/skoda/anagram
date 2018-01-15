@@ -1,0 +1,33 @@
+#! /usr/bin/python3
+import sys
+from collections import Counter
+
+def isAnagram(str1, str2):
+    return Counter(str1) == Counter(str2) and str1 != str2
+
+def escapeWord(word):
+    return word.lower().strip()
+
+def searchAnagramInDictionary(dictionary, search_word):
+    with open(dictionary) as dictionary_f:
+        for dict_word in dictionary_f.readlines():
+            dict_word= escapeWord(dict_word)
+            search_word= escapeWord(search_word)
+            if isAnagram(dict_word, search_word):
+                yield dict_word
+
+def main():
+    if(len(sys.argv) < 2):
+        print("Usage: ./anagram mydict foo bar baz")
+        sys.exit()
+
+    l_search_word= sys.argv[2::]
+    dictionnary= sys.argv[1]
+
+    for search_word in l_search_word:
+        print(search_word + ":")
+        l_anagram_found= searchAnagramInDictionary(dictionnary, search_word)
+        for anagram_found in l_anagram_found:
+            print(anagram_found)
+
+if __name__ == "__main__": main()

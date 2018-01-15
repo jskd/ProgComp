@@ -1,25 +1,22 @@
 SHELL = /bin/sh
-OCAMLBUILD = ocamlbuild
-DEBUGFLAG = -g
-OCAMLCFLAGS = -cflags $(DEBUGFLAG),-annot,-bin-annot,-w,A
-OCAMLLFLAGS = -lflags $(DEBUGFLAG)
-OCAMLLIBS =
-
 RM = rm -f
-TARGET = anagram.byte
 
-build = $(OCAMLBUILD) $(OCAMLCFLAGS) $(OCAMLLFLAGS) $(OCAMLLIBS)
+OCAMLBUILD = ocamlbuild
+OCAMLCFLAGS = -cflags -annot,-bin-annot,-safe-string,-w,A
+
+TARGET = anagram
+
+build = $(OCAMLBUILD) $(OCAMLCFLAGS)
 clean = $(OCAMLBUILD) -clean
 
-.SUFFIXES:
 .PHONY: all $(TARGET) clean
 
 all: $(TARGET)
-	ln -fs $(TARGET) anagram
+	@ln -fs $<.native $<
 
 $(TARGET):
-	$(build) $@
+	$(build) $@.native
 
 clean:
 	$(clean)
-	$(RM) anagram
+	@$(RM) anagram
