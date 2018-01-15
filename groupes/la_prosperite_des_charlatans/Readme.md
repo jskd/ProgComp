@@ -1,4 +1,4 @@
-# La prospérité des charlatants
+# La prospérité des charlatans
 
 ## Chapitre final: Les misanthropes vont enfin en cours
 
