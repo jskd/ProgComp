@@ -1,0 +1,8 @@
+* Rust
+* Go
+* Programmation GPU
+* POO
+* Equipe "intégration continue"
+* Scala + Spark
+* Erlang
+* Programmation fonctionnelle pure
