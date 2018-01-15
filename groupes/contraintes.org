@@ -1,8 +1,6 @@
-* Programmation GPU
-* Rust
-* Go
-* Scala + Spark
-* Erlang
-* Programmation fonctionnelle pure
-* POO
-* Equipe "intégration continue"
+* Programmation GPU : Fector&Promela
+* Rust : Babar
+* Go ou/et PF pure : Nw-group
+* Scala + Spark : Scableur
+* Equipe "intégration continue" : la_prosperite_des_charlatans
+
