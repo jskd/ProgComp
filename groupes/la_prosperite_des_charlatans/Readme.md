@@ -1,6 +1,8 @@
-# Les trois magiciens
+# La prospérité des charlatant
 
-## Membres de l'équipe
+## Chapitre final: Les misanthropes vont enfin en cours
+
+### Membres de l'équipe
 
 - Xiang LI <xiangfr007@gmail.com>
 - Jérôme SKODA <contact@jeromeskoda.fr>
