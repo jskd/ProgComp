@@ -31,8 +31,8 @@ for i in range(2,len(sys.argv)):
 	if sortedString in mydict_map:
 		for s_string in mydict_map[sortedString].split(","):
 			result.append(s_string)
-
-result.sort()
-
-for r in result:
-	print(r)
+	result.sort()
+	print(str(sys.argv[i])+":")
+	for r in result:
+		print(r)
+	result = []

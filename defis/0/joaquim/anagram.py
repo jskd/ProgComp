@@ -33,6 +33,8 @@ if __name__ == "__main__":
 					dico_anagram[word] += [dico_entry]
 
 		for k, v in dico_anagram.items():
-			print(k,":",v)
+			print(k+":")
+			for value in v:
+				print(value)
 	else:
 		print("Usage: anagram.py <dico> <words>")
