@@ -1,0 +1,23 @@
+* HSIEH Yung-Kun hsieh
+* LI xiang lixxi
+* fedor vonaka [1]
+** Présentation d'anagramme (après une semaine)
+   - C'est bien de choisir quoi montrer et dans quel ordre.
+   - Il faut être complet dans les explications à un niveau
+     d'abstraction donné.
+* krimo hamadi
+* KOCHKUROV Egor VINT64
+* LEFRANC joaquim lefranc [1]
+** Présentation d'anagramme
+   - Il faut éviter de faire une présentation qui montre tout
+     sans choisir d'ordre dans la présentation.
+* DIABIRA binta diabira
+* FLECHEUX joan flecheux
+* SKODA jerome skoda
+* HAUTIER thomas hautier
+* Yves Viaud viaud
+* Idir Lankri lankri
+* JEAN-PIERRE luxon jeanpier
+* Hamilakis nicolas hamilaki
+* OULEBSIR HOCINE oulebsir
+* LAGHA belaid lagha
