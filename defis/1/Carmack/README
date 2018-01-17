@@ -1,1 +1,10 @@
 Faire le tableur + comparer les bibliothèque de calcul GPU
+
+TODO :
+
+- Choix d'une structure de données pour formules/entiers
+- Parsing du fichier CSV à faire
+- "Exécution" de data.csv
+	- Calculer les formules
+- Produire view0.csv
+- Produire changes.txt
