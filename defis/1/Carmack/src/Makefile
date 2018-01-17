@@ -1,5 +1,5 @@
 CC     = gcc
-CFLAGS = -W -Wall -ansi -pedantic
+CFLAGS = -Wall -pedantic
 TARGET = ws
 
 $(TARGET): main.c
