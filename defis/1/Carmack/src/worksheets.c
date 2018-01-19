@@ -177,6 +177,18 @@ void evaluate_worksheet(worksheet *ws) {
 	printf("Students! This is our job!\n");
 }
 
+void apply_user(worksheet* ws, user* user_mods) {
+	printf("Students! This is our job!\n");
+}
+
+void produce_view(worksheet* ws, const char* path) {
+	printf("Students! This is our job!\n");
+}
+
+void produce_changes(worksheet* ws, const char* path) {
+	printf("Students! This is our job!\n");
+}
+
 void release_worksheet(worksheet* ws) {
 	for (unsigned i = 0; i < ws->lines_count; i++) {
 		free(ws->lines[i].content);

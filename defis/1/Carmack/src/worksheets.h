@@ -51,8 +51,10 @@ int parse_formula(char* token, data* formula);
 int parse_user(const char* path, user* user_mods);
 
 /// Worksheet/User management
-void evaluate_worksheet(worksheet* ws); // Maybe add others parameters ?
-void apply_user(worksheet* ws);
+void evaluate_worksheet(worksheet* ws); // Maybe add other parameters ?
+void apply_user(worksheet* ws, user* user_mods);
+void produce_view(worksheet* ws, const char* path); // add other parameters ?
+void produce_changes(worksheet* ws, const char* path); // same thing ?
 void release_worksheet(worksheet* ws);
 void release_user(user* user_mods);
 
