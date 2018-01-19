@@ -1,0 +1,19 @@
+# IntelliJ
+.idea/*
+*.iml
+## JAVA ##
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+## Output Folders ##
+out/
+project/project/
+project/target/
+target/
