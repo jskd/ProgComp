@@ -2,8 +2,34 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::env;
 
-struct Entry<T>{
-    value: T
+trait Cellule {
+    fn getValue(&self) -> i32;
+}
+struct Number {value:i32}
+struct Formule {form:String}
+
+impl Number
+{
+    fn setValue(&mut self, n: i32)
+    {
+        self.value = n;
+    }
+}
+impl Cellule for Number
+{
+    
+    fn getValue(&self) -> i32
+    {
+        return self.value;
+    }
+}
+impl Cellule for Formule
+{
+    // TODO
+    fn getValue(&self) -> i32
+    {
+        return 0;
+    }
 }
 fn read_file(f :&str) -> String
 {
@@ -12,12 +38,14 @@ fn read_file(f :&str) -> String
     file.read_to_string(&mut data);
     return data.trim().to_string();
 }
-/*
-fn parsetab(d: &str) -> Vec<Vec<Entry<_>>>
-{
 
+fn parsetab(d: &str) -> Vec<Vec<Box<Cellule>>>
+{
+    let t: Vec<Vec<Box<Cellule>>> =  Vec::new();
+
+    return t; 
 }
-*/
+
 fn main()
 {
     let args: Vec<String> = env::args().collect();
@@ -26,5 +54,16 @@ fn main()
         panic!("Erreur d'arguments");
     }
     let mut data = read_file(&args[1]);
-    println!("{}", data);
+    let mut Num: Number =  Number{value: 3};
+    Num.setValue(4);
+    let mut a =  data.split("\n");
+    let vec = a.collect::<Vec<&str>>();
+    for c in &vec{
+        println!("-> {}", c.trim());
+        let mut temp = c.split(";");
+        let  vec2 = temp.collect::<Vec<&str>>();
+        for d in &vec2{
+            println!("L:{}", d);
+        }
+    }
 }

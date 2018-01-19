@@ -35,10 +35,12 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
     - State "DONE"       from "TODO"       [2018-01-15 Mon 11:42]
 *** DONE Relire doc/little-guide-software-engineering.pdf
     - State "DONE"       from "TODO"       [2018-01-15 Mon 11:42]
+*** DONE Affectation des contraintes technologiques
+    - State "DONE"       from "TODO"       [2018-01-15 Mon 12:36]
 *** TODO Présentations d'analyse du problème du défi 1.
-*** TODO Affectation des contraintes technologiques
 *** TODO Réalisation du défi 1
 *** TODO Présentation du défi 2
+*** TODO Lire https://cr.yp.to/qmail/qmailsec-20071101.pdf
 * Notes de cours
 
 Ces notes sont à compléter avec vos propres remarques personnelles et
