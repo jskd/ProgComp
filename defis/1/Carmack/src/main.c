@@ -1,26 +1,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
-
-typedef enum { FORMULA, VALUE } data_ty;
-
-typedef struct {
-    int r1, r2, c1, c2, val;
-} formula;
-
-typedef struct {
-    data_ty ty;
-    union {
-        int value;
-        formula formula;
-    };
-} data;
+#include "worksheets.h"
 
 int main(int argc, const char* argv[]) {
 	if (argc != 5) {
 		errno = EINVAL;
 		perror("usage: ./ws data.csv user.txt view0.csv changes.txt\n");
+		return EXIT_FAILURE;
 	}
+
+	worksheet current_worksheet;
+
+	parse_data(argv[1], &current_worksheet);
+	print_worksheet(&current_worksheet);
+	release_worksheet(&current_worksheet);
+
 	return EXIT_SUCCESS;
 }
 
