@@ -11,10 +11,14 @@ int main(int argc, const char* argv[]) {
 	}
 
 	worksheet current_worksheet;
+	user current_user;
 
 	parse_data(argv[1], &current_worksheet);
+	parse_user(argv[2], &current_user);
 	print_worksheet(&current_worksheet);
+	print_user(&current_user);
 	release_worksheet(&current_worksheet);
+	release_user(&current_user);
 
 	return EXIT_SUCCESS;
 }
