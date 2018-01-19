@@ -1,9 +1,9 @@
 CC     = gcc
-CFLAGS = -Wall -pedantic
+CFLAGS = -std=c11 -Wall -pedantic
 TARGET = ws
 
-$(TARGET): main.c
-	$(CC) main.c -o $(TARGET) $(CFLAGS)
+$(TARGET): *.c
+	$(CC) *.c -o $(TARGET) $(CFLAGS)
 
 clean:; rm -rf *.o
 
