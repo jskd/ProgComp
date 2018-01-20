@@ -1,7 +1,10 @@
+
+#include "worksheets.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "worksheets.h"
+
 
 #define MAX_BUF_LINE	(1 << 11)
 #define VAL_PER_LINE	(1 << 10)
@@ -15,7 +18,7 @@ int parse_data(const char *path, worksheet* output) {
 	char *token, *saveptr;
 	char buf[MAX_BUF_LINE];
 	unsigned lines_count = 0, elems_count = 0;
-	
+
 	if ((file = fopen(path, "r")) == NULL)
 		return 1;
 
@@ -30,7 +33,7 @@ int parse_data(const char *path, worksheet* output) {
 		current_line->content = malloc(VAL_PER_LINE * sizeof(data));
 
 		// Analyzing each token
-		while (token != NULL) { 
+		while (token != NULL) {
 			data *current_data = &(current_line->content[elems_count]);
 
 			switch (token_type(token)) {
@@ -170,7 +173,7 @@ data_ty token_type(const char* token) {
 		else
 			return VALUE;
 	}
-	return INVALID; 
+	return INVALID;
 }
 
 void evaluate_worksheet(worksheet *ws) {
@@ -234,4 +237,3 @@ void print_data(data* value, const char* separator) {
 			break;
 	}
 }
-

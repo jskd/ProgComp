@@ -1,12 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
+
 #include "worksheets.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ARGN 5
+
 int main(int argc, const char* argv[]) {
-	if (argc != 5) {
-		errno = EINVAL;
-		perror("usage: ./ws data.csv user.txt view0.csv changes.txt\n");
+	if (argc != ARGN) {
+		fprintf(stderr, "usage: ./ws data.csv user.txt view0.csv changes.txt\n");
 		return EXIT_FAILURE;
 	}
 
@@ -22,4 +24,3 @@ int main(int argc, const char* argv[]) {
 
 	return EXIT_SUCCESS;
 }
-
