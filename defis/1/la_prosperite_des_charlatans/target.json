@@ -1,0 +1,16 @@
+{
+  "target":[
+    {
+      "name":"babar",
+      "path":"defis/1/babar"
+    },
+    {
+      "name":"Carmack",
+      "path":"defis/1/Carmack"
+    },
+    {
+      "name":"Scableur",
+      "path":"defis/1/Scableur"
+    }
+  ]
+}
