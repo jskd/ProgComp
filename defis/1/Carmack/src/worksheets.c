@@ -42,7 +42,7 @@ int parse_data(const char *path, struct worksheet *output) {
 					break;
 				case VALUE:
 					current_data->ty = VALUE;
-					current_data->value = atoi(token);
+					current_data->udata.value = atoi(token);
 					break;
 				case INVALID:
 				default:
@@ -90,15 +90,15 @@ int parse_formula(char* token, struct data *formula) {
 		// If you have a better solution, do it (I'm tired)
 		switch (elements_parsed) {
 			case 1:
-				formula->formula.r1 = atoi(formula_element); break;
+				formula->udata.formula.r1 = atoi(formula_element); break;
 			case 2:
-				formula->formula.c1 = atoi(formula_element); break;
+				formula->udata.formula.c1 = atoi(formula_element); break;
 			case 3:
-				formula->formula.r2 = atoi(formula_element); break;
+				formula->udata.formula.r2 = atoi(formula_element); break;
 			case 4:
-				formula->formula.c2 = atoi(formula_element); break;
+				formula->udata.formula.c2 = atoi(formula_element); break;
 			case 5:
-				formula->formula.val = atoi(formula_element); break;
+				formula->udata.formula.val = atoi(formula_element); break;
 			default: break;
 		}
 
@@ -145,7 +145,7 @@ int parse_user(const char* path, struct user *user_mods) {
 					if (token_type(token) == FORMULA)
 						parse_formula(token, &(current_change->value));
 					else {
-						current_change->value.value = atoi(token);
+						current_change->value.udata.value = atoi(token);
 						current_change->value.ty = VALUE;
 					}
 					break;
@@ -229,7 +229,7 @@ void print_data(struct data* value, const char* separator) {
 			printf("F%s", separator);
 			break;
 		case VALUE:
-			printf("%d%s", value->value, separator);
+			printf("%d%s", value->udata.value, separator);
 			break;
 		case INVALID:
 			printf("?%s", separator);
