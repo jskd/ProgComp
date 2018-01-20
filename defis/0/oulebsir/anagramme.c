@@ -20,27 +20,31 @@ return 0;
 }
 void print_ana(char *head, char *str)
 {
-    
-    static int k = 0;
-    size_t sz = strlen(str);
-    if(0 == sz) {
-        return ;
-    }
-    if(1 == sz) {
-        printf("%s%s\n", head, str);
-	printf("-------");
-    } else {
-        size_t i;
-        char headbuf[64], strbuf[64];
-        for(i = 0; i < sz; ++i) {
-            sprintf(headbuf, "%s%c", head, str[i]);
-            
-            strncpy(strbuf, str, i);
-            strncpy(strbuf+i, str+i+1, sz-i);
+   
+       	
            
-            print_ana(headbuf, strbuf);
-        }
-    }
+           int i, j;
+           int y=0;
+           char c;
+          while (y != fact) {
+          printf("%s\n", a);
+          i=1;
+          while(a[i] > a[i-1]) i++;
+          j=0;
+          while(a[j] < a[i])j++;         
+      c=a[j];
+      a[j]=a[i];
+      a[i]=c;
+i--;
+for (j = 0; j < i; i--, j++) {
+  c = a[i];
+  a[i] = a[j];
+  a[j] = c;
+      }
+y++;  
+   }
+}
+ 
 }
  
 int main(int argc,char * argv[]) 
