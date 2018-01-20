@@ -9,61 +9,61 @@
 // Besides, if we implement a big data worksheet engine in the future,
 // we may need them for storing multiple metadata.
 
-typedef enum { INVALID, FORMULA, VALUE } data_ty;
+enum data_ty { INVALID, FORMULA, VALUE };
 
-typedef struct {
+struct formula {
 	int r1, r2, c1, c2, val;
-} formula;
+};
 
-typedef struct {
-	data_ty ty;
+struct data {
+	enum data_ty ty;
 	union {
 		int value;
-		formula formula;
+		struct formula formula;
 	};
-} data;
+};
 
-typedef struct {
+struct line {
 	unsigned elements_count;
-	data *content;
-} line;
+	struct data *content;
+} ;
 
-typedef struct {
+struct worksheet {
 	unsigned lines_count;
-	line* lines;
-} worksheet;
+	struct line *lines;
+};
 
-typedef struct {
+struct user_component {
 	int r, c;
-	data value;
-} user_component;
+	struct data value;
+} ;
 
-typedef struct {
+struct user {
 	unsigned changes_count;
-	user_component* content;
-} user;
+	struct user_component *content;
+};
 
 // Functions
 
 /// Parsing
-int parse_data(const char* path, worksheet* ws);
-int parse_formula(char* token, data* formula);
-int parse_user(const char* path, user* user_mods);
+int parse_data(const char *path, struct worksheet *ws);
+int parse_formula(char *token, struct data *formula);
+int parse_user(const char *path, struct user *user_mods);
 
 /// Worksheet/User management
-void evaluate_worksheet(worksheet* ws); // Maybe add other parameters ?
-void apply_user(worksheet* ws, user* user_mods);
-void produce_view(worksheet* ws, const char* path); // add other parameters ?
-void produce_changes(worksheet* ws, const char* path); // same thing ?
-void release_worksheet(worksheet* ws);
-void release_user(user* user_mods);
+void evaluate_worksheet(struct worksheet *ws); // Maybe add other parameters ?
+void apply_user(struct worksheet *ws, struct user *user_mods);
+void produce_view(struct worksheet *ws, const char *path); // add other parameters ?
+void produce_changes(struct worksheet *ws, const char *path); // same thing ?
+void release_worksheet(struct worksheet *ws);
+void release_user(struct user *user_mods);
 
 /// Print things
-void print_worksheet(worksheet* ws);
-void print_user(user* user_mods);
-void print_data(data* value, const char* separator);
+void print_worksheet(struct worksheet *ws);
+void print_user(struct user *user_mods);
+void print_data(struct data *value, const char *separator);
 
 /// Utilities
-data_ty token_type(const char* token);
+enum data_ty token_type(const char *token);
 
 #endif
