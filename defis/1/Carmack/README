@@ -15,3 +15,8 @@ Vu que nous somme pas mis d'accord sur le "coding style", on travaillera en util
 la convention de nommage à la VLC.
 
 https://wiki.videolan.org/Code_Conventions/
+
++ pst_ for pointer to structure
++ nb_ for number (any integer type)
++ parr_ for array (any type)
++ pstar_ for array of structures
