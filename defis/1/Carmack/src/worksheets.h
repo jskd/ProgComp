@@ -32,28 +32,28 @@ struct cell {
 	enum cell_ty ty;
 	union {
 		int value;
-		struct formula formula;
+		struct formula st_formula;
 	} udata;
 };
 
 struct line_data {
 	unsigned nb_elements;
-	struct cell *content;
+	struct cell *pst_content;
 };
 
 struct worksheet {
 	unsigned nblines;
-	struct line_data *lines;
+	struct line_data *pst_line_data;
 };
 
 struct user_component {
 	int r, c;
-	struct cell value;
+	struct cell st_value;
 };
 
 struct user_data {
 	unsigned nb_changes;
-	struct user_component *content;
+	struct user_component *pst_content;
 };
 
 // Functions
