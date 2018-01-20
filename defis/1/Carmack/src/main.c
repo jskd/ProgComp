@@ -13,7 +13,7 @@ int main(int argc, const char* argv[]) {
 	}
 
 	struct worksheet current_worksheet;
-	struct user current_user;
+	struct user_data current_user;
 
 	parse_data(argv[1], &current_worksheet);
 	parse_user(argv[2], &current_user);
