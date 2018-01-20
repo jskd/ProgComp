@@ -20,13 +20,13 @@ struct data {
 	union {
 		int value;
 		struct formula formula;
-	};
+	} udata;
 };
 
 struct line {
 	unsigned elements_count;
 	struct data *content;
-} ;
+};
 
 struct worksheet {
 	unsigned lines_count;
@@ -36,7 +36,7 @@ struct worksheet {
 struct user_component {
 	int r, c;
 	struct data value;
-} ;
+};
 
 struct user {
 	unsigned changes_count;
