@@ -1,32 +1,14 @@
 package prog.comp2018.scableur.data
 
-trait Area[T] {
-
+trait Value {
+  def eval : Option[Int]
 }
-
-trait History[T] {
-  def getModifications : Iterable[T]
-}
-
-trait View[T] {
-  def getIterable : Iterable[T]
-  def getHistory : History[T]
-}
-
-
-trait Value
 
 //Constant value (0-255)
-case class Constant() extends Value
-//Function
-case class Function() extends Value
-
-// Function types
-case class IterationsOfVInArea(a: Area[Value], value: Value) extends Function {
-  
+case class ConstantType(private var value: Option[Int]) extends Value {
+  def eval : Option[Int] = value
 }
-
-
-
-
-
+//Function
+abstract case class FunctionType() extends Value {
+  def eval : Option[Int]
+}

@@ -4,14 +4,10 @@ import java.io.{FileInputStream, IOException}
 import java.util.Scanner
 import prog.comp2018.scableur.utils.Debug
 
-class FileReader {
-  var inputStream : FileInputStream = null
-  var scanner : Scanner = null
+class FileReader(private var filename : String ) {
+  var inputStream : FileInputStream = new FileInputStream(filename)
+  var scanner : Scanner = new Scanner(inputStream, "UTF-8")
 
-  def FileReader (filename : String) : Unit = {
-    inputStream = new FileInputStream(filename)
-    scanner = new Scanner(inputStream, "UTF-8")
-  }
 
   def line : String = {
     try{
