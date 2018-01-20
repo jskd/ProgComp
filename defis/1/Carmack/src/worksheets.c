@@ -1,10 +1,8 @@
-
 #include "worksheets.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 #define MAX_BUF_LINE	(1 << 11)
 #define VAL_PER_LINE	(1 << 10)
@@ -29,16 +27,22 @@ int parse_data(const char *path, struct worksheet *output) {
 		return -1;
 
 	struct line_data *pst_lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
+	if (pst_lines == NULL)
+		return -1;
 
-    /* Suggestion: this block shoud be in a separate function */
+	/* Suggestion: this block shoud be in a separate function */
 
 	while(fgets(psz_buf, sizeof(psz_buf), p_file)) {
 		struct line_data *st_current_line = malloc(sizeof(struct line_data));
+		if (st_current_line == NULL)
+			return -1;
 
 		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
 		psz_token = strtok_r(psz_buf, ";", &p_saveptr); // let's parse
 
 		st_current_line->pst_content = malloc(VAL_PER_LINE * sizeof(struct cell));
+		if (st_current_line->pst_content == NULL)
+			return -1;
 
 		// Analyzing each token
 		while (psz_token != NULL) {
@@ -74,7 +78,7 @@ int parse_data(const char *path, struct worksheet *output) {
 		u_line_count++;
 	}
 
-    /* END Suggestion */
+	/* END Suggestion */
 
 	// Exporting...
 	output->nblines = u_line_count;
@@ -85,7 +89,6 @@ int parse_data(const char *path, struct worksheet *output) {
 }
 
 int parse_formula(char* psz_token, struct cell *formula) {
-
     char *psz_formula = NULL, *p_saveptr = NULL;
 	unsigned nb_parsed_elements = 0;
 
@@ -139,6 +142,8 @@ int parse_user(const char* path, struct user_data *user_mods) {
 
 	struct user_component *pstar_user_changes =
 		malloc(MAX_LINES_COUNT * sizeof(struct user_component));
+	if (pstar_user_changes == NULL)
+		return -1;
 
 	struct user_component *pstar_usr_cur_change = pstar_user_changes;
 
@@ -180,8 +185,7 @@ int parse_user(const char* path, struct user_data *user_mods) {
 
 // we should do more checks than just testing the first char
 enum cell_ty token_type(const char* psz_token) {
-
-    if (psz_token != NULL) {
+	if (psz_token != NULL) {
 		if (psz_token[0] == '=')
 			return FORMULA;
 		else
@@ -218,7 +222,6 @@ void release_user(struct user_data *user_mods) {
 }
 
 void print_worksheet(struct worksheet *ws) {
-
     for (unsigned i = 0; i < ws->nblines; i++) {
         struct line_data st_line_data = ws->pst_line_data [i];
         for (unsigned j = 0; j < st_line_data.nb_elements; j++) {
@@ -252,3 +255,4 @@ void print_data(struct cell* value, const char* separator) {
 			break;
 	}
 }
+
