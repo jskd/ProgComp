@@ -9,3 +9,9 @@ TODO :
 - Produire view0.csv
 - Produire changes.txt
 
+Code style:
+
+Vu que nous somme pas mis d'accord sur le "coding style", on travaillera en utilisant
+la convention de nommage à la VLC.
+
+https://wiki.videolan.org/Code_Conventions/
