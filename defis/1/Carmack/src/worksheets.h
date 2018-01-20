@@ -37,12 +37,12 @@ struct cell {
 };
 
 struct line_data {
-	unsigned elements_count;
+	unsigned nb_elements;
 	struct cell *content;
 };
 
 struct worksheet {
-	unsigned lines_count;
+	unsigned nblines;
 	struct line_data *lines;
 };
 
@@ -52,7 +52,7 @@ struct user_component {
 };
 
 struct user_data {
-	unsigned changes_count;
+	unsigned nb_changes;
 	struct user_component *content;
 };
 

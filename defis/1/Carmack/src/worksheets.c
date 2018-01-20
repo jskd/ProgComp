@@ -15,34 +15,34 @@
 
 int parse_data(const char *path, struct worksheet *output) {
 	FILE *p_file = NULL;
-	char *psz_token = NULL, *saveptr = NULL;
+	char *psz_token = NULL, *p_saveptr = NULL;
 	char psz_buf[MAX_BUF_LINE] = {'\0'};
-	unsigned lines_count = 0, elems_count = 0;
+	unsigned u_line_count = 0, u_elem_count = 0;
 
 	if ((p_file = fopen(path, "r")) == NULL)
 		return -1;
 
-	struct line_data *lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
+	struct line_data *pst_lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
 
 	while(fgets(psz_buf, sizeof(psz_buf), p_file)) {
-		struct line_data *current_line = malloc(sizeof(struct line_data));
+		struct line_data *st_current_line = malloc(sizeof(struct line_data));
 
 		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
-		psz_token = strtok_r(psz_buf, ";", &saveptr); // let's parse
+		psz_token = strtok_r(psz_buf, ";", &p_saveptr); // let's parse
 
-		current_line->content = malloc(VAL_PER_LINE * sizeof(struct cell));
+		st_current_line->content = malloc(VAL_PER_LINE * sizeof(struct cell));
 
 		// Analyzing each token
 		while (psz_token != NULL) {
-			struct cell *current_data = &(current_line->content[elems_count]);
+			struct cell *pst_current_cell = &(st_current_line->content[u_elem_count]);
 
 			switch (token_type(psz_token)) {
 				case FORMULA:
-					parse_formula(psz_token, current_data);
+					parse_formula(psz_token, pst_current_cell);
 					break;
 				case VALUE:
-					current_data->ty = VALUE;
-					current_data->udata.value = atoi(psz_token);
+					pst_current_cell->ty = VALUE;
+					pst_current_cell->udata.value = atoi(psz_token);
 					break;
 				case INVALID:
 				default:
@@ -50,25 +50,25 @@ int parse_data(const char *path, struct worksheet *output) {
 			}
 
 			// Adding the element
-			current_line->content[elems_count] = *current_data;
+			st_current_line->content[u_elem_count] = *pst_current_cell;
 
 			// let's get to the next token
-			psz_token = strtok_r(NULL, ";", &saveptr);
+			psz_token = strtok_r(NULL, ";", &p_saveptr);
 
-			elems_count++;
+			u_elem_count++;
 		}
 
 		// Adding the line
-		current_line->elements_count = elems_count;
-		lines[lines_count] = *current_line;
+		st_current_line->nb_elements = u_elem_count;
+		pst_lines[u_line_count] = *st_current_line;
 
-		elems_count = 0;
-		lines_count++;
+		u_elem_count = 0;
+		u_line_count++;
 	}
 
 	// Exporting...
-	output->lines_count = lines_count;
-	output->lines = lines;
+	output->nblines = u_line_count;
+	output->lines = pst_lines;
 
 	fclose(p_file);
 	return 0;
@@ -76,19 +76,19 @@ int parse_data(const char *path, struct worksheet *output) {
 
 int parse_formula(char* psz_token, struct cell *formula) {
 
-    char *formula_element = NULL, *saveptr = NULL;
-	unsigned elements_parsed = 0;
+    char *formula_element = NULL, *p_saveptr = NULL;
+	unsigned nb_parsed_elements = 0;
 
-	formula_element = strtok_r(&(psz_token[2]), ",", &saveptr);;
+	formula_element = strtok_r(&(psz_token[2]), ",", &p_saveptr);;
 
 	// Main assumption:
 	// A formula contains 5 components
 
 	while (formula_element != NULL) {
-		elements_parsed++;
+		nb_parsed_elements++;
 
 		// If you have a better solution, do it (I'm tired)
-		switch (elements_parsed) {
+		switch (nb_parsed_elements) {
 			case 1:
 				formula->udata.formula.r1 = atoi(formula_element); break;
 			case 2:
@@ -102,10 +102,10 @@ int parse_formula(char* psz_token, struct cell *formula) {
 			default: break;
 		}
 
-		formula_element = strtok_r(NULL, ",", &saveptr);
+		formula_element = strtok_r(NULL, ",", &p_saveptr);
 	}
 
-	if (elements_parsed != 5) {
+	if (nb_parsed_elements != 5) {
 		formula->ty = INVALID;
 		return 1;
 	}
@@ -117,9 +117,9 @@ int parse_formula(char* psz_token, struct cell *formula) {
 
 int parse_user(const char* path, struct user_data *user_mods) {
 	FILE *p_file = NULL;
-	char *psz_token = NULL, *saveptr = NULL;
+	char *psz_token = NULL, *p_saveptr = NULL;
 	char psz_buf[MAX_BUF_LINE] = {'\0'};
-	unsigned elements_parsed = 0, user_changes_count = 0;
+	unsigned nb_parsed_elements = 0, user_changes_count = 0;
 
 	if ((p_file = fopen(path, "r")) == NULL)
 		return -1;
@@ -133,12 +133,12 @@ int parse_user(const char* path, struct user_data *user_mods) {
 		user_changes_count++;
 
 		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
-		psz_token = strtok_r(psz_buf, " ", &saveptr); // let's parse
+		psz_token = strtok_r(psz_buf, " ", &p_saveptr); // let's parse
 
 		while (psz_token != NULL) {
-			elements_parsed++;
+			nb_parsed_elements++;
 
-			switch (elements_parsed) {
+			switch (nb_parsed_elements) {
 				case 1: current_change->r = atoi(psz_token); break;
 				case 2: current_change->c = atoi(psz_token); break;
 				case 3:
@@ -152,14 +152,14 @@ int parse_user(const char* path, struct user_data *user_mods) {
 				default: break;
 			}
 
-			psz_token = strtok_r(NULL, " ", &saveptr);
+			psz_token = strtok_r(NULL, " ", &p_saveptr);
 		}
 
-		elements_parsed = 0;
+		nb_parsed_elements = 0;
 		current_change++;
 	}
 
-	user_mods->changes_count = user_changes_count;
+	user_mods->nb_changes = user_changes_count;
 	user_mods->content = user_changes;
 
 	return 0;
@@ -194,7 +194,7 @@ void produce_changes(struct worksheet *ws, const char *path) {
 }
 
 void release_worksheet(struct worksheet *ws) {
-	for (unsigned i = 0; i < ws->lines_count; i++) {
+	for (unsigned i = 0; i < ws->nblines; i++) {
 		free(ws->lines[i].content);
 	}
 	free(ws->lines);
@@ -206,9 +206,9 @@ void release_user(struct user_data *user_mods) {
 
 void print_worksheet(struct worksheet *ws) {
 
-    for (unsigned i = 0; i < ws->lines_count; i++) {
+    for (unsigned i = 0; i < ws->nblines; i++) {
         struct line_data st_line_data = ws->lines[i];
-        for (unsigned j = 0; j < st_line_data.elements_count; j++) {
+        for (unsigned j = 0; j < st_line_data.nb_elements; j++) {
 			struct cell node = st_line_data.content[j];
 			print_data(&node, "\t");
 		}
@@ -217,7 +217,7 @@ void print_worksheet(struct worksheet *ws) {
 }
 
 void print_user(struct user_data *user_mods) {
-	for (unsigned i = 0; i < user_mods->changes_count; i++) {
+	for (unsigned i = 0; i < user_mods->nb_changes; i++) {
 		struct user_component component = user_mods->content[i];
 		printf("(%d;%d) -> ", component.r, component.c);
 		print_data(&(component.value), "\n");
