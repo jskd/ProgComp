@@ -16,7 +16,7 @@ la convention de nommage à la VLC.
 
 https://wiki.videolan.org/Code_Conventions/
 
-+ pst_ for pointer to structure
-+ nb_ for number (any integer type)
-+ parr_ for array (any type)
-+ pstar_ for array of structures
++ pst_ pour les pointeurs vers une structure
++ nb_ pour les nombres (peut importe le type d'entier)
++ parr_ pour les tableaux dynamiques (n'importe quel type)
++ pstar_ pour les tableaux dynamiques de structures
