@@ -12,8 +12,8 @@ int main(int argc, const char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	worksheet current_worksheet;
-	user current_user;
+	struct worksheet current_worksheet;
+	struct user current_user;
 
 	parse_data(argv[1], &current_worksheet);
 	parse_user(argv[2], &current_user);
