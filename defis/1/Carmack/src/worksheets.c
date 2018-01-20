@@ -12,7 +12,13 @@
 
 // We're creating arrays so we need fixed sizes
 // Unless we introducing another data type !
-
+/*
+    from @luxon
+    1 - !!! Check return values from malloc !!!
+    2 - I suggest to use bool instead of int as type of return value, because
+        you want to check if the operation has deen done successfully
+    3 - Maybe you should put the big while-block in a separate (private) function
+*/
 int parse_data(const char *path, struct worksheet *output) {
 	FILE *p_file = NULL;
 	char *psz_token = NULL, *p_saveptr = NULL;
@@ -23,6 +29,8 @@ int parse_data(const char *path, struct worksheet *output) {
 		return -1;
 
 	struct line_data *pst_lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
+
+    /* Suggestion: this block shoud be in a separate function */
 
 	while(fgets(psz_buf, sizeof(psz_buf), p_file)) {
 		struct line_data *st_current_line = malloc(sizeof(struct line_data));
@@ -65,6 +73,8 @@ int parse_data(const char *path, struct worksheet *output) {
 		u_elem_count = 0;
 		u_line_count++;
 	}
+
+    /* END Suggestion */
 
 	// Exporting...
 	output->nblines = u_line_count;
@@ -115,6 +125,9 @@ int parse_formula(char* psz_token, struct cell *formula) {
 	return 0;
 }
 
+/*
+    3 - The "big" while-block in a separate (private) function?
+*/
 int parse_user(const char* path, struct user_data *user_mods) {
 	FILE *p_file = NULL;
 	char *psz_token = NULL, *p_saveptr = NULL;
