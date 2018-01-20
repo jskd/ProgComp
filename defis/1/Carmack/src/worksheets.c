@@ -14,35 +14,35 @@
 // Unless we introducing another data type !
 
 int parse_data(const char *path, struct worksheet *output) {
-	FILE *file = NULL;
-	char *token = NULL, *saveptr = NULL;
-	char buf[MAX_BUF_LINE] = {'\0'};
+	FILE *p_file = NULL;
+	char *psz_token = NULL, *saveptr = NULL;
+	char psz_buf[MAX_BUF_LINE] = {'\0'};
 	unsigned lines_count = 0, elems_count = 0;
 
-	if ((file = fopen(path, "r")) == NULL)
+	if ((p_file = fopen(path, "r")) == NULL)
 		return -1;
 
 	struct line_data *lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
 
-	while(fgets(buf, sizeof(buf), file)) {
+	while(fgets(psz_buf, sizeof(psz_buf), p_file)) {
 		struct line_data *current_line = malloc(sizeof(struct line_data));
 
-		buf[strlen(buf)-1] = '\0'; // we're removing the newline
-		token = strtok_r(buf, ";", &saveptr); // let's parse
+		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
+		psz_token = strtok_r(psz_buf, ";", &saveptr); // let's parse
 
 		current_line->content = malloc(VAL_PER_LINE * sizeof(struct cell));
 
 		// Analyzing each token
-		while (token != NULL) {
+		while (psz_token != NULL) {
 			struct cell *current_data = &(current_line->content[elems_count]);
 
-			switch (token_type(token)) {
+			switch (token_type(psz_token)) {
 				case FORMULA:
-					parse_formula(token, current_data);
+					parse_formula(psz_token, current_data);
 					break;
 				case VALUE:
 					current_data->ty = VALUE;
-					current_data->udata.value = atoi(token);
+					current_data->udata.value = atoi(psz_token);
 					break;
 				case INVALID:
 				default:
@@ -53,7 +53,7 @@ int parse_data(const char *path, struct worksheet *output) {
 			current_line->content[elems_count] = *current_data;
 
 			// let's get to the next token
-			token = strtok_r(NULL, ";", &saveptr);
+			psz_token = strtok_r(NULL, ";", &saveptr);
 
 			elems_count++;
 		}
@@ -70,16 +70,16 @@ int parse_data(const char *path, struct worksheet *output) {
 	output->lines_count = lines_count;
 	output->lines = lines;
 
-	fclose(file);
+	fclose(p_file);
 	return 0;
 }
 
-int parse_formula(char* token, struct cell *formula) {
+int parse_formula(char* psz_token, struct cell *formula) {
 
     char *formula_element = NULL, *saveptr = NULL;
 	unsigned elements_parsed = 0;
 
-	formula_element = strtok_r(&(token[2]), ",", &saveptr);;
+	formula_element = strtok_r(&(psz_token[2]), ",", &saveptr);;
 
 	// Main assumption:
 	// A formula contains 5 components
@@ -116,12 +116,12 @@ int parse_formula(char* token, struct cell *formula) {
 }
 
 int parse_user(const char* path, struct user_data *user_mods) {
-	FILE *file = NULL;
-	char *token = NULL, *saveptr = NULL;
-	char buf[MAX_BUF_LINE] = {'\0'};
+	FILE *p_file = NULL;
+	char *psz_token = NULL, *saveptr = NULL;
+	char psz_buf[MAX_BUF_LINE] = {'\0'};
 	unsigned elements_parsed = 0, user_changes_count = 0;
 
-	if ((file = fopen(path, "r")) == NULL)
+	if ((p_file = fopen(path, "r")) == NULL)
 		return -1;
 
 	struct user_component *user_changes =
@@ -129,30 +129,30 @@ int parse_user(const char* path, struct user_data *user_mods) {
 
 	struct user_component *current_change = user_changes;
 
-	while(fgets(buf, sizeof(buf), file)) {
+	while(fgets(psz_buf, sizeof(psz_buf), p_file)) {
 		user_changes_count++;
 
-		buf[strlen(buf)-1] = '\0'; // we're removing the newline
-		token = strtok_r(buf, " ", &saveptr); // let's parse
+		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
+		psz_token = strtok_r(psz_buf, " ", &saveptr); // let's parse
 
-		while (token != NULL) {
+		while (psz_token != NULL) {
 			elements_parsed++;
 
 			switch (elements_parsed) {
-				case 1: current_change->r = atoi(token); break;
-				case 2: current_change->c = atoi(token); break;
+				case 1: current_change->r = atoi(psz_token); break;
+				case 2: current_change->c = atoi(psz_token); break;
 				case 3:
-					if (token_type(token) == FORMULA)
-						parse_formula(token, &(current_change->value));
+					if (token_type(psz_token) == FORMULA)
+						parse_formula(psz_token, &(current_change->value));
 					else {
-						current_change->value.udata.value = atoi(token);
+						current_change->value.udata.value = atoi(psz_token);
 						current_change->value.ty = VALUE;
 					}
 					break;
 				default: break;
 			}
 
-			token = strtok_r(NULL, " ", &saveptr);
+			psz_token = strtok_r(NULL, " ", &saveptr);
 		}
 
 		elements_parsed = 0;
@@ -166,10 +166,10 @@ int parse_user(const char* path, struct user_data *user_mods) {
 }
 
 // we should do more checks than just testing the first char
-enum cell_ty token_type(const char* token) {
+enum cell_ty token_type(const char* psz_token) {
 
-    if (token != NULL) {
-		if (token[0] == '=')
+    if (psz_token != NULL) {
+		if (psz_token[0] == '=')
 			return FORMULA;
 		else
 			return VALUE;
