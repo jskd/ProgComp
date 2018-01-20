@@ -1,3 +1,11 @@
+
+/*
+    worksheet.h
+
+    Every structures used in the program to execute
+    the different operations
+*/
+
 #ifndef WORKSHEETS_H
 #define WORKSHEETS_H
 
@@ -9,6 +17,8 @@
 // Besides, if we implement a big data worksheet engine in the future,
 // we may need them for storing multiple metadata.
 
+// Copy! (^_^)
+
 enum cell_ty { INVALID, FORMULA, VALUE };
 
 struct formula {
@@ -16,10 +26,7 @@ struct formula {
 };
 
 /*
-    old name: data
-    new name: cell
-
-    It is the classic name used in a worksheet
+    A cell in the worksheet
 */
 struct cell {
 	enum cell_ty ty;
