@@ -22,19 +22,19 @@ int parse_data(const char *path, struct worksheet *output) {
 	if ((file = fopen(path, "r")) == NULL)
 		return -1;
 
-	struct line *lines = malloc(MAX_LINES_COUNT * sizeof(struct line));
+	struct line_data *lines = malloc(MAX_LINES_COUNT * sizeof(struct line_data));
 
 	while(fgets(buf, sizeof(buf), file)) {
-		struct line *current_line = malloc(sizeof(struct line));
+		struct line_data *current_line = malloc(sizeof(struct line_data));
 
 		buf[strlen(buf)-1] = '\0'; // we're removing the newline
 		token = strtok_r(buf, ";", &saveptr); // let's parse
 
-		current_line->content = malloc(VAL_PER_LINE * sizeof(struct data));
+		current_line->content = malloc(VAL_PER_LINE * sizeof(struct cell));
 
 		// Analyzing each token
 		while (token != NULL) {
-			struct data *current_data = &(current_line->content[elems_count]);
+			struct cell *current_data = &(current_line->content[elems_count]);
 
 			switch (token_type(token)) {
 				case FORMULA:
@@ -74,7 +74,7 @@ int parse_data(const char *path, struct worksheet *output) {
 	return 0;
 }
 
-int parse_formula(char* token, struct data *formula) {
+int parse_formula(char* token, struct cell *formula) {
 
     char *formula_element = NULL, *saveptr = NULL;
 	unsigned elements_parsed = 0;
@@ -115,7 +115,7 @@ int parse_formula(char* token, struct data *formula) {
 	return 0;
 }
 
-int parse_user(const char* path, struct user *user_mods) {
+int parse_user(const char* path, struct user_data *user_mods) {
 	FILE *file = NULL;
 	char *token = NULL, *saveptr = NULL;
 	char buf[MAX_BUF_LINE] = {'\0'};
@@ -166,7 +166,7 @@ int parse_user(const char* path, struct user *user_mods) {
 }
 
 // we should do more checks than just testing the first char
-enum data_ty token_type(const char* token) {
+enum cell_ty token_type(const char* token) {
 
     if (token != NULL) {
 		if (token[0] == '=')
@@ -181,7 +181,7 @@ void evaluate_worksheet(struct worksheet *ws) {
 	printf("Students! This is our job!\n");
 }
 
-void apply_user(struct worksheet *ws, struct user *user_mods) {
+void apply_user(struct worksheet *ws, struct user_data *user_mods) {
 	printf("Students! This is our job!\n");
 }
 
@@ -200,22 +200,23 @@ void release_worksheet(struct worksheet *ws) {
 	free(ws->lines);
 }
 
-void release_user(struct user *user_mods) {
+void release_user(struct user_data *user_mods) {
 	free(user_mods->content);
 }
 
 void print_worksheet(struct worksheet *ws) {
-	for (unsigned i = 0; i < ws->lines_count; i++) {
-		struct line line = ws->lines[i];
-		for (unsigned j = 0; j < line.elements_count; j++) {
-			struct data node = line.content[j];
+
+    for (unsigned i = 0; i < ws->lines_count; i++) {
+        struct line_data st_line_data = ws->lines[i];
+        for (unsigned j = 0; j < st_line_data.elements_count; j++) {
+			struct cell node = st_line_data.content[j];
 			print_data(&node, "\t");
 		}
 		printf("\n");
 	}
 }
 
-void print_user(struct user *user_mods) {
+void print_user(struct user_data *user_mods) {
 	for (unsigned i = 0; i < user_mods->changes_count; i++) {
 		struct user_component component = user_mods->content[i];
 		printf("(%d;%d) -> ", component.r, component.c);
@@ -223,7 +224,7 @@ void print_user(struct user *user_mods) {
 	}
 }
 
-void print_data(struct data* value, const char* separator) {
+void print_data(struct cell* value, const char* separator) {
 	switch (value->ty) {
 		case FORMULA:
 			printf("F%s", separator);
