@@ -2,9 +2,21 @@ Faire le tableur + comparer les bibliothèque de calcul GPU
 
 TODO :
 
-- Choix d'une structure de données pour formules/entiers
-- Parsing du fichier CSV à faire
+✔ Choix d'une structure de données pour formules/entiers
+✔ Parsing des fichiers data CSV à faire
 - "Exécution" de data.csv
 	- Calculer les formules
 - Produire view0.csv
 - Produire changes.txt
+
+Code style:
+
+Vu que nous somme pas mis d'accord sur le "coding style", on travaillera en utilisant
+la convention de nommage à la VLC.
+
+https://wiki.videolan.org/Code_Conventions/
+
++ pst_ pour les pointeurs vers une structure
++ nb_ pour les nombres (peut importe le type d'entier)
++ parr_ pour les tableaux dynamiques (n'importe quel type)
++ pstar_ pour les tableaux dynamiques de structures
