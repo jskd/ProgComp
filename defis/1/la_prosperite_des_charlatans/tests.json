@@ -1,0 +1,14 @@
+{
+  "tests":[
+    {
+      "name":"Files presence",
+      "exec":"",
+      "expected":""
+    },
+    {
+      "name":"User structure",
+      "exec":"",
+      "expected":"tests/expected_user"
+    }
+  ]
+}
