@@ -92,7 +92,8 @@ int parse_formula(char* psz_token, struct cell *formula) {
     char *psz_formula = NULL, *p_saveptr = NULL;
 	unsigned nb_parsed_elements = 0;
 
-	psz_formula = strtok_r(&(psz_token[2]), ",", &p_saveptr);;
+	// psz_token+3 because we're skipping `=#(`
+	psz_formula = strtok_r((psz_token+3), ",", &p_saveptr);;
 
 	// Main assumption:
 	// A formula contains 5 components

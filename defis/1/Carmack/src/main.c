@@ -1,4 +1,3 @@
-
 #include "worksheets.h"
 
 #include <stdio.h>
@@ -26,7 +25,11 @@ int main(int argc, const char* argv[]) {
 	}
 
 	print_worksheet(&current_worksheet);
+	evaluate_worksheet(&current_worksheet);
+	print_worksheet(&current_worksheet);
+
 	print_user(&current_user);
+
 	release_worksheet(&current_worksheet);
 	release_user(&current_user);
 
