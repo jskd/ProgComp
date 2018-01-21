@@ -11,6 +11,7 @@ func checkError(err error){
 	}
 }
 
+
 /*read File and returns there content in a 2D slice of strings*/
 func readFile() [][]string{
 	file, err := ioutil.ReadFile("data.csv")
@@ -22,6 +23,12 @@ func readFile() [][]string{
 	}
 	return car
 }
+
+/* Evaluate content of data.csv TODO*/
+func evaluate(element string) string{
+	return element
+}
+
 /*write in File the 2D slice of strings*/
 func writeFile(){
 	taille := len(readFile())
@@ -36,7 +43,7 @@ func writeFile(){
 	for i:=0;i<len(s);i++ {
 		for j:=0;j<len(s[i]);j++ {
 			fmt.Println("---%d---",j)
-			_, err = f.WriteString(s[i][j]+",")
+			_, err = f.WriteString(evaluate(s[i][j])+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
