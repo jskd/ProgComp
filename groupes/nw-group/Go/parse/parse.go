@@ -34,8 +34,9 @@ func writeFile(){
 	}
 	sep := "\n"
 	for i:=0;i<len(s);i++ {
-		for j:=0;j<cap(s);j++ {
-			_, err = f.WriteString(s[i][j])
+		for j:=0;j<len(s[i]);j++ {
+			fmt.Println("---%d---",j)
+			_, err = f.WriteString(s[i][j]+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
