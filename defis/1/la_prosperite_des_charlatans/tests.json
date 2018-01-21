@@ -8,7 +8,7 @@
     {
       "name":"User structure",
       "exec":"",
-      "expected":"tests/expected_user"
+      "expected":"tests/user.txt"
     }
   ]
 }
