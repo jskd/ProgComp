@@ -15,6 +15,9 @@ if __name__ == "__main__":
 
     for target in data_targets["target"]:
         print(" # Current project :", target["name"])
+        print("-"*32)
+
+        nb_passed = 0
 
         for i, test in enumerate(data_tests["tests"]):
 
@@ -23,13 +26,15 @@ if __name__ == "__main__":
             if cmd == "" :
                 # Here, tests without exec files
                 # out = anotherFunction()
-                out = ""
+                out = "0 0 5\n1 0 10\n1 1 =#(0, 0, 1, 0, 5)"
             else:
                 out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
 
             if test["expected"] != "":
                 with open(test["expected"], 'r') as f:
-                    result = "PASS" if f.read() == out else "FAIL"
+                    result = "PASS" if f.read().strip("\n") == out else "FAIL"
+                    if result == "PASS" : nb_passed += 1
+
             else:
                 # Here, tests without expected files
                 # result = anotherExpectedThings
@@ -37,5 +42,5 @@ if __name__ == "__main__":
 
             print(" [{}] -> [{}] {} {}".format(i, result, test["name"], test["expected"]))
 
-    print ("\n >> RESULT : [{}/{}] -> NOTE: 20/20 avec félicitations du jury".format(0, len(data_tests["tests"])))
-    print ()
+        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(data_tests["tests"]), (nb_passed / len(data_tests["tests"])) * 20 ))
+        print ()
