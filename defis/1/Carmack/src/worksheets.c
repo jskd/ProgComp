@@ -124,6 +124,7 @@ int parse_formula(char* psz_token, struct cell *formula) {
 	}
 
 	formula->ty = FORMULA;
+    formula->udata.st_formula.status = 0;
 
 	return 0;
 }
@@ -194,8 +195,54 @@ enum cell_ty token_type(const char* psz_token) {
 	return INVALID;
 }
 
+int evaluate_formula(struct formula *f, struct worksheet *ws,
+                     int x0, int y0) {
+    int x, y, val_num = 0;
+    struct cell *c;
+
+    if(f->status)
+        goto return_with_error;
+    f->status = 1;
+
+    for(x = f->r1; x <= f->r2; x++) {
+        for(y = f->c1; y <= f->c2; y++) {
+            c = (ws->pst_line_data + x)->pst_content + y;
+            switch(c->ty) {
+            case INVALID:
+                goto return_with_error;
+            case VALUE:
+                val_num = (c->udata.value == f->val) ?
+                    (val_num + 1) : val_num;
+                break;
+            case FORMULA:
+                // Look, Ma, recursion in C!
+                evaluate_formula(&(c->udata.st_formula), ws, x, y);
+                y--;
+                break;
+            }
+        }
+    }
+
+    ((ws->pst_line_data + x0)->pst_content + y0)->ty = VALUE;
+    ((ws->pst_line_data + x0)->pst_content + y0)->udata.value = val_num;
+    return 0;
+
+ return_with_error:
+    ((ws->pst_line_data + x0)->pst_content + y0)->ty = INVALID;
+    return -1;
+}
+
 void evaluate_worksheet(struct worksheet *ws) {
-	printf("Students! This is our job!\n");
+    int x, y;
+    struct cell *c;
+
+    for(x = 0; x < ws->nblines; x++) {
+        for(y = 0; y < (ws->pst_line_data + x)->nb_elements; y++) {
+            c = (ws->pst_line_data + x)->pst_content + y;
+            if(c->ty == FORMULA)
+                evaluate_formula(&(c->udata.st_formula), ws, x, y);
+        }
+    }
 }
 
 void apply_user(struct worksheet *ws, struct user_data *user_mods) {
