@@ -30,6 +30,10 @@ int main(int argc, const char* argv[]) {
 
 	print_user(&current_user);
 
+	if (produce_view(&current_worksheet, argv[3])) {
+		fprintf(stderr, "Error while writing to `%s` file", argv[3]);
+	}
+
 	release_worksheet(&current_worksheet);
 	release_user(&current_user);
 

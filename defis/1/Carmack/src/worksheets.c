@@ -8,6 +8,8 @@
 #define VAL_PER_LINE	(1 << 10)
 #define MAX_LINES_COUNT	(1 << 10)
 
+void write_data(FILE* stream, struct cell *value, const char *separator);
+
 // We're creating arrays so we need fixed sizes
 // Unless we introducing another data type !
 /*
@@ -250,8 +252,24 @@ void apply_user(struct worksheet *ws, struct user_data *user_mods) {
 	printf("Students! This is our job!\n");
 }
 
-void produce_view(struct worksheet *ws, const char *path) {
-	printf("Students! This is our job!\n");
+int produce_view(struct worksheet *ws, const char *path) {
+	FILE *p_file = fopen(path, "w");
+	unsigned i, j;
+
+	if (p_file == NULL)
+		return -1;
+
+	for (i = 0; i < ws->nblines; i++) {
+        struct line_data st_line_data = ws->pst_line_data[i];
+		unsigned nb_elements = st_line_data.nb_elements;
+        for (j = 0; j < nb_elements; j++) {
+			struct cell node = st_line_data.pst_content[j];
+			write_data(p_file, &node, (j == nb_elements-1) ? "" : ";");
+		}
+		fprintf(p_file, "\n");
+	}
+
+	return 0;
 }
 
 void produce_changes(struct worksheet *ws, const char *path) {
@@ -274,7 +292,7 @@ void print_worksheet(struct worksheet *ws) {
         struct line_data st_line_data = ws->pst_line_data [i];
         for (unsigned j = 0; j < st_line_data.nb_elements; j++) {
 			struct cell node = st_line_data.pst_content[j];
-			print_data(&node, "\t");
+			write_data(stdout, &node, "\t");
 		}
 		printf("\n");
 	}
@@ -284,20 +302,20 @@ void print_user(struct user_data *user_mods) {
 	for (unsigned i = 0; i < user_mods->nb_changes; i++) {
 		struct user_component component = user_mods->pst_content[i];
 		printf("(%d;%d) -> ", component.r, component.c);
-		print_data(&(component.st_value), "\n");
+		write_data(stdout, &(component.st_value), "\n");
 	}
 }
 
-void print_data(struct cell* value, const char* separator) {
+void write_data(FILE* stream, struct cell* value, const char* separator) {
 	switch (value->ty) {
 		case FORMULA:
-			printf("F%s", separator);
+			fprintf(stream, "F%s", separator);
 			break;
 		case VALUE:
-			printf("%d%s", value->udata.value, separator);
+			fprintf(stream, "%d%s", value->udata.value, separator);
 			break;
 		case INVALID:
-			printf("?%s", separator);
+			fprintf(stream, "P%s", separator);
 			break;
 		default:
 			break;
