@@ -38,7 +38,7 @@
     },
     {
       "name":"test",
-      "path":"tests/"
+      "path":"../GroupTest"
     }
   ]
 }

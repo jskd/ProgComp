@@ -22,7 +22,7 @@ if __name__ == "__main__":
         test_result = True
 
         try:
-            with open(tested_path + "/" + "view0.csv", "r") as user_file:
+            with open(tested_path + "/" + "output/view0.csv", "r") as user_file:
 
                 for line in user_file.readlines():
                     line_splited = line.strip("\n").split(" ")
