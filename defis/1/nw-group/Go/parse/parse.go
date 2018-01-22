@@ -6,7 +6,8 @@ import ("fmt"
 	"strings"
         "strconv")
 
-type formula struct{
+/*strucure of formula*/
+type Formula struct{
 	xSource int;
 	ySource int;
 	xDestination int;
@@ -14,32 +15,49 @@ type formula struct{
 	value int;
 }
 
-type data struct {
+/*data may be value or formula to evaluate*/
+type Data struct {
 	valeur string;
-	form formula;
+	form Formula;
 }
 
-type cellule struct {
+/*location of cell and content*/
+type Cell struct {
    x int;
    y int;
-   value data;
+   value Data;
 }
 
-func checkError(err error){
+func checkError(err error) {
 	if err != nil {
 		 panic(err)
 	}
 }
 
-func convertString2Int(str string) {
+func convertString2Int(str string) int {
   i, err := strconv.Atoi(str)
+  checkError(err)
   return i
 }
 
+func toFormula(formuleLue string) Formula {
+	formule := new(Formula)
+	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
+	if trimedFormule != formuleLue {
+		arg_list:=strings.Split(trimedFormule, ",")
+		arg_list[4] = strings.Replace(arg_list[4], ")", "", -1)
+		formule.xSource = convertString2Int(arg_list[0])
+		formule.ySource = convertString2Int(arg_list[1])
+		formule.xDestination = convertString2Int(arg_list[2])
+		formule.yDestination = convertString2Int(arg_list[3])
+		formule.value = convertString2Int(arg_list[4])
+	}
+	return *formule
+}
 
 /*read File and returns there content in a 2D slice of strings*/
-func readFile(sep string) [][]string{
-	file, err := ioutil.ReadFile("data.csv")
+func readFile(fileToRead string, sep string) [][]string{
+	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
    lines := strings.Split(string(file), "\n")
 	car:=make([][]string, 0, 0)
@@ -52,16 +70,15 @@ func readFile(sep string) [][]string{
 }
 
 /* Evaluate content of data.csv TODO*/
-func evaluate(element string) string{
-	
+func evaluate(element Formula) string{
 	return element
 }
 
 /*write in File the 2D slice of strings*/
 func writeFile(){
-	taille := len(readFile(","))
-	s:=make([][]string, taille,cap(readFile(",")))
-	s=readFile(",")
+	taille := len(readFile("data.csv",","))
+	s:=make([][]string, taille,taille)
+	s=readFile("data.csv",",")
 	fmt.Printf("%q\n",s)
 	f, err := os.OpenFile("view0.csv", os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
@@ -78,6 +95,15 @@ func writeFile(){
 	}
 }
 
+/* user actions */
+func userActions(){
+	s:=make([][]string, 0,0)
+	s=readFile("user.txt"," ")
+	fmt.Println("%q",s)
+}
+
 func main() {
 	writeFile()
+	userActions()
+	toFormula("=#(0, 0, 50, 50, 1)")
 }
