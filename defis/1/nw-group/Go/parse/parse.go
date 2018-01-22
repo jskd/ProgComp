@@ -36,7 +36,7 @@ func checkError(err error){
 func toFormula(formuleLue string) formula{
 	formule := new(Formula)
 	if(formuleLue[0]="=" && formuleLue[1]="#")
-	
+
 	formule.xSource=formuleLue[3]
 	formule.ySource=formuleLue[5]
 	formule.xDestination=formuleLue[7]
@@ -55,14 +55,23 @@ func readFile(fileToRead string, sep string) [][]string{
 			car=append(car,strings.Split(lines[i], sep))
 		}
 	}
-	
+
 	return car
 }
 
-/* Evaluate content of data.csv TODO*/
-func evaluate(element formula) string{
-	
-	return element
+/* Evaluates a formula.  On success, a formula evaluates into an
+   integer.  Returns an error when the dependency graph of the formula
+   has a cycle.  */
+func evaluate(formula formula, spreadSheet [][]string) (int, error) {
+	count := 0
+	for r := formula.ySource; r <= formula.yDestination; r++ {
+		for c := formula.xSource; c <= formula.xDestination; c++ {
+			if spreadSheet[r][c] == string(formula.value) {
+				count++
+			}
+		}
+	}
+	return count, nil
 }
 
 /*write in File the 2D slice of strings*/
@@ -78,7 +87,8 @@ func writeFile(){
 	sep := "\n"
 	for i:=0;i<len(s);i++ {
 		for j:=0;j<len(s[i]);j++ {
-			_, err = f.WriteString(evaluate(s[i][j])+",")
+			formula := toFormula(s[i][j])
+			_, err = f.WriteString(evaluate(formula)+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
