@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
             if test["expected"] != "":
                 with open(test["expected"], 'r') as f:
-                    result = "PASS" if f.read().strip("\n") == out else "FAIL"
+                    result = "PASS" if f.read() == out else "FAIL"
                     if result == "PASS" : nb_passed += 1
 
             else:
