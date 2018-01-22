@@ -42,13 +42,15 @@ int parse_data(const char *path, struct worksheet *output) {
 		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
 		psz_token = strtok_r(psz_buf, ";", &p_saveptr); // let's parse
 
-		st_current_line->pst_content = malloc(VAL_PER_LINE * sizeof(struct cell));
+		st_current_line->pst_content =
+			malloc(VAL_PER_LINE * sizeof(struct cell));
 		if (st_current_line->pst_content == NULL)
 			return -1;
 
 		// Analyzing each token
 		while (psz_token != NULL) {
-			struct cell *pst_current_cell = &(st_current_line->pst_content[u_elem_count]);
+			struct cell *pst_current_cell =
+				&(st_current_line->pst_content[u_elem_count]);
 
 			switch (token_type(psz_token)) {
 				case FORMULA:
@@ -76,6 +78,7 @@ int parse_data(const char *path, struct worksheet *output) {
 		st_current_line->nb_elements = u_elem_count;
 		pst_lines[u_line_count] = *st_current_line;
 
+		// Resetting/Updating counters
 		u_elem_count = 0;
 		u_line_count++;
 	}
@@ -121,6 +124,7 @@ int parse_formula(char* psz_token, struct cell *formula) {
 		psz_formula = strtok_r(NULL, ",", &p_saveptr);
 	}
 
+	// Exporting
 	if (nb_parsed_elements != 5) {
 		formula->ty = INVALID;
 		return 1;
@@ -174,16 +178,20 @@ int parse_user(const char* path, struct user_data *user_mods) {
 				default: break;
 			}
 
+			// Let's get to the next token
 			psz_token = strtok_r(NULL, " ", &p_saveptr);
 		}
 
+		// Resetting/Updating counters
 		nb_parsed_elements = 0;
 		pstar_usr_cur_change++;
 	}
 
+	// Exporting
 	user_mods->nb_changes = nb_user_changes;
 	user_mods->pst_content = pstar_user_changes;
 
+	fclose(p_file);
 	return 0;
 }
 

@@ -9,7 +9,7 @@ if __name__ == "__main__":
     with open("target.json") as data:
         data_targets = json.load(data)
 
-    with open("tests.json") as data:
+    with open("tests2.json") as data:
         data_tests = json.load(data)
 
 
@@ -19,10 +19,13 @@ if __name__ == "__main__":
 
         nb_passed = 0
 
+
         for i, test in enumerate(data_tests["tests"]):
-
+            test_file = target["path"] +"/"+test["expected"]
             cmd = test["exec"]
-
+            cmd.append(test_file)
+            print(cmd)
+            """
             if cmd == "" :
                 # Here, tests without exec files
                 # out = anotherFunction()
@@ -32,7 +35,7 @@ if __name__ == "__main__":
 
             if test["expected"] != "":
                 with open(test["expected"], 'r') as f:
-                    result = "PASS" if f.read() == out else "FAIL"
+                    result = "PASS" if f.read().strip("\n") == out else "FAIL"
                     if result == "PASS" : nb_passed += 1
 
             else:
@@ -41,6 +44,7 @@ if __name__ == "__main__":
                 result = "FAIL"
 
             print(" [{}] -> [{}] {} {}".format(i, result, test["name"], test["expected"]))
+            """
 
-        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(data_tests["tests"]), (nb_passed / len(data_tests["tests"])) * 20 ))
-        print ()
+        #print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(data_tests["tests"]), (nb_passed / len(data_tests["tests"])) * 20 ))
+        #print ()
