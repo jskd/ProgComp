@@ -69,9 +69,19 @@ func readFile(fileToRead string, sep string) [][]string{
 	return car
 }
 
-/* Evaluate content of data.csv TODO*/
-func evaluate(element Formula) string{
-	return element
+/* Evaluates a formula.  On success, a formula evaluates into an
+   integer.  Returns an error when the dependency graph of the formula
+   has a cycle.  */
+func evaluate(formula Formula, spreadSheet [][]string) (int) {
+	count := 0
+	for r := formula.ySource; r <= formula.yDestination; r++ {
+		for c := formula.xSource; c <= formula.xDestination; c++ {
+			if spreadSheet[r][c] == string(formula.value) {
+				count++
+			}
+		}
+	}
+	return count
 }
 
 /*write in File the 2D slice of strings*/
@@ -87,7 +97,8 @@ func writeFile(){
 	sep := "\n"
 	for i:=0;i<len(s);i++ {
 		for j:=0;j<len(s[i]);j++ {
-			_, err = f.WriteString(evaluate(s[i][j])+",")
+			formula := toFormula(s[i][j])
+			_, err = f.WriteString((evaluate(formula, s))+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
