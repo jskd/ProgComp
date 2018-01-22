@@ -1,6 +1,7 @@
 {
   "settings": [
-    { "test_dir": "tests/" }
+    { "test_dir": "tests/" },
+    { "expected_dir": "expected/" }
   ],
   "tests": [
     { "name": "Fichier vide" },
