@@ -11,6 +11,7 @@
 ** Présentation d'anagramme
    - Il faut éviter de faire une présentation qui montre tout
      sans choisir d'ordre dans la présentation.
+** <2018-01-22> Absent
 * DIABIRA binta diabira
 * FLECHEUX joan flecheux
 * SKODA jerome skoda
