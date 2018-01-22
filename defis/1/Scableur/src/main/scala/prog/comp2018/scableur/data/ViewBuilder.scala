@@ -10,18 +10,22 @@ import prog.comp2018.scableur.data.functions._
 object ViewBuilder {
   // Build a Partial View from data
 
-  def evaluate(s:String):Value ={
+  def parse (s:String):Value ={
     //case value is a function
     if(s.substring(0,2).equals("=#")){
       val subS = s.substring(s.indexOf("(")+1,s.length-1)
       val args = subS.split(",")
-      val f = new NbrIteration(args); f
+      val coord: Array[Int] = Array()
+      for(i <- 0 to 3){
+        coord :+ (args(i).toInt)
+      }
+
+      val f = new NbrIteration(coord, (parse(args(4)))); f
     }
     else{
       //case value is constante or P
-      val i = if(s.equals("P")) None 
-      else {val ii = s.toInt; 
-            if(ii >= 0 && ii <= 255) Some(ii) else None }
+      val ii = s.toInt;
+      val i = if(ii >= 0 && ii <= 255) Some(ii) else None
 
       val c = new ConstantType(i); c
 
