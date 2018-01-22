@@ -206,6 +206,8 @@ enum cell_ty token_type(const char* psz_token) {
 	return INVALID;
 }
 
+//struct user_data log[MAX_LINES_COUNT];
+
 int evaluate_formula(struct formula *f, struct worksheet *ws,
                      int x0, int y0) {
     int x, y, val_num = 0;
@@ -257,7 +259,19 @@ void evaluate_worksheet(struct worksheet *ws) {
 }
 
 void apply_user(struct worksheet *ws, struct user_data *user_mods) {
-	printf("Students! This is our job!\n");
+    int i;
+    struct user_component c;
+
+    for(i = 0; i < user_mods->nb_changes; i++) {
+        c = user_mods->pst_content[i];
+        if(c.r < 0 || c.r > ws->nblines ||
+           c.c < 0 || c.c > ws->pst_line_data[c.r].nb_elements) {
+            fprintf(stderr, "Out of bounds!\n");
+            continue;
+        }
+        ws->pst_line_data[c.r].pst_content[c.c] = c.st_value;
+    }
+    evaluate_worksheet(ws);
 }
 
 int produce_view(struct worksheet *ws, const char *path) {
