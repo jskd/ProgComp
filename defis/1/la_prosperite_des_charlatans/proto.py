@@ -4,6 +4,36 @@ import json
 import os,sys
 from subprocess import *
 
+def get_group_dir(test_dir, group_name):
+    return test_dir + "/output-" + group_name
+
+def init_group_dir(test_dir, group_name):
+    Popen(["rmdir", "-rf", get_group_dir(test_dir, group_name)])
+    Popen(["mkdir", "-p" , get_group_dir(test_dir, group_name)])
+
+def uniteTest(test_dir, group_name):
+
+    init_group_dir(test_dir, group_name);
+
+    GROUP_OUTPUT    = get_group_dir(test_dir, group_name)
+    VIEW_OUT        = GROUP_OUTPUT + "/view0.csv"
+    CHANGE_OUT      = GROUP_OUTPUT + "/changes.txt"
+
+    cmd= ["echo", DATA_IN, USER_IN, VIEW_OUT, CHANGE_OUT ]
+
+
+    out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+
+    diff_view  = Popen(["diff", VIEW_OUT  , VIEW_EXPECTED], stdout=PIPE).communicate()[0].decode("utf-8")
+    diff_change= Popen(["diff", CHANGE_OUT, CHANGE_EXPECTED], stdout=PIPE).communicate()[0].decode("utf-8")
+
+    if diff_view != "" :
+        print("[FAIL-VIEW] ")
+
+    if diff_change != "" :
+        print("[FAIL-CHANGE] ")
+
+
 if __name__ == "__main__":
 
     with open("target.json") as data:
@@ -13,34 +43,5 @@ if __name__ == "__main__":
         data_tests = json.load(data)
 
 
-    for target in data_targets["target"]:
-        print(" # Current project :", target["name"])
-        print("-"*32)
 
-        nb_passed = 0
-
-        for i, test in enumerate(data_tests["tests"]):
-
-            cmd = test["exec"]
-
-            if cmd == "" :
-                # Here, tests without exec files
-                # out = anotherFunction()
-                out = "0 0 5\n1 0 10\n1 1 =#(0, 0, 1, 0, 5)"
-            else:
-                out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-
-            if test["expected"] != "":
-                with open(test["expected"], 'r') as f:
-                    result = "PASS" if f.read() == out else "FAIL"
-                    if result == "PASS" : nb_passed += 1
-
-            else:
-                # Here, tests without expected files
-                # result = anotherExpectedThings
-                result = "FAIL"
-
-            print(" [{}] -> [{}] {} {}".format(i, result, test["name"], test["expected"]))
-
-        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(data_tests["tests"]), (nb_passed / len(data_tests["tests"])) * 20 ))
-        print ()
+    uniteTest("tests/0", "toto")
