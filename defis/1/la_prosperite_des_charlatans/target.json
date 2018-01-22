@@ -2,23 +2,27 @@
   "target":[
     {
       "name":"babar",
-      "path":"defis/1/babar"
+      "path":"../babar"
     },
     {
       "name":"Carmack",
-      "path":"defis/1/Carmack"
+      "path":"../Carmack"
     },
     {
       "name":"Scableur",
-      "path":"defis/1/Scableur"
+      "path":"../Scableur"
     },
     {
       "name":"nw-group-ocaml",
-      "path":"defis/1/nw-group/OCaml"
+      "path":"../nw-group/OCaml"
     },
     {
       "name":"nw-group-go",
-      "path":"defis/1/nw-group/Go"
+      "path":"../nw-group/Go"
+    },
+    {
+      "name":"test",
+      "path":"tests/"
     }
   ]
 }
