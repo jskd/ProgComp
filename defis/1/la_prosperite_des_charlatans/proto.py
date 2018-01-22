@@ -33,7 +33,7 @@ if __name__ == "__main__":
             cmd = test_info["exec"]
 
             try:
-                cmd = [cmd[0], join(TEST_DIR + test + "/", cmd[1]), target["path"], infos_path]
+                cmd = [cmd[0], join(TEST_DIR + test + "/", cmd[1]), target["path"]]
             except:
                 cmd = test_info["exec"]
 
@@ -47,8 +47,6 @@ if __name__ == "__main__":
                 result = "FAIL"
                 colorprint = 'red'
 
-
             print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
 
-        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(tests_folders), (nb_passed / len(tests_folders)) * 20 ))
-        print ()
+        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury\n".format(nb_passed, len(tests_folders), (nb_passed / len(tests_folders)) * 20 ))
