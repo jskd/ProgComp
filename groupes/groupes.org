@@ -26,7 +26,7 @@
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
 **** Correction
-***** Incapacité à compiler car absence de Makefile
+***** Ca compile ! Mais avec quelques warnings 
 **** Efficacité
 ***** Incapacité à compiler car absence de Makefile
 **** Lisilibité
