@@ -26,10 +26,19 @@
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
 **** Correction
+***** Incapacité à compiler car absence de Makefile
 **** Efficacité
+***** Incapacité à compiler car absence de Makefile
 **** Lisilibité
+***** Lisibilité correcte
+***** Noms de fonctions expressifs
+***** Noms de variables parfois peu expressifs
+***** Trop d'actions dans le main, manque de fonctions
+***** Manque de commentaires :(
 **** Extensibilité
+***** Utilisation *intéressante* des Traits
 **** Robustesse
+***** Il semble y avoir une gestion d'absence de fichiers d'entrée
 
 * la_prosperite_des_charlatans
 ** <2018-01-22>
