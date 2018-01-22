@@ -8,6 +8,8 @@
 #define VAL_PER_LINE	(1 << 10)
 #define MAX_LINES_COUNT	(1 << 10)
 
+void write_data(FILE* stream, struct cell *value, const char *separator);
+
 // We're creating arrays so we need fixed sizes
 // Unless we introducing another data type !
 /*
@@ -40,13 +42,15 @@ int parse_data(const char *path, struct worksheet *output) {
 		psz_buf[strlen(psz_buf)-1] = '\0'; // we're removing the newline
 		psz_token = strtok_r(psz_buf, ";", &p_saveptr); // let's parse
 
-		st_current_line->pst_content = malloc(VAL_PER_LINE * sizeof(struct cell));
+		st_current_line->pst_content =
+			malloc(VAL_PER_LINE * sizeof(struct cell));
 		if (st_current_line->pst_content == NULL)
 			return -1;
 
 		// Analyzing each token
 		while (psz_token != NULL) {
-			struct cell *pst_current_cell = &(st_current_line->pst_content[u_elem_count]);
+			struct cell *pst_current_cell =
+				&(st_current_line->pst_content[u_elem_count]);
 
 			switch (token_type(psz_token)) {
 				case FORMULA:
@@ -74,6 +78,7 @@ int parse_data(const char *path, struct worksheet *output) {
 		st_current_line->nb_elements = u_elem_count;
 		pst_lines[u_line_count] = *st_current_line;
 
+		// Resetting/Updating counters
 		u_elem_count = 0;
 		u_line_count++;
 	}
@@ -92,7 +97,8 @@ int parse_formula(char* psz_token, struct cell *formula) {
     char *psz_formula = NULL, *p_saveptr = NULL;
 	unsigned nb_parsed_elements = 0;
 
-	psz_formula = strtok_r(&(psz_token[2]), ",", &p_saveptr);;
+	// psz_token+3 because we're skipping `=#(`
+	psz_formula = strtok_r((psz_token+3), ",", &p_saveptr);;
 
 	// Main assumption:
 	// A formula contains 5 components
@@ -118,6 +124,7 @@ int parse_formula(char* psz_token, struct cell *formula) {
 		psz_formula = strtok_r(NULL, ",", &p_saveptr);
 	}
 
+	// Exporting
 	if (nb_parsed_elements != 5) {
 		formula->ty = INVALID;
 		return 1;
@@ -171,16 +178,20 @@ int parse_user(const char* path, struct user_data *user_mods) {
 				default: break;
 			}
 
+			// Let's get to the next token
 			psz_token = strtok_r(NULL, " ", &p_saveptr);
 		}
 
+		// Resetting/Updating counters
 		nb_parsed_elements = 0;
 		pstar_usr_cur_change++;
 	}
 
+	// Exporting
 	user_mods->nb_changes = nb_user_changes;
 	user_mods->pst_content = pstar_user_changes;
 
+	fclose(p_file);
 	return 0;
 }
 
@@ -194,6 +205,8 @@ enum cell_ty token_type(const char* psz_token) {
 	}
 	return INVALID;
 }
+
+//struct user_data log[MAX_LINES_COUNT];
 
 int evaluate_formula(struct formula *f, struct worksheet *ws,
                      int x0, int y0) {
@@ -246,11 +259,39 @@ void evaluate_worksheet(struct worksheet *ws) {
 }
 
 void apply_user(struct worksheet *ws, struct user_data *user_mods) {
-	printf("Students! This is our job!\n");
+    int i;
+    struct user_component c;
+
+    for(i = 0; i < user_mods->nb_changes; i++) {
+        c = user_mods->pst_content[i];
+        if(c.r < 0 || c.r > ws->nblines ||
+           c.c < 0 || c.c > ws->pst_line_data[c.r].nb_elements) {
+            fprintf(stderr, "Out of bounds!\n");
+            continue;
+        }
+        ws->pst_line_data[c.r].pst_content[c.c] = c.st_value;
+    }
+    evaluate_worksheet(ws);
 }
 
-void produce_view(struct worksheet *ws, const char *path) {
-	printf("Students! This is our job!\n");
+int produce_view(struct worksheet *ws, const char *path) {
+	FILE *p_file = fopen(path, "w");
+	unsigned i, j;
+
+	if (p_file == NULL)
+		return -1;
+
+	for (i = 0; i < ws->nblines; i++) {
+        struct line_data st_line_data = ws->pst_line_data[i];
+		unsigned nb_elements = st_line_data.nb_elements;
+        for (j = 0; j < nb_elements; j++) {
+			struct cell node = st_line_data.pst_content[j];
+			write_data(p_file, &node, (j == nb_elements-1) ? "" : ";");
+		}
+		fprintf(p_file, "\n");
+	}
+
+	return 0;
 }
 
 void produce_changes(struct worksheet *ws, const char *path) {
@@ -273,7 +314,7 @@ void print_worksheet(struct worksheet *ws) {
         struct line_data st_line_data = ws->pst_line_data [i];
         for (unsigned j = 0; j < st_line_data.nb_elements; j++) {
 			struct cell node = st_line_data.pst_content[j];
-			print_data(&node, "\t");
+			write_data(stdout, &node, "\t");
 		}
 		printf("\n");
 	}
@@ -283,20 +324,20 @@ void print_user(struct user_data *user_mods) {
 	for (unsigned i = 0; i < user_mods->nb_changes; i++) {
 		struct user_component component = user_mods->pst_content[i];
 		printf("(%d;%d) -> ", component.r, component.c);
-		print_data(&(component.st_value), "\n");
+		write_data(stdout, &(component.st_value), "\n");
 	}
 }
 
-void print_data(struct cell* value, const char* separator) {
+void write_data(FILE* stream, struct cell* value, const char* separator) {
 	switch (value->ty) {
 		case FORMULA:
-			printf("F%s", separator);
+			fprintf(stream, "F%s", separator);
 			break;
 		case VALUE:
-			printf("%d%s", value->udata.value, separator);
+			fprintf(stream, "%d%s", value->udata.value, separator);
 			break;
 		case INVALID:
-			printf("?%s", separator);
+			fprintf(stream, "P%s", separator);
 			break;
 		default:
 			break;

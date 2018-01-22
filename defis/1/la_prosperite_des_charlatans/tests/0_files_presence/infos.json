@@ -1,0 +1,9 @@
+{
+  "infos":[
+    {
+      "name":"Test files presence",
+      "exec": ["python3", "files_presence.py"],
+      "expected": "list_files.txt"
+    }
+  ]
+}

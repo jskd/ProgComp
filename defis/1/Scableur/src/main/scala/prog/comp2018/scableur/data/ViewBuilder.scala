@@ -28,7 +28,6 @@ object ViewBuilder {
       val i = if(ii >= 0 && ii <= 255) Some(ii) else None
 
       val c = new ConstantType(i); c
-
     }
   }
 
@@ -63,6 +62,35 @@ object ViewBuilder {
     }
 
     matrix
+
+  }
+
+
+  def getsection(s:String):ArrayList[Value] ={
+
+    var al = new util.ArrayList[Value]()
+
+    var arr = s.split(";")
+
+    for(z<-0 to (arr.length+1)) {
+      var value = parse(arr(z))
+      al.add(value)
+    }
+
+    return al
+
+  }
+
+  def buildAll():ArrayList[ArrayList[Value]] = {
+    val matrix : ArrayList[ArrayList[Value]] = new ArrayList[ArrayList[Value]]()
+
+
+    val f = scala.io.Source.fromFile(Conf.InputData.dataFile)
+    for (line <- f.getLines()){
+      matrix.add(getsection(line))
+    }
+
+    return matrix
 
   }
 

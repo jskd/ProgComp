@@ -1,0 +1,32 @@
+{
+  "files-config": {
+    "input-data": "input/data.csv",
+    "input-user": "input/user.txt",
+    "expected-changes": "/expected/changes.txt",
+    "expected-view0": "/expected/view0.csv",
+    "expected-stdio": "/expected/stdio.txt",
+    "output-changes": "/changes.txt",
+    "output-view0": "/view0.csv",
+    "output-stdio": "/stdio.txt",
+    "output-dir": "/output",
+    "test-dir" : "./tests"
+  },
+  "targets":[
+    {
+      "name":"babar",
+      "path":"defis/1/babar"
+    },
+    {
+      "name":"Carmack",
+      "path":"defis/1/Carmack"
+    },
+    {
+      "name":"Scableur",
+      "path":"defis/1/Scableur"
+    },
+    {
+      "name":"nw-group",
+      "path":"defis/1/nw-group/Go"
+    }
+  ]
+}
