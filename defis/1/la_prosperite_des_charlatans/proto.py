@@ -27,8 +27,9 @@ if __name__ == "__main__":
     for target in targets:
 
         NB_PASSED = 0
-        print(" # Current project :", target["name"])
-        print("-"*32)
+        print("-"*64)
+        print(" #", target["name"].upper())
+        print("-"*64)
 
         for i, test in enumerate(TEST_LIST):
             infos_path = join(TEST_DIR + test + "/", "infos.json")
@@ -56,4 +57,6 @@ if __name__ == "__main__":
 
             print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
 
-        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ))
+        colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
+
+        print (colored("\n [{}/{}] => {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))
