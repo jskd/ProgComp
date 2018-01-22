@@ -6,6 +6,7 @@ from subprocess import *
 from os import listdir
 import os.path
 from os.path import isfile, join
+import re
 
 
 if __name__ == "__main__":
@@ -18,8 +19,24 @@ if __name__ == "__main__":
             test_data = json.load(data)
             test_info = test_data["infos"][0]
 
+        test_result = True
+
+        try:
+            with open(tested_path + "/" + "user.txt", "r") as user_file:
+
+                for line in user_file.readlines():
+                    line_splited = line.strip("\n").split(" ")
+
+                    matchObj = re.match(r"(\d.*) (\d.*) (\d.*|=#\(\d.*,\d.*,\d.*,\d.*,\d.*\))", line)
+
+                    if not matchObj:
+                        test_result = False
+                        break
+
+
+        except: test_result = False
         # BEGIN OF SCRIPT
-        print(True) # True for PASS, False for FAIL
+        print(test_result) # True for PASS, False for FAIL
         # END OF SCRIPT
 
     else:
