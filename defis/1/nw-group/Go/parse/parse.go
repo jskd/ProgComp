@@ -5,7 +5,8 @@ import ("fmt"
 		 "os"
 		 "strings")
 
-type formula struct{
+/*strucure of formula*/
+type Formula struct{
 	xSource int;
 	ySource int;
 	xDestination int;
@@ -13,12 +14,14 @@ type formula struct{
 	value int;
 }
 
-type data struct {
+/*data may be value or formula to evaluate*/
+type Data struct {
 	valeur string;
 	form formula;
 }
 
-type cellule struct {
+/*location of cell and content*/
+type Cell struct {
    x int;
    y int;
    value data;
@@ -30,10 +33,20 @@ func checkError(err error){
 	}
 }
 
+func toFormula(formuleLue string) formula{
+	formule := new(Formula)
+	if(formuleLue[0]="=" && formuleLue[1]="#")
+	
+	formule.xSource=formuleLue[3]
+	formule.ySource=formuleLue[5]
+	formule.xDestination=formuleLue[7]
+	formule.yDestination=formuleLue[9]
+	formule.value = formuleLue[11]
+}
 
 /*read File and returns there content in a 2D slice of strings*/
-func readFile(sep string) [][]string{
-	file, err := ioutil.ReadFile("data.csv")
+func readFile(fileToRead string, sep string) [][]string{
+	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
    lines := strings.Split(string(file), "\n")
 	car:=make([][]string, 0, 0)
@@ -42,20 +55,21 @@ func readFile(sep string) [][]string{
 			car=append(car,strings.Split(lines[i], sep))
 		}
 	}
+	
 	return car
 }
 
 /* Evaluate content of data.csv TODO*/
-func evaluate(element string) string{
+func evaluate(element formula) string{
 	
 	return element
 }
 
 /*write in File the 2D slice of strings*/
 func writeFile(){
-	taille := len(readFile(","))
-	s:=make([][]string, taille,cap(readFile(",")))
-	s=readFile(",")
+	taille := len(readFile("data.csv",","))
+	s:=make([][]string, taille,taille)
+	s=readFile("data.csv",",")
 	fmt.Printf("%q\n",s)
 	f, err := os.OpenFile("view0.csv", os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
@@ -72,6 +86,14 @@ func writeFile(){
 	}
 }
 
+/* user actions */
+func userActions(){
+	s:=make([][]string, 0,0)
+	s=readFile("user.txt"," ")
+	fmt.Println("%q",s)
+}
+
 func main() {
 	writeFile()
+	userActions()
 }
