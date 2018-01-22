@@ -19,6 +19,7 @@ if __name__ == "__main__":
             test_data = json.load(data)
             test_info = test_data["infos"][0]
 
+        # BEGIN OF SCRIPT
         test_result = True
 
         try:
@@ -35,7 +36,7 @@ if __name__ == "__main__":
 
 
         except: test_result = False
-        # BEGIN OF SCRIPT
+        
         print(test_result) # True for PASS, False for FAIL
         # END OF SCRIPT
 

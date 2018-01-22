@@ -20,13 +20,15 @@ if __name__ == "__main__":
 
         # BEGIN OF SCRIPT
         expected_path = join(path, "expected/" + test_info["expected"])
-
         with open(expected_path, 'r') as expected_files:
             expected_liste = sorted(expected_files.read().strip("\n").split("\n"))
 
-        files_liste = sorted([f for f in listdir(tested_path) if isfile(join(tested_path, f)) and f in expected_liste and not f.startswith(".")])
+        files_liste = []
+        for path, subdirs, files in os.walk(tested_path):
+            for name in files:
+                if not name.startswith(".") : files_liste.append(name)
 
-        print(expected_liste == files_liste) # True for PASS, False for FAIL
+        print(sorted(expected_liste) == sorted(files_liste)) # True for PASS, False for FAIL
         # END OF SCRIPT
 
     else:
