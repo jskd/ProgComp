@@ -1,0 +1,48 @@
+TODO Chronologique :
+
+* Réecrire le code du tableur en utilisant un autre langage
+  * C++ ?
+    * Norme C++11
+* Réfléchir à quelle utilisation on va faire du langage
+  * Ex : si on utilise du C++, à quel point utilisons nous ses propriétés ?
+    Est-ce qu'on l'utilise en mode C (ce qui serait dommage) en utilisant
+    uniquement les vectors/fstream/etc...
+    OU  on fait de la vraie programmation C++
+        et on modélise notre problème avec de vrais classes
+        type Worksheet, Parser...
+* Choisir une Coding Style Guideline
+  * On évite celle de VLC svp SI on choisit un autre langage
+  * car elle ne s'applique que pour le C !
+* Diviser l'implémentations en module, par ex:
+  * main.cpp
+  * worksheet.hpp et worksheet.cpp
+    * qui se chargeront de la définition des structures/classes
+    * et de l'implémentation des `worksheet`
+  * parsing.hpp et parsing.cpp
+    * qui parseront les fichiers et créeront
+    * les structures adéquates
+  * util.hpp et util.cpp
+    * qui serviront pour tout le reste
+    * (affichage et écriture des sorties)
+  * ---
+  * IL S'AGIT DE SUGGESTIONS !!
+    Si ça ne vous plait pas, ou vous avez une meilleure idée, allez y
+    Mais parlez en et écrivez là ici ou quelque part !
+    Histoire qu'on ait une trace écrite !
+    ---
+* Une fois mis d'accord sur les fichiers/modules
+  * On divise le travail :
+    * X s'occupe de tel module
+    * Y s'occupe de tel module
+    * ...
+* Chacun présente ses headers
+  * Pour qu'on soit d'accord et que chacun voit les méthodes/fonctions
+  * disponibles pour chaque module
+* On modifie si besoin
+* On réfléchit à une manière de tester nos modules
+  * Tests unitaires ?
+    * Avec quelle librarie ? Catch ? CxxTest ? Autre ?
+* On écrit les tests/mockups
+* On écrit l'implémentation
+* On reteste
+* On mets en place un Dockerfile
