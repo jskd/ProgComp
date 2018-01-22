@@ -4,13 +4,6 @@ import json
 import os,sys
 from subprocess import *
 
-def get_group_dir(test_dir, group_name):
-    return test_dir + "/output-" + group_name
-
-def init_group_dir(test_dir, group_name):
-    Popen(["rmdir", "-rf", get_group_dir(test_dir, group_name)])
-    Popen(["mkdir", "-p" , get_group_dir(test_dir, group_name)])
-
 def uniteTest(test_dir, group_name):
 
     init_group_dir(test_dir, group_name);
@@ -42,6 +35,10 @@ if __name__ == "__main__":
     with open("tests.json") as data:
         data_tests = json.load(data)
 
+    default_file_config = data_tests["default-file-config"]
+
+    print(default_config)
 
 
-    uniteTest("tests/0", "toto")
+
+    #uniteTest("tests/0", "toto")
