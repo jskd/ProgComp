@@ -2,8 +2,8 @@
   "tests":[
     {
       "name":"Files presence",
-      "exec":"",
-      "expected":""
+      "exec": ["echo", "1"],
+      "expected": "tests/0/0.txt"
     },
     {
       "name":"User structure",
