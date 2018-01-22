@@ -55,9 +55,9 @@ fn evaluate(t: &Vec<Vec<Box<Cellule>>>)
 }
 fn read_file(f :&str) -> String
 {
-    let mut file = File::open(f).expect("Erreur à l'ouverture du fichier");
+    let mut file = File::open(f).expect("Error Opening data.csv");
     let mut data = String::new();
-    file.read_to_string(&mut data);
+    file.read_to_string(&mut data).expect("Error reading file data.csv");
     return data.trim().to_string();
 }
 
@@ -107,13 +107,31 @@ fn create_cell(str:String) -> Box<Cellule>
     }
     
 }
-
+fn gen_table(data: String) -> Vec<Vec<Box<Cellule>>>
+{
+    let mut t = Vec::new();
+    let a =  data.split("\n");
+    let vec = a.collect::<Vec<&str>>();
+    for c in &vec{
+        let mut temp = c.split(";");
+        let  vec2 = temp.collect::<Vec<&str>>();
+        let mut row = Vec::new();
+        for d in &vec2{
+            let s = d.to_string();
+            let cell = create_cell(d.to_string());
+            row.push(cell);
+            
+        }
+        t.push(row);
+    }
+    return t;
+}
 fn print_table(t:&Vec<Vec<Box<Cellule>>>)
 {
     let mut i:i32 = 0;
     for k in t{
         for b in k{
-            if(i!=0)
+            if i!=0
             {
                 print!(";");
             }
@@ -131,7 +149,7 @@ fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
     let mut i:i32 = 0;
     for k in t{
         for b in k{
-            if(i!=0)
+            if i!=0
             {
                 mystring += ";";
             }
@@ -142,7 +160,7 @@ fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
         i=0;
         mystring +="\n";
     }
-    write!(file, "{}", mystring);
+    write!(file, "{}", mystring).expect("Error Writing into view0.csv");
 }
 fn main()
 {
@@ -151,28 +169,11 @@ fn main()
     {
         panic!("Erreur d'arguments");
     }
-    let mut data = read_file(&args[1]);
-    let mut num: Number =  Number{value: 3};
-    num.set_value(4);
-    let mut t = Vec::new();
-    let mut a =  data.split("\n");
-    let vec = a.collect::<Vec<&str>>();
-    for c in &vec{
-//         println!("-> {}", c.trim());
-        let mut temp = c.split(";");
-        let  vec2 = temp.collect::<Vec<&str>>();
-        let mut row = Vec::new();
-        for d in &vec2{
-//             println!("L:{}", d);
-            let s = d.to_string();
-            let cell = create_cell(d.to_string());
-            row.push(cell);
-            
-        }
-        t.push(row);
-    }
+    let data = read_file(&args[1]);
+
+    let t = gen_table(data);
 
     print_table(&t);
     write_view0(&t);
 
-}
+}    
