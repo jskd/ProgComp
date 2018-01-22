@@ -43,7 +43,8 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 *** TODO Présentation du défi 2
 *** TODO Lire https://cr.yp.to/qmail/qmailsec-20071101.pdf
 ** Séance 3
-*** TODO Point sur le défi 1
+*** DONE Point sur le défi 1
+    - State "DONE"       from "TODO"       [2018-01-22 Mon 11:45]
 *** TODO Présentation de la réalisation du défi 1 par une autre équipe
 *** TODO Présentation du défi 2
 * Notes de cours
