@@ -1,14 +1,6 @@
 {
-  "tests":[
-    {
-      "name":"Test echo 1 (test du script de test)",
-      "exec": ["echo", "1"],
-      "expected": "tests/0/0.txt"
-    },
-    {
-      "name":"User structure",
-      "exec":"",
-      "expected":"tests/user.txt"
-    }
+  "tests": [
+    { "name": "Fichier vide" },
+    { "name": "User structure" }
   ]
 }
