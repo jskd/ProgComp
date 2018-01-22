@@ -1,9 +1,10 @@
 package main
 
 import ("fmt"
-		 "io/ioutil"
-		 "os"
-		 "strings")
+	"io/ioutil"
+	"os"
+	"strings"
+        "strconv")
 
 type formula struct{
 	xSource int;
@@ -28,6 +29,11 @@ func checkError(err error){
 	if err != nil {
 		 panic(err)
 	}
+}
+
+func convertString2Int(str string) {
+  i, err := strconv.Atoi(str)
+  return i
 }
 
 
