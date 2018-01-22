@@ -4,10 +4,11 @@ use std::env;
 
 trait Cellule {
     fn get_value(&self) -> i32;
+    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ();
 }
 struct Number {value:i32}
 struct Formule {
-    num:Number,
+    num:i32,
     r1:i32,
     c1:i32,
     r2:i32,
@@ -24,7 +25,10 @@ impl Number
 }
 impl Cellule for Number
 {
-    
+    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    {
+
+    }
     fn get_value(&self) -> i32
     {
         return self.value;
@@ -32,10 +36,21 @@ impl Cellule for Number
 }
 impl Cellule for Formule
 {
-    // TODO
+    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    {
+
+    }
     fn get_value(&self) -> i32
     {
         return 0;
+    }
+}
+fn evaluate(t: &Vec<Vec<Box<Cellule>>>)
+{
+    for a in t{
+        for b in a{
+            b.evaluate(t);
+        }
     }
 }
 fn read_file(f :&str) -> String
@@ -49,14 +64,13 @@ fn read_file(f :&str) -> String
 fn parsetab(d: &str) -> Vec<Vec<Box<Cellule>>>
 {
     let t: Vec<Vec<Box<Cellule>>> =  Vec::new();
-
     return t; 
 }
 
 fn init_formule(form_dec_vec: Vec<&str>) -> Box<Cellule>
 {
     let cell = Formule{
-            num:Number{value:0,},
+            num:0,
             r1:form_dec_vec[0].trim().parse()
             .expect("Erreur format"),
             c1:form_dec_vec[1].trim().parse()
