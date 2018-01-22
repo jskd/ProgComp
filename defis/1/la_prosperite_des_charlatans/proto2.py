@@ -18,6 +18,7 @@ if __name__ == "__main__":
         print("-"*32)
 
         nb_passed = 0
+        
         Popen(["ws", "tests/data.csv", "tests/user.txt",target["path"]+  "view0.csv", target["path"]+ "changes.txt"], stdout=PIPE).communicate()[0].decode("utf-8")
 
         for i, test in enumerate(data_tests["tests"]):
