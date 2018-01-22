@@ -1,7 +1,7 @@
 {
   "tests":[
     {
-      "name":"Files presence",
+      "name":"Test echo 1 (test du script de test)",
       "exec": ["echo", "1"],
       "expected": "tests/0/0.txt"
     },
