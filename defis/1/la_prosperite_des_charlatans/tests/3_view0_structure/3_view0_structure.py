@@ -27,7 +27,7 @@ if __name__ == "__main__":
                 for line in user_file.readlines():
                     line_splited = line.strip("\n").split(" ")
 
-                    matchObj = re.match(r"(\d.*),(\d.*),(\d.*|P),(\d.*|P),(\d.*|P)", line)
+                    matchObj = re.match(r"(\d.*|P)(,\d.*|P)*", line)
 
                     if not matchObj:
                         test_result = False
