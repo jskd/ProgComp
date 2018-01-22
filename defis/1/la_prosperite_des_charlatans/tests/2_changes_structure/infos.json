@@ -1,0 +1,9 @@
+{
+  "infos":[
+    {
+      "name":"Test changes.txt structure",
+      "exec": ["python3", "2_changes_structure.py"],
+      "expected": ""
+    }
+  ]
+}
