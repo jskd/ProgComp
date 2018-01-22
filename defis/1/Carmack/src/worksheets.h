@@ -65,15 +65,14 @@ int parse_user(const char *path, struct user_data *user_mods);
 /// Worksheet/User management
 void evaluate_worksheet(struct worksheet *ws); // Maybe add other parameters ?
 void apply_user(struct worksheet *ws, struct user_data *user_mods);
-void produce_view(struct worksheet *ws, const char *path); // other parameters ?
+int produce_view(struct worksheet *ws, const char *path); // other parameters ?
 void produce_changes(struct worksheet *ws, const char *path); // same thing ?
 void release_worksheet(struct worksheet *ws);
 void release_user(struct user_data *user_mods);
 
-/// Print things
+/// Print/Writing things
 void print_worksheet(struct worksheet *ws);
 void print_user(struct user_data *user_mods);
-void print_data(struct cell *value, const char *separator);
 
 /// Utilities
 enum cell_ty token_type(const char *token);
