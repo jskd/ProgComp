@@ -11,6 +11,14 @@
     {
       "name":"Scableur",
       "path":"defis/1/Scableur"
+    },
+    {
+      "name":"nw-group-ocaml",
+      "path":"defis/1/nw-group/OCaml"
+    },
+    {
+      "name":"nw-group-go",
+      "path":"defis/1/nw-group/Go"
     }
   ]
 }

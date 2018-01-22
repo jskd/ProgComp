@@ -1,4 +1,4 @@
-#+STARTUP: overview
+
 #+STARTUP: hidestars
 #+TODO: TODO(t!) FOCUSED (f@/!) STARTED(s@/!) WAITING(w@/!) SOMEDAY(S@/!) URGENT (u!) | DONE(d!) CANCELLED(c@!)
 
@@ -37,10 +37,15 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
     - State "DONE"       from "TODO"       [2018-01-15 Mon 11:42]
 *** DONE Affectation des contraintes technologiques
     - State "DONE"       from "TODO"       [2018-01-15 Mon 12:36]
-*** TODO Présentations d'analyse du problème du défi 1.
+*** DONE Présentations d'analyse du problème du défi 1.
+    - State "DONE"       from "TODO"       [2018-01-22 Mon 10:04]
 *** TODO Réalisation du défi 1
 *** TODO Présentation du défi 2
 *** TODO Lire https://cr.yp.to/qmail/qmailsec-20071101.pdf
+** Séance 3
+*** TODO Point sur le défi 1
+*** TODO Présentation de la réalisation du défi 1 par une autre équipe
+*** TODO Présentation du défi 2
 * Notes de cours
 
 Ces notes sont à compléter avec vos propres remarques personnelles et
@@ -83,5 +88,10 @@ les lectures conseillées dans la section précédente.
       pris au sérieux et effectués conscieusement.
 * Fiches méthodologiques
 ** Comment évaluer du code?
+*** Correction
+*** Efficacité
+*** Lisilibité
+*** Extensibilité
+*** Robustesse
 ** Comment présenter du code?
 ** Comment évaluer efficacement le travail d'un collègue?

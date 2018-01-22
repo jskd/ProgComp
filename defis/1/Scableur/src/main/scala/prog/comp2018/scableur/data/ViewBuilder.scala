@@ -28,10 +28,22 @@ object ViewBuilder {
     }
   }
 
-  def getsection(str: String, i: Int, j:Int):ArrayList[Value] ={
+  def getsection(str: String, i: Int, j:Int):ArrayList[Value] ={      // 1;2;3;4;5;6
     //on appel evaluate que je met dans le arrayList. pour chaque
     //case entre i et j ,et on stock la Value retournée dans le ArrayList[Value] et on le renvoi
-    return new util.ArrayList[Value]()//////TODO
+    var al = new util.ArrayList[Value]()
+
+    var arr = str.split(";")
+
+    for(z<-i to j+1){
+      var value=evaluate(arr(z))
+      al.add(value)
+
+    }
+
+
+
+    return al
   }
 
   def build(i1: Int, j1: Int, i2: Int, j2 : Int ) : ArrayList[ArrayList[Value]] = {
