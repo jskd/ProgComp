@@ -1,9 +1,10 @@
 package main
 
 import ("fmt"
-		 "io/ioutil"
-		 "os"
-		 "strings")
+	"io/ioutil"
+	"os"
+	"strings"
+        "strconv")
 
 /*strucure of formula*/
 type Formula struct{
@@ -17,31 +18,46 @@ type Formula struct{
 /*data may be value or formula to evaluate*/
 type Data struct {
 	valeur string;
-	form formula;
+	form Formula;
 }
 
 /*location of cell and content*/
 type Cell struct {
    x int;
    y int;
-   value data;
+   value Data;
 }
 
-func checkError(err error){
+func checkError(err error) {
 	if err != nil {
 		 panic(err)
 	}
 }
 
-func toFormula(formuleLue string) formula{
-	formule := new(Formula)
-	if(formuleLue[0]="=" && formuleLue[1]="#")
+func convertString2Int(str string) int {
+  i, err := strconv.Atoi(str)
+  checkError(err)
+  return i
+}
 
-	formule.xSource=formuleLue[3]
-	formule.ySource=formuleLue[5]
-	formule.xDestination=formuleLue[7]
-	formule.yDestination=formuleLue[9]
-	formule.value = formuleLue[11]
+func convertInt2String(i int) string {
+  s := strconv.Itoa(i)
+  return s
+}
+
+func toFormula(formuleLue string) Formula {
+	formule := new(Formula)
+	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
+	if trimedFormule != formuleLue {
+		arg_list:=strings.Split(trimedFormule, ",")
+		arg_list[4] = strings.Replace(arg_list[4], ")", "", -1)
+		formule.xSource = convertString2Int(arg_list[0])
+		formule.ySource = convertString2Int(arg_list[1])
+		formule.xDestination = convertString2Int(arg_list[2])
+		formule.yDestination = convertString2Int(arg_list[3])
+		formule.value = convertString2Int(arg_list[4])
+	}
+	return *formule
 }
 
 /*read File and returns there content in a 2D slice of strings*/
@@ -55,14 +71,13 @@ func readFile(fileToRead string, sep string) [][]string{
 			car=append(car,strings.Split(lines[i], sep))
 		}
 	}
-
 	return car
 }
 
 /* Evaluates a formula.  On success, a formula evaluates into an
    integer.  Returns an error when the dependency graph of the formula
    has a cycle.  */
-func evaluate(formula formula, spreadSheet [][]string) (int, error) {
+func evaluate(formula Formula, spreadSheet [][]string) (int) {
 	count := 0
 	for r := formula.ySource; r <= formula.yDestination; r++ {
 		for c := formula.xSource; c <= formula.xDestination; c++ {
@@ -71,7 +86,7 @@ func evaluate(formula formula, spreadSheet [][]string) (int, error) {
 			}
 		}
 	}
-	return count, nil
+	return count
 }
 
 /*write in File the 2D slice of strings*/
@@ -88,7 +103,7 @@ func writeFile(){
 	for i:=0;i<len(s);i++ {
 		for j:=0;j<len(s[i]);j++ {
 			formula := toFormula(s[i][j])
-			_, err = f.WriteString(evaluate(formula)+",")
+			_, err = f.WriteString(convertInt2String(evaluate(formula, s))+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
@@ -106,4 +121,5 @@ func userActions(){
 func main() {
 	writeFile()
 	userActions()
+	toFormula("=#(0,0,50,50,1)")
 }
