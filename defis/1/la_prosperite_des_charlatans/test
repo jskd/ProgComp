@@ -1,0 +1,32 @@
+#!/bin/bash
+make
+echo "make success !"
+file_ws="ws"
+file_view0="view0.csv"
+file_changes="changes.txt"
+test_path="../la_prosperite_des_charlatans/tests/"
+test_data.csv=${test_path}"data.csv"
+test_view0.csv=${test_path}"view0_correct.csv"
+test_user.csv=${test_path}"user.csv"
+test_changes.csv=${test_path}"changes_correct.txt"
+
+if [ ! -f "$file_ws" ]; then
+	echo "can't find ws FAIL :("
+else
+	echo "ws find ok !"
+fi
+
+chmod +x ws
+./ws $test_data.csv view0.csv $test_user.csv changes.txt
+
+if [ ! -f "$file_view0" ]; then
+	echo "can't find view0.csv FAIL :("
+fi
+
+diff $test_view0.csv view0.csv
+
+if [ ! -f "$file_changes" ]; then
+	echo "can't find changes.txt FAIL :("
+fi
+
+diff $test_changes.csv changes.txt
