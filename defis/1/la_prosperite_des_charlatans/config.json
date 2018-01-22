@@ -1,4 +1,7 @@
 {
+  "settings": [
+    { "test_dir": "tests/" }
+  ],
   "tests": [
     { "name": "Fichier vide" },
     { "name": "User structure" }

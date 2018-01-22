@@ -5,21 +5,22 @@ import os,sys
 from os import listdir
 from os.path import isfile, join
 from subprocess import *
+from termcolor import colored
 
-TEST_DIR = "tests/"
+with open("config.json") as data:
+    config = json.load(data)
+
+TEST_DIR = config["settings"][0]["test_dir"]
 
 if __name__ == "__main__":
 
-    with open("config.json") as data:
-        data_targets = json.load(data)
+    tests_folders = sorted([f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")])
 
-    tests_folders = [f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")]
-
-    for target in data_targets["target"]:
-        print(" # Current project :", target["name"])
-        print("-"*32)
+    for target in config["target"]:
 
         nb_passed = 0
+        print(" # Current project :", target["name"])
+        print("-"*32)
 
         for i, test in enumerate(tests_folders):
 
@@ -40,12 +41,14 @@ if __name__ == "__main__":
 
             if out.strip("\n") == "True" :
                 result = "PASS"
+                colorprint = 'green'
                 nb_passed += 1
             else:
                 result = "FAIL"
+                colorprint = 'red'
 
 
-            print(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]))
+            print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
 
         print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(tests_folders), (nb_passed / len(tests_folders)) * 20 ))
         print ()
