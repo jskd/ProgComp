@@ -40,6 +40,11 @@ func convertString2Int(str string) int {
   return i
 }
 
+func convertInt2String(i int) string {
+  s := strconv.Itoa(i)
+  return s
+}
+
 func toFormula(formuleLue string) Formula {
 	formule := new(Formula)
 	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
@@ -98,7 +103,7 @@ func writeFile(){
 	for i:=0;i<len(s);i++ {
 		for j:=0;j<len(s[i]);j++ {
 			formula := toFormula(s[i][j])
-			_, err = f.WriteString((evaluate(formula, s))+",")
+			_, err = f.WriteString(convertInt2String(evaluate(formula, s))+",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
@@ -116,5 +121,5 @@ func userActions(){
 func main() {
 	writeFile()
 	userActions()
-	toFormula("=#(0, 0, 50, 50, 1)")
+	toFormula("=#(0,0,50,50,1)")
 }
