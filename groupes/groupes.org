@@ -69,8 +69,21 @@
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
 **** Correction
+    Le code compile mais plante lors de l'execution:
+        java -jar out/Scableur.jar resources/data.csv user.txt view0.csv changes.txt
+    produit:
+        [ERROR]: thrown byresources/data.csv
+        Exception in thread "main" prog.comp2018.scableur.utils.exceptions.NotCSVFileException
+        at prog.comp2018.scableur.utils.Conf$InputData$.dataFile(Conf.scala:13)
+        at prog.comp2018.scableur.Scableur$.load_args(Scableur.scala:18)
+        at prog.comp2018.scableur.Scableur$.main(Scableur.scala:12)
+        at prog.comp2018.scableur.Scableur.main(Scableur.scala)
 **** Efficacité
+    Pas d'execution donc pas de mesure, mais l'utilisation de sbt rend la compilation tres simple.
 **** Lisilibité
+    Le code est lisible et bien construit: il est divise en packages qui s'occupent chacun d'une tache.
+    Le nom des classes n'est par contre pas tres clair et le code n'est pas commente.
 **** Extensibilité
+    Comme le projet est bien decoupe, il sera facile d'ajouter ou de retirer des modules.
 **** Robustesse
-
+    La encore pas de tests possibles, mais le code comporte de nombreux tests et attrape les erreurs eventuelles, ce qui est plutot bon signe.
