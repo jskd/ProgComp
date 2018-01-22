@@ -7,15 +7,11 @@ from os.path import isfile, join
 from subprocess import *
 
 TEST_DIR = "tests/"
-OUT_EXPECTED_DIR = "output-expected/"
 
 if __name__ == "__main__":
 
-    with open("target.json") as data:
+    with open("config.json") as data:
         data_targets = json.load(data)
-
-    with open("tests.json") as data:
-        data_tests = json.load(data)
 
     tests_folders = [f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")]
 

@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
         splited_infos = infos_path.split("/")
         TEST_DIR = "/".join(splited_infos[0:len(splited_infos)-1]) + "/"
-        OUT_EXPECTED_DIR = "output-expected/"
+        OUT_EXPECTED_DIR = "expected/"
 
         with open(infos_path, 'r') as data:
             test_data = json.load(data)
