@@ -2,4 +2,4 @@ PY=python3
 
 
 test:
-	${PY} proto.py
+	${PY} test.py
