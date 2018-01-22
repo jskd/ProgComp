@@ -10,6 +10,12 @@ TODO Chronologique :
     OU  on fait de la vraie programmation C++
         et on modélise notre problème avec de vrais classes
         type Worksheet, Parser...
+* Commencer à réfléchir à la librairie GPU qu'on va utiliser...
+  * ...disponible pour le langage ciblé et sa norme
+  * ...si possible ciblant le plus grand nombre de matériel possible
+  * ...et aux autres librairies en général
+  * ...sans en utiliser 150 non plus
+  * critères :	facile à installer, utiliser, performant
 * Choisir une Coding Style Guideline
   * On évite celle de VLC svp SI on choisit un autre langage
   * car elle ne s'applique que pour le C !
