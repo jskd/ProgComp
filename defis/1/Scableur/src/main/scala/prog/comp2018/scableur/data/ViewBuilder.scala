@@ -40,7 +40,7 @@ object ViewBuilder {
     var arr = str.split(";")
 
     for(z<-i to j+1){
-      var value=evaluate(arr(z))
+      var value= parse(arr(z))
       al.add(value)
 
     }
