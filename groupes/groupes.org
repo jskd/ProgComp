@@ -1,0 +1,76 @@
+#+STARTUP: hidestars
+
+* babar.org
+** <2018-01-22>
+*** DONE Commencer à comprendre Rust
+*** DONE Parseur de CSV
+*** DONE Structure pour les cellules
+*** TODO Finaliser l'infrastructure
+*** TODO Implémenter l'évaluation des formules
+*** TODO Evaluer le travail du groupe "scableur"
+    Instructions:
+    - Donnez votre évaluation pour chacun des points suivants.
+    - Proposez des actions pour améliorer la qualité du code.
+**** Correction
+**** Efficacité
+**** Lisilibité
+**** Extensibilité
+**** Robustesse
+
+* Carmack.org
+** <2018-01-22>
+*** DONE Une première implémentation de l'évaluation des formules
+*** TODO Terminer le traitement de users.txt
+*** TODO Evaluer le travail du groupe "babar"
+    Instructions:
+    - Donnez votre évaluation pour chacun des points suivants.
+    - Proposez des actions pour améliorer la qualité du code.
+**** Correction
+**** Efficacité
+**** Lisilibité
+**** Extensibilité
+**** Robustesse
+
+* la_prosperite_des_charlatans
+** <2018-01-22>
+*** DONE Un script qui fait un test.
+*** TODO Faire plus de tests unitaires pour 11h30!
+*** TODO Faire un retour aux autres groupes *avant* 11h30!
+*** TODO Evaluer le travail de tous les groupes
+    Instructions:
+    - Donnez votre évaluation pour chacun des points suivants.
+    - Proposez des actions pour améliorer la qualité du code.
+**** Correction
+**** Efficacité
+**** Lisilibité
+**** Extensibilité
+**** Robustesse
+
+* nw-group
+** <2018-01-22>
+*** DONE Commencer à comprendre Go
+*** DONE Parsing + infrastructure
+*** TODO Evaluation des formules
+*** TODO Evaluer le travail du groupe "Carmack"
+    Instructions:
+    - Donnez votre évaluation pour chacun des points suivants.
+    - Proposez des actions pour améliorer la qualité du code.
+**** Correction
+**** Efficacité
+**** Lisilibité
+**** Extensibilité
+**** Robustesse
+
+* scableur.org
+*** DONE Parseur + Infrastructure
+*** TODO Evaluation des formules pour 11h30
+*** TODO Evaluer le travail du groupe "nw-group"
+    Instructions:
+    - Donnez votre évaluation pour chacun des points suivants.
+    - Proposez des actions pour améliorer la qualité du code.
+**** Correction
+**** Efficacité
+**** Lisilibité
+**** Extensibilité
+**** Robustesse
+

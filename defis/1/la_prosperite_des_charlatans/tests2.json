@@ -2,12 +2,12 @@
   "tests":[
     {
       "name":"Diff view0.csv et view0_correct.csv",
-      "exec" : ["diff","tests/view0_correct.csv"],
+      "file" : "tests/view0_correct.csv",
       "expected" : "view0.csv"
     },
     {
       "name":"Diff changes.txt et changes_correct.txt",
-      "exec" : ["diff","tests/changes_correct.txt"],
+      "file" : "tests/changes_correct.txt",
       "expected" : "changes.txt"
     }
   ]
