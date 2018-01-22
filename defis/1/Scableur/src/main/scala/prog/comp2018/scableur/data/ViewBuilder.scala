@@ -5,15 +5,31 @@ import java.util.ArrayList
 
 
 import prog.comp2018.scableur.utils.{Conf, FileReader}
+import prog.comp2018.scableur.data.functions._
 
 object ViewBuilder {
   // Build a Partial View from data
 
   def evaluate(s:String):Value ={
-    null
+    //case value is a function
+    if(s.substring(0,2).equals("=#")){
+      val subS = s.substring(s.indexOf("(")+1,s.length-1)
+      val args = subS.split(",")
+      val f = new NbrIteration(args); f
+    }
+    else{
+      //case value is constante or P
+      val i = if(s.equals("P")) None 
+      else {val ii = s.toInt; 
+            if(ii >= 0 && ii <= 255) Some(ii) else None }
+
+      val c = new ConstantType(i); c
+
+    }
   }
 
-  def getsection(str: String, i: Int, j:Int):ArrayList[Value] ={//on appel evaluate que je met dans le arrayList. pour chaque
+  def getsection(str: String, i: Int, j:Int):ArrayList[Value] ={
+    //on appel evaluate que je met dans le arrayList. pour chaque
     //case entre i et j ,et on stock la Value retournée dans le ArrayList[Value] et on le renvoi
     return new util.ArrayList[Value]()//////TODO
   }
