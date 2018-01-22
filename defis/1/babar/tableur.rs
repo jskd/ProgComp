@@ -94,12 +94,42 @@ fn create_cell(str:String) -> Box<Cellule>
     
 }
 
-
-// fn create_view(path: &str, cells: Vec<Vec<Box<Cellule>>>) 
-// {
-//     let mut file = File::create(path).expect("Erreur à l'ouverture du fichier");
-// }
-
+fn print_table(t:&Vec<Vec<Box<Cellule>>>)
+{
+    let mut i:i32 = 0;
+    for k in t{
+        for b in k{
+            if(i!=0)
+            {
+                print!(";");
+            }
+            i+=1;
+            print!("{}", b.get_value());
+        }
+        i=0;
+        println!("");
+    }
+}
+fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
+{
+    let mut file = File::create("view0.csv").expect("Error writing file");
+    let mut mystring = String::new();
+    let mut i:i32 = 0;
+    for k in t{
+        for b in k{
+            if(i!=0)
+            {
+                mystring += ";";
+            }
+            i+=1;
+            let tmp = b.get_value().to_string();
+            mystring.push_str(&tmp);
+        }
+        i=0;
+        mystring +="\n";
+    }
+    write!(file, "{}", mystring);
+}
 fn main()
 {
     let args: Vec<String> = env::args().collect();
@@ -127,4 +157,8 @@ fn main()
         }
         t.push(row);
     }
+
+    print_table(&t);
+    write_view0(&t);
+
 }
