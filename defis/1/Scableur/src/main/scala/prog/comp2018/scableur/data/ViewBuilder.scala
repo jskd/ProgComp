@@ -28,7 +28,6 @@ object ViewBuilder {
       val i = if(ii >= 0 && ii <= 255) Some(ii) else None
 
       val c = new ConstantType(i); c
-
     }
   }
 

@@ -1,0 +1,44 @@
+{
+  "settings": [
+    { "test_dir": "tests/" },
+    { "expected_dir": "expected/" }
+  ],
+  "tests": [
+    { "name": "Fichier vide" },
+    { "name": "User structure" }
+  ],
+  "default-file-config": {
+    "input-data": "/input/data.csv",
+    "input-user": "/input/user.txt",
+    "expected-changes": "/expected/changes.txt",
+    "expected-view0": "/expected/view0.txt",
+    "expected-stdio": "/expected/stdio.txt",
+    "output-dir": "/output"
+  },
+  "target":[
+    {
+      "name":"babar",
+      "path":"../babar"
+    },
+    {
+      "name":"Carmack",
+      "path":"../Carmack"
+    },
+    {
+      "name":"Scableur",
+      "path":"../Scableur"
+    },
+    {
+      "name":"nw-group-ocaml",
+      "path":"../nw-group/OCaml"
+    },
+    {
+      "name":"nw-group-go",
+      "path":"../nw-group/Go"
+    },
+    {
+      "name":"test",
+      "path":"../GroupTest"
+    }
+  ]
+}

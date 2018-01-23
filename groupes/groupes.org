@@ -26,7 +26,7 @@
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
 **** Correction
-***** Incapacité à compiler car absence de Makefile
+***** Ca compile ! Mais avec quelques warnings 
 **** Efficacité
 ***** Incapacité à compiler car absence de Makefile
 **** Lisilibité
@@ -66,7 +66,7 @@
     - Proposez des actions pour améliorer la qualité du code.
 **** Correction
 **** Efficacité
-**** Lisilibité
+**** Lisilibité 
 **** Extensibilité
 **** Robustesse
 
@@ -77,6 +77,27 @@
     Instructions:
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
+<<<<<<< HEAD
+**** Correction  
+	-> le code compile sans errur, par contre le resultat c'es pas vraiment
+	le resultat attendu (une ligne n'est pas bien parsé exp : "1;3;=#(0,0,0,1,5)"
+							=> [["1" "3" "=#(" "0" "0" "0" "1" "5)"]])
+**** Efficacité
+	-> fonction toFormula: le 5ème arg est toujour convertie ver un int et dans le cas ou
+	se 5ème arg est une formule on poura pas la convirtir simplement mais l'evalué 
+	dans le cas de nombre Iteration je pense que il faut comparé le contenue d'une case avec avec notre 
+	argumant pas leur resultat (comparé si une case elle a le meme contenu)...
+
+	-> 
+**** Lisilibité
+	-> le code est lisible ainsi que les noms de fonction sont bien choisi
+**** Extensibilité
+	-> le type formule n'est pas extensible 
+	-> le rest on pense que c'est pas mal
+**** Robustesse
+	-> il existe quelque tests d'erreur mais il manque quelques un ;)
+
+=======
 **** Correction
     Le code compile mais plante lors de l'execution:
         java -jar out/Scableur.jar resources/data.csv user.txt view0.csv changes.txt
@@ -96,3 +117,4 @@
     Comme le projet est bien decoupe, il sera facile d'ajouter ou de retirer des modules.
 **** Robustesse
     La encore pas de tests possibles, mais le code comporte de nombreux tests et attrape les erreurs eventuelles, ce qui est plutot bon signe.
+>>>>>>> 6dc4841071794f2686c2a3bb294ce1b51b3622a1
