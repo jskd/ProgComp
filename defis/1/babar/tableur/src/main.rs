@@ -4,7 +4,8 @@ use std::env;
 
 trait Cellule {
     fn get_value(&self) -> i32;
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ();
+    fn set_value(&mut self,val:i32);
+    fn evaluate(&self, t:&mut Vec<Vec<Box<Cellule>>>) -> ();
 }
 struct Number {value:i32}
 struct Formule {
@@ -16,40 +17,61 @@ struct Formule {
     v:i32,
 }
 
-impl Number
-{
-    fn set_value(&mut self, n: i32)
-    {
-        self.value = n;
-    }
-}
+
+
 impl Cellule for Number
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&self, t:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
-
+        
     }
     fn get_value(&self) -> i32
     {
         return self.value;
     }
+    
+    fn set_value(&mut self, n: i32)
+    {
+        self.value = n;
+    }
 }
 impl Cellule for Formule
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&mut self, grill:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
-
+        calculOcc(&mut self,grill)
+            
     }
     fn get_value(&self) -> i32
     {
-        return 0;
+        return self.num;
+    }
+    
+    fn set_value(&mut self, n: i32)
+    {
+        self.num = n;
     }
 }
-fn evaluate(t: &Vec<Vec<Box<Cellule>>>)
+
+fn calculOcc(cell:&mut Formule,grill:&mut Vec<Vec<Box<Cellule>>>)
 {
-    for a in t{
-        for b in a{
-            b.evaluate(t);
+    for i in 1..2{
+        for j in 1..2{
+            grill[i][j].evaluate(grill);
+            if grill[i][j].get_value() == cell.v{
+                cell.set_value(cell.num+1);
+            }
+                
+        }
+    } 
+
+}
+
+fn evaluate(grill: &mut Vec<Vec<Box<Cellule>>>)
+{
+    for row in grill{
+        for case in row{
+            case.evaluate(grill);
         }
     }
 }
@@ -142,9 +164,9 @@ fn print_table(t:&Vec<Vec<Box<Cellule>>>)
         println!("");
     }
 }
-fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
+fn write_view0(view0: &str,t:&Vec<Vec<Box<Cellule>>>)
 {
-    let mut file = File::create("view0.csv").expect("Error writing file");
+    let mut file = File::create(view0).expect("Error writing file");
     let mut mystring = String::new();
     let mut i:i32 = 0;
     for k in t{
@@ -160,7 +182,7 @@ fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
         i=0;
         mystring +="\n";
     }
-    write!(file, "{}", mystring).expect("Error Writing into view0.csv");
+    write!(file, "{}", mystring).expect("Error Writing into the view0");
 }
 fn main()
 {
@@ -174,6 +196,6 @@ fn main()
     let t = gen_table(data);
 
     print_table(&t);
-    write_view0(&t);
+    write_view0(&args[3],&t);
 
 }    
