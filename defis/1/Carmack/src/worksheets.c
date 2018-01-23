@@ -217,6 +217,10 @@ int evaluate_formula(struct formula *f, struct worksheet *ws,
 
     if(f->status && f->res == -1) //visited and not calculated formula -> error
         goto return_with_error;
+	else{
+		if (f->status) //supposed to be well calculated formula
+			return 0;
+	}
     f->status = 1;
 
     for(x = f->r1; x <= f->r2; x++) {
@@ -268,22 +272,6 @@ void evaluate_worksheet(struct worksheet *ws) {
     }
 }
 
-void apply_user(struct worksheet *ws, struct user_data *user_mods) {
-    int i;
-    struct user_component c;
-
-    for(i = 0; i < user_mods->nb_changes; i++) {
-        c = user_mods->pst_content[i];
-        if(c.r < 0 || c.r > ws->nblines ||
-           c.c < 0 || c.c > ws->pst_line_data[c.r].nb_elements) {
-            fprintf(stderr, "Out of bounds!\n");
-            continue;
-        }
-        ws->pst_line_data[c.r].pst_content[c.c] = c.st_value;
-    }
-    evaluate_worksheet(ws);
-}
-
 int produce_view(struct worksheet *ws, const char *path) {
 	FILE *p_file = fopen(path, "w");
 	unsigned i, j;
@@ -304,8 +292,90 @@ int produce_view(struct worksheet *ws, const char *path) {
 	return 0;
 }
 
-void produce_changes(struct worksheet *ws, const char *path) {
-	printf("Students! This is our job!\n");
+void write_change(FILE* stream, int line, int col, struct cell value, char verbose) {
+	int val;
+	switch (value.ty) {
+		case INVALID:
+			val = -1;
+			break;
+		case VALUE:
+			val = value.udata.value;
+			break;
+		case FORMULA:
+			val = value.udata.st_formula.res;
+			break;
+		default:
+			val = -1;
+			break;
+	}
+	if (verbose)
+		printf("(%d,%d) %d -> %d\n", line, col, value.old_value, val);
+	fprintf(stream, "%d %d %d\n", line, col, val);
+}
+
+
+void reset_table(struct worksheet *ws){
+	//added old_value to all cells, super memory-consumung, redo later with log
+	//after this function all old_values are set correctly
+	unsigned i, j;
+	for (i = 0; i < ws->nblines; i++) {
+    struct line_data st_line_data = ws->pst_line_data[i];
+	unsigned nb_elements = st_line_data.nb_elements;
+        for (j = 0; j < nb_elements; j++) {
+			struct cell *node = st_line_data.pst_content + j;
+			switch(node->ty){
+				case FORMULA:
+					//if formula survived evaluate_formula, it has good res
+					node->old_value = node->udata.st_formula.res;
+					node->udata.st_formula.res = -1;
+					node->udata.st_formula.status = 0;
+					break;
+				case VALUE:
+					node->old_value = node->udata.value;
+					break;
+				case INVALID:
+/*
+supposing node->udata.st_formula.res was left -1 after evaluate_formula,
+if not the case, OBLIGATORILY uncomment next line
+node->udata.st_formula.res = -1
+*/					
+					node->old_value = -1;
+					node->ty = FORMULA;
+					node->udata.st_formula.status = 0;
+					break;
+				default:
+					break;
+			}
+		}
+	}
+}
+
+
+int produce_changes(struct worksheet *ws,  struct user_data *user_mods, const char *path) {
+	reset_table(ws);
+	apply_user(ws, user_mods);
+	
+	FILE *p_file = fopen(path, "w");
+	
+	if (p_file == NULL)
+		return -1;
+	
+	unsigned i, j;
+	for (i = 0; i < ws->nblines; i++) {
+        struct line_data st_line_data = ws->pst_line_data[i];
+		unsigned nb_elements = st_line_data.nb_elements;
+        for (j = 0; j < nb_elements; j++) {
+			struct cell node = st_line_data.pst_content[j];
+			if ((node.ty == INVALID && node.old_value != -1) ||
+			(node.ty == VALUE && node.old_value != node.udata.value) ||
+			(node.ty == FORMULA && node.old_value != node.udata.st_formula.res))
+				write_change(p_file, i, j, node, 1); //change verbose to 0 here
+		}
+		//fprintf(p_file, "\n");
+	}
+
+	return 0;
+
 }
 
 void release_worksheet(struct worksheet *ws) {
@@ -328,8 +398,10 @@ void print_worksheet(struct worksheet *ws) {
 		}
 		printf("\n");
 	}
+	printf("\n");
 }
 
+//don't use it for a while
 void print_user(struct user_data *user_mods) {
 	for (unsigned i = 0; i < user_mods->nb_changes; i++) {
 		struct user_component component = user_mods->pst_content[i];
@@ -357,3 +429,21 @@ void write_data(FILE* stream, struct cell* value, const char* separator) {
 	}
 }
 
+
+void apply_user(struct worksheet *ws, struct user_data *user_mods) {
+    int i;
+    struct user_component c;
+
+    for(i = 0; i < user_mods->nb_changes; i++) {
+        c = user_mods->pst_content[i];
+        if(c.r < 0 || c.r > ws->nblines ||
+           c.c < 0 || c.c > ws->pst_line_data[c.r].nb_elements) {
+            fprintf(stderr, "Out of bounds!\n");
+            continue;
+        }
+		struct cell *target = ws->pst_line_data[c.r].pst_content + c.c;
+        target->ty = c.st_value.ty;
+		target->udata = c.st_value.udata; //should work fine 
+    }
+    evaluate_worksheet(ws);
+}
