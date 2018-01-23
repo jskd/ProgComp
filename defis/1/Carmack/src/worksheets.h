@@ -21,7 +21,7 @@
 enum cell_ty { INVALID, FORMULA, VALUE };
 
 struct formula {
-	int r1, r2, c1, c2, val, status;
+	int r1, r2, c1, c2, val, res, status;
 };
 
 /*
