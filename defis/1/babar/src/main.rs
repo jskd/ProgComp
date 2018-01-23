@@ -5,7 +5,7 @@ use std::env;
 trait Cellule {
     fn get_value(&self) -> i32;
     fn set_value(&mut self,val:i32);
-    fn evaluate(&self, t:&mut Vec<Vec<Box<Cellule>>>) -> ();
+    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ();
 }
 struct Number {value:i32}
 struct Formule {
@@ -21,7 +21,7 @@ struct Formule {
 
 impl Cellule for Number
 {
-    fn evaluate(&self, t:&mut Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
         
     }
@@ -39,7 +39,7 @@ impl Cellule for Formule
 {
     fn evaluate(&mut self, grill:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
-        calculOcc(&mut self,grill)
+        calcul_occ(self,grill)
             
     }
     fn get_value(&self) -> i32
@@ -53,11 +53,15 @@ impl Cellule for Formule
     }
 }
 
-fn calculOcc(cell:&mut Formule,grill:&mut Vec<Vec<Box<Cellule>>>)
+fn calcul_occ(cell:&mut Formule,grill:&mut Vec<Vec<Box<Cellule>>>)
 {
-    for i in 1..2{
-        for j in 1..2{
-            grill[i][j].evaluate(grill);
+    let r1 = cell.r1 as usize;
+    let r2 = cell.r2 as usize;
+    let c1 = cell.c1 as usize;
+    let c2 = cell.c2 as usize;
+    for i in r1..r2{
+        for j in c1..c2{
+             grill[i][j].evaluate(grill);
             if grill[i][j].get_value() == cell.v{
                 cell.set_value(cell.num+1);
             }
