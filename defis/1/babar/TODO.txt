@@ -1,0 +1,10 @@
+- Utiliser cargo + docker
+- Commenter le code
+- Evaluer les formules
+- Definir convention de nommage + indentation
+- Casser le main en fonctions
+
+
+docker
+docker-compose
+docker-machine

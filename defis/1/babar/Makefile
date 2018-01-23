@@ -1,4 +1,10 @@
-all: tableur
+all:
+	@cargo build
 
-tableur: tableur.rs
-	rustc tableur.rs -o ws
+run:
+	@cargo run res/data.csv res/user.txt res/view0.csv res/changes.txt
+
+build:
+	@docker build -t ws .
+rund:
+	@docker run ws

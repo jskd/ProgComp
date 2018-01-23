@@ -1,6 +1,0 @@
-[package]
-name = "tableur"
-version = "0.1.0"
-authors = ["DIABIRA binta <diabira@informatique.univ-paris-diderot.fr>"]
-
-[dependencies]
