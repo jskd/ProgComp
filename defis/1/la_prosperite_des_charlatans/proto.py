@@ -7,11 +7,21 @@ from os.path import isfile, join
 from subprocess import *
 from termcolor import colored
 
+TEST_DIR = ""
+TEST_LIST = []
+
 with open("config.json") as data:
     config = json.load(data)
+    TEST_DIR = config["settings"][0]["test_dir"]
 
-TEST_DIR = config["settings"][0]["test_dir"]
-TEST_LIST = sorted([f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")])
+with open(TEST_DIR + "_tests_order.txt") as tests_order:
+    for line in tests_order.readlines():
+        line = line.strip("\n")
+
+        if os.path.isdir(TEST_DIR + line):
+            TEST_LIST += [line]
+
+#TEST_LIST = sorted([f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")])
 
 if __name__ == "__main__":
     targets = config["target"]

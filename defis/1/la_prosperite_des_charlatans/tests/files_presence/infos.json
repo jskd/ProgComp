@@ -2,7 +2,7 @@
   "infos":[
     {
       "name":"Test files presence",
-      "exec": ["python3", "0_files_presence.py"],
+      "exec": ["python3", "files_presence.py"],
       "expected": "list_files.txt"
     }
   ]

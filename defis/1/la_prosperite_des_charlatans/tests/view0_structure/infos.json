@@ -2,7 +2,7 @@
   "infos":[
     {
       "name":"Test view0.csv structure",
-      "exec": ["python3", "3_view0_structure.py"],
+      "exec": ["python3", "view0_structure.py"],
       "expected": ""
     }
   ]
