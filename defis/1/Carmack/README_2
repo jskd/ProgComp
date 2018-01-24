@@ -7,18 +7,30 @@ TODO Chronologique :
   * Ex : si on utilise du C++, à quel point utilisons nous ses propriétés ?
     Est-ce qu'on l'utilise en mode C (ce qui serait dommage) en utilisant
     uniquement les vectors/fstream/etc...
+    (@luxon techniquement c'est pas vraiment du mode C, mais bon...)
     OU  on fait de la vraie programmation C++
         et on modélise notre problème avec de vrais classes
         type Worksheet, Parser...
-* Commencer à réfléchir à la librairie GPU qu'on va utiliser...
+
+@luxon
+
+   * Je pense que je mieux c'est de modéliser et raisonner objet.
+     Ce sera plus clair et un peu plus facile de structurer le code.
+     Après, pour certaines opérations très spécifiques,
+     il est probable de les faire en C pur.
+
+* Commencer à réfléchir à la bibliothèque GPU qu'on va utiliser...
+  (@luxon pas encore, il faut d'abord finir défi 1)
   * ...disponible pour le langage ciblé et sa norme
   * ...si possible ciblant le plus grand nombre de matériel possible
-  * ...et aux autres librairies en général
+  * ...et aux autres bibliothèques en général
   * ...sans en utiliser 150 non plus
   * critères :	facile à installer, utiliser, performant
-* Choisir une Coding Style Guideline
+* Choisir une Coding Style Guideline (@luxon Google code style)
   * On évite celle de VLC svp SI on choisit un autre langage
   * car elle ne s'applique que pour le C !
+  (toute façon c'était juste pour avoir un premier truc hein !!!)
+*
 * Diviser l'implémentations en module, par ex:
   * main.cpp
   * worksheet.hpp et worksheet.cpp
@@ -30,25 +42,51 @@ TODO Chronologique :
   * util.hpp et util.cpp
     * qui serviront pour tout le reste
     * (affichage et écriture des sorties)
+  * @luxon D'abord on modélise, ensuite on structure nos fichiers
   * ---
   * IL S'AGIT DE SUGGESTIONS !!
-    Si ça ne vous plait pas, ou vous avez une meilleure idée, allez y
-    Mais parlez en et écrivez là ici ou quelque part !
-    Histoire qu'on ait une trace écrite !
+    * Si ça ne vous plait pas, ou vous avez une meilleure idée, allez y
+    * Mais parlez en et écrivez là ici ou quelque part !
+    * Histoire qu'on ait une trace écrite !
     ---
 * Une fois mis d'accord sur les fichiers/modules
   * On divise le travail :
     * X s'occupe de tel module
     * Y s'occupe de tel module
     * ...
-* Chacun présente ses headers
-  * Pour qu'on soit d'accord et que chacun voit les méthodes/fonctions
+* Chacun présente son/ses API(s)
+  * Pour qu'on soit d'accord et que chacun ait connaissance des méthodes/fonctions
   * disponibles pour chaque module
 * On modifie si besoin
 * On réfléchit à une manière de tester nos modules
+  (oui, mais seulement quand tout est bien défini, si on est en TDD)
   * Tests unitaires ?
-    * Avec quelle librarie ? Catch ? CxxTest ? Autre ?
-* On écrit les tests/mockups
+    * Avec quelle bibliothèque ? Catch ? CxxTest ? Autre ?
+* On écrit les tests/mockups (en mode TDD oui !)
 * On écrit l'implémentation
 * On reteste
-* On mets en place un Dockerfile
+* On mets en place un Dockerfile (@luxon je m'en charge,
+  et pourquoi attendre que tout soit fait AVANT le Dockerfile ?
+  On est pas en Cascade !)
+
+
+@luxon
+
+Déjà on peut largement diviser le travail
+
+- Une personne sur la partie partie parseur
+- Une personne sur la partie opérations
+- Une personne sur la partie test unitaire
+  (si on est en TDD, il faudra d'abord l'API de chaque module, pour pouvoir
+   rédiger les tests, donc les APIs devront être bien définie en premier,
+   puis ceux qui devéloppent les modules doivent D'ABORD
+   connaitre les cas à traiter)
+   En gros, si on est en TDD, on définit l'API, puis on rédige les tests,
+   et on implémente
+- @luxon sur partie docker
+
+L'objectif principal c'est d'avoir le défi 1 FINI.
+SI on a le temps, et SEULEMENT APRES AVOIR FINI LE DEFI 1,
+on réfléchit au défi 2.
+
+Bref, il va y avoir du boulot, BEAUCOUP DE BOULOT !
