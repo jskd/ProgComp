@@ -26,16 +26,11 @@ if __name__ == "__main__":
         # BEGIN OF SCRIPT
         test_result = True
         try:
-            with open(group_path + MAKEFILE_PATH, "r"): pass
 
-            cmd = ["make", "--directory=" + group_path, "mrproper"]
-            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
+            # -- TODO Write some code here !
 
-            matchObj = re.match(r"make\[1\]*", out)
-            if matchObj:
-                test_result = False
+            pass
         except:
-            out = "False"
             test_result = False
 
         # True for PASS, False for FAIL

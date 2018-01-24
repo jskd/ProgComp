@@ -1,7 +1,12 @@
 {
   "settings": [
     { "test_dir": "tests/" },
-    { "expected_dir": "expected/" }
+    { "bin_dir": "bin/" },
+    { "makefile": "Makefile" },
+    { "expected_dir": "expected/" },
+    { "infos_json": "infos.json" },
+    { "view0": "output/view0.csv" },
+    { "changes": "output/changes.txt" }
   ],
   "tests": [
     { "name": "Fichier vide" },

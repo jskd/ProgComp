@@ -1,38 +1,40 @@
 #!/usr/bin/env python3
-
-import json
-import os,sys
+import json, os, sys, re
 from subprocess import *
 from os import listdir
-import os.path
 from os.path import isfile, join
-import re
 
+# OPEN CONSTANTS IN config.json
+with open("config.json") as config_data:
+    config = json.load(config_data)
+
+    BIN_PATH = config["settings"][1]["bin_dir"]
+    MAKEFILE_PATH = config["settings"][2]["makefile"]
+    EXPECTED_PATH = config["settings"][3]["expected_dir"]
+    INFOS_PATH = config["settings"][4]["infos_json"]
 
 if __name__ == "__main__":
     if len(sys.argv) >= 1:
-        path = os.path.dirname(sys.argv[0]) + "/"
-        tested_path = sys.argv[1]
+        test_path = os.path.dirname(sys.argv[0]) + "/"
+        group_path = sys.argv[1] + "/"
 
         # INIT DATA
-        with open(path  + "infos.json", 'r') as data:
+        with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
             test_info = test_data["infos"][0]
 
         # BEGIN OF SCRIPT
         test_result = True
-
         try:
-            bin_dir = tested_path + "/" + "bin/"
-
-            if not os.path.isdir(bin_dir):
+            if not os.path.isdir(group_path + BIN_PATH):
                 raise Exception("Error: bin/ does not exist.")
 
-            with open(tested_path + "/" + "Makefile", "r"): pass
-            cmd = ["make", "--directory=" + tested_path]
-            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
-            matchObj = re.match(r"make\[1\]*", out)
+            with open(group_path + MAKEFILE_PATH, "r"): pass
 
+            cmd = ["make", "--directory=" + group_path]
+            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
+
+            matchObj = re.match(r"make\[1\]*", out)
             if matchObj:
                 test_result = False
 
@@ -40,8 +42,8 @@ if __name__ == "__main__":
             out = "False"
             test_result = False
 
-        print(test_result) # True for PASS, False for FAIL
+        # True for PASS, False for FAIL
+        print(test_result)
         # END OF SCRIPT
-
     else:
         print("Usage: files_presence.py <expected_file>")
