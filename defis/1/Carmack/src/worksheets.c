@@ -132,6 +132,8 @@ int parse_formula(char* psz_token, struct cell *formula) {
 
 	formula->ty = FORMULA;
     formula->udata.st_formula.status = 0;
+    formula->udata.st_formula.res = -1; 
+	//IMPORTANT! NOT CALCULATED FORMULAS ARE NOW DEFINED BY -1 IN RES!!!
 
 	return 0;
 }
@@ -213,7 +215,7 @@ int evaluate_formula(struct formula *f, struct worksheet *ws,
     int x, y, val_num = 0;
     struct cell *c;
 
-    if(f->status)
+    if(f->status && f->res == -1) //visited and not calculated formula -> error
         goto return_with_error;
     f->status = 1;
 
@@ -228,16 +230,24 @@ int evaluate_formula(struct formula *f, struct worksheet *ws,
                     (val_num + 1) : val_num;
                 break;
             case FORMULA:
+				if (c->udata.st_formula.res == -1){ 
+				//if not INVALID and res == -1 then not yet calculated
                 // Look, Ma, recursion in C!
                 evaluate_formula(&(c->udata.st_formula), ws, x, y);
                 y--;
+				}
+				else {
+					val_num = (c->udata.st_formula.res == f->val) ?
+                    (val_num + 1) : val_num;
+				}
                 break;
             }
         }
     }
 
-    ((ws->pst_line_data + x0)->pst_content + y0)->ty = VALUE;
-    ((ws->pst_line_data + x0)->pst_content + y0)->udata.value = val_num;
+    //((ws->pst_line_data + x0)->pst_content + y0)->ty = VALUE; 
+	//formula stays formula
+    ((ws->pst_line_data + x0)->pst_content + y0)->udata.st_formula.res = val_num;
     return 0;
 
  return_with_error:
@@ -331,7 +341,10 @@ void print_user(struct user_data *user_mods) {
 void write_data(FILE* stream, struct cell* value, const char* separator) {
 	switch (value->ty) {
 		case FORMULA:
-			fprintf(stream, "F%s", separator);
+			if (value->udata.st_formula.res == -1) //not yet calculated formula
+				fprintf(stream, "F%s", separator);
+			else 
+				fprintf(stream, "%d%s", value->udata.st_formula.res, separator);
 			break;
 		case VALUE:
 			fprintf(stream, "%d%s", value->udata.value, separator);

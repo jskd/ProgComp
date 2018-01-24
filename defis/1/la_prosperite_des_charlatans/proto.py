@@ -2,45 +2,71 @@
 
 import json
 import os,sys
+from os import listdir
+from os.path import isfile, join
 from subprocess import *
+from termcolor import colored
+
+TEST_DIR = ""
+TEST_LIST = []
+
+with open("config.json") as data:
+    config = json.load(data)
+    TEST_DIR = config["settings"][0]["test_dir"]
+
+with open(TEST_DIR + "_tests_order.txt") as tests_order:
+    for line in tests_order.readlines():
+        line = line.strip("\n")
+
+        if os.path.isdir(TEST_DIR + line):
+            TEST_LIST += [line]
+
+#TEST_LIST = sorted([f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")])
 
 if __name__ == "__main__":
+    targets = config["target"]
 
-    with open("target.json") as data:
-        data_targets = json.load(data)
+    if len(sys.argv) > 1:
+        grp_name = sys.argv[1]
 
-    with open("tests.json") as data:
-        data_tests = json.load(data)
+        for target in targets:
+            if target["name"] == grp_name:
+                targets = [target]
+                break
 
+    for target in targets:
 
-    for target in data_targets["target"]:
-        print(" # Current project :", target["name"])
-        print("-"*32)
+        NB_PASSED = 0
+        print("-"*64)
+        print(" #", target["name"].upper())
+        print("-"*64)
 
-        nb_passed = 0
+        for i, test in enumerate(TEST_LIST):
+            infos_path = join(TEST_DIR + test + "/", "infos.json")
 
-        for i, test in enumerate(data_tests["tests"]):
+            with open(infos_path) as data:
+                test_data = json.load(data)
 
-            cmd = test["exec"]
+            test_info = test_data["infos"][0]
+            cmd = test_info["exec"]
+            exec_file = join(TEST_DIR + test + "/", cmd[1])
 
-            if cmd == "" :
-                # Here, tests without exec files
-                # out = anotherFunction()
-                out = "0 0 5\n1 0 10\n1 1 =#(0, 0, 1, 0, 5)"
-            else:
+            try:
+                cmd = [cmd[0], exec_file, target["path"]]
                 out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+            except:
+                out = "False"
 
-            if test["expected"] != "":
-                with open(test["expected"], 'r') as f:
-                    result = "PASS" if f.read() == out else "FAIL"
-                    if result == "PASS" : nb_passed += 1
-
+            if out.strip("\n") == "True" :
+                result = "PASS"
+                colorprint = 'green'
+                NB_PASSED += 1
             else:
-                # Here, tests without expected files
-                # result = anotherExpectedThings
                 result = "FAIL"
+                colorprint = 'red'
 
-            print(" [{}] -> [{}] {} {}".format(i, result, test["name"], test["expected"]))
+            print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
 
-        print (" TOTAL : [{}/{}] -> NOTE: {}/20 avec félicitations du jury".format(nb_passed, len(data_tests["tests"]), (nb_passed / len(data_tests["tests"])) * 20 ))
-        print ()
+        colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
+
+        print (colored("\n [{}/{}] => {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))

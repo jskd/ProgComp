@@ -4,7 +4,8 @@ use std::env;
 
 trait Cellule {
     fn get_value(&self) -> i32;
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ();
+    fn set_value(&mut self,val:i32);
+    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ();
 }
 struct Number {value:i32}
 struct Formule {
@@ -16,48 +17,73 @@ struct Formule {
     v:i32,
 }
 
-impl Number
-{
-    fn set_value(&mut self, n: i32)
-    {
-        self.value = n;
-    }
-}
+
+
 impl Cellule for Number
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
-
+        
     }
     fn get_value(&self) -> i32
     {
         return self.value;
     }
+    
+    fn set_value(&mut self, n: i32)
+    {
+        self.value = n;
+    }
 }
 impl Cellule for Formule
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&mut self, grill:&mut Vec<Vec<Box<Cellule>>>) -> ()
     {
-
+        calcul_occ(self,grill)
+            
     }
     fn get_value(&self) -> i32
     {
-        return 0;
+        return self.num;
+    }
+    
+    fn set_value(&mut self, n: i32)
+    {
+        self.num = n;
     }
 }
-fn evaluate(t: &Vec<Vec<Box<Cellule>>>)
+
+fn calcul_occ(cell:&mut Formule,grill:&mut Vec<Vec<Box<Cellule>>>)
 {
-    for a in t{
-        for b in a{
-            b.evaluate(t);
+    let r1 = cell.r1 as usize;
+    let r2 = cell.r2 as usize;
+    let c1 = cell.c1 as usize;
+    let c2 = cell.c2 as usize;
+    for i in r1..r2{
+        for j in c1..c2{
+             grill[i][j].evaluate(grill);
+            if grill[i][j].get_value() == cell.v{
+                cell.set_value(cell.num+1);
+            }
+                
+        }
+    } 
+
+}
+
+fn evaluate(grill: &mut Vec<Vec<Box<Cellule>>>)
+{
+    for row in grill{
+        for case in row{
+            case.evaluate(grill);
         }
     }
 }
 fn read_file(f :&str) -> String
 {
-    let mut file = File::open(f).expect("Erreur à l'ouverture du fichier");
+    let mut file = File::open(f).expect("Error Opening data.csv");
     let mut data = String::new();
-    file.read_to_string(&mut data);
+    file.read_to_string(&mut data).expect("Error reading file data.csv");
     return data.trim().to_string();
 }
 
@@ -107,13 +133,31 @@ fn create_cell(str:String) -> Box<Cellule>
     }
     
 }
-
+fn gen_table(data: String) -> Vec<Vec<Box<Cellule>>>
+{
+    let mut t = Vec::new();
+    let a =  data.split("\n");
+    let vec = a.collect::<Vec<&str>>();
+    for c in &vec{
+        let mut temp = c.split(";");
+        let  vec2 = temp.collect::<Vec<&str>>();
+        let mut row = Vec::new();
+        for d in &vec2{
+            let s = d.to_string();
+            let cell = create_cell(d.to_string());
+            row.push(cell);
+            
+        }
+        t.push(row);
+    }
+    return t;
+}
 fn print_table(t:&Vec<Vec<Box<Cellule>>>)
 {
     let mut i:i32 = 0;
     for k in t{
         for b in k{
-            if(i!=0)
+            if i!=0
             {
                 print!(";");
             }
@@ -124,14 +168,14 @@ fn print_table(t:&Vec<Vec<Box<Cellule>>>)
         println!("");
     }
 }
-fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
+fn write_view0(view0: &str,t:&Vec<Vec<Box<Cellule>>>)
 {
-    let mut file = File::create("view0.csv").expect("Error writing file");
+    let mut file = File::create(view0).expect("Error writing file");
     let mut mystring = String::new();
     let mut i:i32 = 0;
     for k in t{
         for b in k{
-            if(i!=0)
+            if i!=0
             {
                 mystring += ";";
             }
@@ -142,7 +186,7 @@ fn write_view0(t:&Vec<Vec<Box<Cellule>>>)
         i=0;
         mystring +="\n";
     }
-    write!(file, "{}", mystring);
+    write!(file, "{}", mystring).expect("Error Writing into the view0");
 }
 fn main()
 {
@@ -151,28 +195,11 @@ fn main()
     {
         panic!("Erreur d'arguments");
     }
-    let mut data = read_file(&args[1]);
-    let mut num: Number =  Number{value: 3};
-    num.set_value(4);
-    let mut t = Vec::new();
-    let mut a =  data.split("\n");
-    let vec = a.collect::<Vec<&str>>();
-    for c in &vec{
-//         println!("-> {}", c.trim());
-        let mut temp = c.split(";");
-        let  vec2 = temp.collect::<Vec<&str>>();
-        let mut row = Vec::new();
-        for d in &vec2{
-//             println!("L:{}", d);
-            let s = d.to_string();
-            let cell = create_cell(d.to_string());
-            row.push(cell);
-            
-        }
-        t.push(row);
-    }
+    let data = read_file(&args[1]);
+
+    let t = gen_table(data);
 
     print_table(&t);
-    write_view0(&t);
+    write_view0(&args[3],&t);
 
-}
+}    
