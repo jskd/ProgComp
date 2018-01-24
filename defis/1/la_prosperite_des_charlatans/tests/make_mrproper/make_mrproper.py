@@ -6,6 +6,7 @@ from subprocess import *
 from os import listdir
 import os.path
 from os.path import isfile, join
+import re
 
 
 if __name__ == "__main__":
@@ -19,16 +20,22 @@ if __name__ == "__main__":
             test_info = test_data["infos"][0]
 
         # BEGIN OF SCRIPT
-        expected_path = join(path, "expected/" + test_info["expected"])
-        with open(expected_path, 'r') as expected_files:
-            expected_liste = sorted(expected_files.read().strip("\n").split("\n"))
+        test_result = True
 
-        files_liste = []
-        for path, subdirs, files in os.walk(tested_path):
-            for name in files:
-                if not name.startswith(".") and name in expected_liste: files_liste.append(name)
+        try:
+            with open(tested_path + "/" + "Makefile", "r"): pass
+            cmd = ["make", "--directory=" + tested_path, "mrproper"]
+            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
+            matchObj = re.match(r"make\[1\]*", out)
 
-        print(sorted(expected_liste) == sorted(files_liste)) # True for PASS, False for FAIL
+            if matchObj:
+                test_result = False
+
+        except:
+            out = "False"
+            test_result = False
+
+        print(test_result) # True for PASS, False for FAIL
         # END OF SCRIPT
 
     else:

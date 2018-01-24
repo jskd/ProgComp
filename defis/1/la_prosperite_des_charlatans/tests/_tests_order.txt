@@ -1,4 +1,5 @@
-make_executable
+make_mrproper
+make_target
 files_presence
 user_structure
 changes_structure

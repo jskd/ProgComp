@@ -11,11 +11,30 @@
     Instructions:
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
+
 **** Correction
+    Le code compile mais plante lors de l'execution:
+        java -jar out/Scableur.jar resources/data.csv user.txt view0.csv changes.txt
+    produit:
+        [ERROR]: thrown byresources/data.csv
+        Exception in thread "main" prog.comp2018.scableur.utils.exceptions.NotCSVFileException
+        at prog.comp2018.scableur.utils.Conf$InputData$.dataFile(Conf.scala:13)
+        at prog.comp2018.scableur.Scableur$.load_args(Scableur.scala:18)
+        at prog.comp2018.scableur.Scableur$.main(Scableur.scala:12)
+        at prog.comp2018.scableur.Scableur.main(Scableur.scala)
+
 **** Efficacité
+    Pas d'execution donc pas de mesure, mais l'utilisation de sbt rend la compilation tres simple.
+
 **** Lisilibité
+    Le code est lisible et bien construit: il est divise en packages qui s'occupent chacun d'une tache.
+    Le nom des classes n'est par contre pas tres clair et le code n'est pas commente.
+
 **** Extensibilité
+    Comme le projet est bien decoupe, il sera facile d'ajouter ou de retirer des modules.
+
 **** Robustesse
+    La encore pas de tests possibles, mais le code comporte de nombreux tests et attrape les erreurs eventuelles, ce qui est plutot bon signe.
 
 * Carmack.org
 ** <2018-01-22>
@@ -77,7 +96,7 @@
     Instructions:
     - Donnez votre évaluation pour chacun des points suivants.
     - Proposez des actions pour améliorer la qualité du code.
-<<<<<<< HEAD
+
 **** Correction  
 	-> le code compile sans errur, par contre le resultat c'es pas vraiment
 	le resultat attendu (une ligne n'est pas bien parsé exp : "1;3;=#(0,0,0,1,5)"
@@ -85,36 +104,15 @@
 **** Efficacité
 	-> fonction toFormula: le 5ème arg est toujour convertie ver un int et dans le cas ou
 	se 5ème arg est une formule on poura pas la convirtir simplement mais l'evalué 
-	dans le cas de nombre Iteration je pense que il faut comparé le contenue d'une case avec avec notre 
+	dans le cas de nombre Iteration je pense que il faut comparé le contenue d'une case avec notre 
 	argumant pas leur resultat (comparé si une case elle a le meme contenu)...
 
-	-> 
 **** Lisilibité
 	-> le code est lisible ainsi que les noms de fonction sont bien choisi
+
 **** Extensibilité
 	-> le type formule n'est pas extensible 
 	-> le rest on pense que c'est pas mal
+
 **** Robustesse
 	-> il existe quelque tests d'erreur mais il manque quelques un ;)
-
-=======
-**** Correction
-    Le code compile mais plante lors de l'execution:
-        java -jar out/Scableur.jar resources/data.csv user.txt view0.csv changes.txt
-    produit:
-        [ERROR]: thrown byresources/data.csv
-        Exception in thread "main" prog.comp2018.scableur.utils.exceptions.NotCSVFileException
-        at prog.comp2018.scableur.utils.Conf$InputData$.dataFile(Conf.scala:13)
-        at prog.comp2018.scableur.Scableur$.load_args(Scableur.scala:18)
-        at prog.comp2018.scableur.Scableur$.main(Scableur.scala:12)
-        at prog.comp2018.scableur.Scableur.main(Scableur.scala)
-**** Efficacité
-    Pas d'execution donc pas de mesure, mais l'utilisation de sbt rend la compilation tres simple.
-**** Lisilibité
-    Le code est lisible et bien construit: il est divise en packages qui s'occupent chacun d'une tache.
-    Le nom des classes n'est par contre pas tres clair et le code n'est pas commente.
-**** Extensibilité
-    Comme le projet est bien decoupe, il sera facile d'ajouter ou de retirer des modules.
-**** Robustesse
-    La encore pas de tests possibles, mais le code comporte de nombreux tests et attrape les erreurs eventuelles, ce qui est plutot bon signe.
->>>>>>> 6dc4841071794f2686c2a3bb294ce1b51b3622a1
