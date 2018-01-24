@@ -23,6 +23,11 @@ if __name__ == "__main__":
         test_result = True
 
         try:
+            bin_dir = tested_path + "/" + "bin/"
+
+            if not os.path.isdir(bin_dir):
+                raise Exception("Error: bin/ does not exist.")
+
             with open(tested_path + "/" + "Makefile", "r"): pass
             cmd = ["make", "--directory=" + tested_path]
             out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
