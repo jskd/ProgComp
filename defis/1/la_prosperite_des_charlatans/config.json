@@ -6,7 +6,8 @@
     { "expected_dir": "expected/" },
     { "infos_json": "infos.json" },
     { "view0": "output/view0.csv" },
-    { "changes": "output/changes.txt" }
+    { "changes": "output/changes.txt" },
+    { "executable": "bin/ws" }
   ],
   "tests": [
     { "name": "Fichier vide" },

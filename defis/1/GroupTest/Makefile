@@ -1,5 +1,5 @@
 CPP=g++ --std=c++11 -Wall
-EXEC = Main
+EXEC = ws
 
 SRC_DIR = src
 BIN_DIR = bin
