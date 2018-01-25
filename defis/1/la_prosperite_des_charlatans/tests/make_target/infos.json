@@ -3,7 +3,7 @@
     {
       "name":"Make target",
       "exec": ["python3", "make_target.py"],
-      "expected": ""
+      "expected": "ws"
     }
   ]
 }
