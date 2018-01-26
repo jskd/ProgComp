@@ -25,7 +25,7 @@ if __name__ == "__main__":
         with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
             test_info = test_data["infos"][0]
-
+            
         # BEGIN OF SCRIPT
         test_result = True
         try:

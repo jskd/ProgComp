@@ -49,6 +49,7 @@ if __name__ == "__main__":
             try:
                 cmd = [cmd[0], exec_file, target["path"]]
                 out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+                print(out)
             except:
                 out = "False"
 
@@ -60,7 +61,7 @@ if __name__ == "__main__":
                 result = "FAIL"
                 colorprint = 'red'
 
-            print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
+            print(colored(" [{}] -> [{}] {}".format(i, result, test_info["name"]), colorprint))
 
         colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
         print (colored("\n [{}/{}] => {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))

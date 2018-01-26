@@ -3,7 +3,7 @@
     {
       "name":"Unit Test 1: calculation of formula",
       "exec": ["python3", "unittest_1.py"],
-      "expected": "view0.csv",
+      "expected": ["changes_expected.txt", "view0_expected.csv"],
       "comment" : "view0 contains the result of formula"
     }
   ]
