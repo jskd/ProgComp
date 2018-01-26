@@ -1,55 +1,57 @@
 package main
 
-import ("fmt"
+import (
+	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
 	"strings"
-        "strconv")
+)
 
 /*strucure of formula*/
-type Formula struct{
-	xSource int;
-	ySource int;
-	xDestination int;
-	yDestination int;
-	value int;
+type Formula struct {
+	xSource      int
+	ySource      int
+	xDestination int
+	yDestination int
+	value        int
 }
 
 /*data may be value or formula to evaluate*/
 type Data struct {
-	valeur string;
-	form Formula;
+	valeur string
+	form   Formula
 }
 
 /*location of cell and content*/
 type Cell struct {
-   x int;
-   y int;
-   value Data;
+	x     int
+	y     int
+	value Data
 }
 
 func checkError(err error) {
 	if err != nil {
-		 panic(err)
+		panic(err)
 	}
 }
 
 func convertString2Int(str string) int {
-  i, err := strconv.Atoi(str)
-  checkError(err)
-  return i
+	i, err := strconv.Atoi(str)
+	checkError(err)
+	return i
 }
 
 func convertInt2String(i int) string {
-  s := strconv.Itoa(i)
-  return s
+	s := strconv.Itoa(i)
+	return s
 }
 
 func toFormula(formuleLue string) Formula {
 	formule := new(Formula)
 	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
 	if trimedFormule != formuleLue {
-		arg_list:=strings.Split(trimedFormule, ",")
+		arg_list := strings.Split(trimedFormule, ",")
 		arg_list[4] = strings.Replace(arg_list[4], ")", "", -1)
 		formule.xSource = convertString2Int(arg_list[0])
 		formule.ySource = convertString2Int(arg_list[1])
@@ -61,14 +63,14 @@ func toFormula(formuleLue string) Formula {
 }
 
 /*read File and returns there content in a 2D slice of strings*/
-func readFile(fileToRead string, sep string) [][]string{
+func readFile(fileToRead string, sep string) [][]string {
 	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
-   lines := strings.Split(string(file), "\n")
-	car:=make([][]string, 0, 0)
-	for i:=0;i<len(lines);i++ {
-		if(lines[i]!=""){
-			car=append(car,strings.Split(lines[i], sep))
+	lines := strings.Split(string(file), "\n")
+	car := make([][]string, 0, 0)
+	for i := 0; i < len(lines); i++ {
+		if lines[i] != "" {
+			car = append(car, strings.Split(lines[i], sep))
 		}
 	}
 	return car
@@ -77,7 +79,7 @@ func readFile(fileToRead string, sep string) [][]string{
 /* Evaluates a formula.  On success, a formula evaluates into an
    integer.  Returns an error when the dependency graph of the formula
    has a cycle.  */
-func evaluate(formula Formula, spreadSheet [][]string) (int) {
+func evaluate(formula Formula, spreadSheet [][]string) int {
 	count := 0
 	for r := formula.ySource; r <= formula.yDestination; r++ {
 		for c := formula.xSource; c <= formula.xDestination; c++ {
@@ -90,20 +92,20 @@ func evaluate(formula Formula, spreadSheet [][]string) (int) {
 }
 
 /*write in File the 2D slice of strings*/
-func writeFile(){
-	taille := len(readFile("data.csv",","))
-	s:=make([][]string, taille,taille)
-	s=readFile("data.csv",",")
-	fmt.Printf("%q\n",s)
+func writeFile() {
+	taille := len(readFile("data.csv", ","))
+	s := make([][]string, taille, taille)
+	s = readFile("data.csv", ",")
+	fmt.Printf("%q\n", s)
 	f, err := os.OpenFile("view0.csv", os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}
 	sep := "\n"
-	for i:=0;i<len(s);i++ {
-		for j:=0;j<len(s[i]);j++ {
+	for i := 0; i < len(s); i++ {
+		for j := 0; j < len(s[i]); j++ {
 			formula := toFormula(s[i][j])
-			_, err = f.WriteString(convertInt2String(evaluate(formula, s))+",")
+			_, err = f.WriteString(convertInt2String(evaluate(formula, s)) + ",")
 			checkError(err)
 		}
 		_, err = f.WriteString(sep)
@@ -112,14 +114,8 @@ func writeFile(){
 }
 
 /* user actions */
-func userActions(){
-	s:=make([][]string, 0,0)
-	s=readFile("user.txt"," ")
-	fmt.Println("%q",s)
-}
-
-func main() {
-	writeFile()
-	userActions()
-	toFormula("=#(0,0,50,50,1)")
+func userActions() {
+	s := make([][]string, 0, 0)
+	s = readFile("user.txt", " ")
+	fmt.Println("%q", s)
 }
