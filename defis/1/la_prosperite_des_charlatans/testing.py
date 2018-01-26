@@ -49,7 +49,7 @@ if __name__ == "__main__":
             try:
                 cmd = [cmd[0], exec_file, target["path"]]
                 out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-                print(out)
+                #print(out)
             except:
                 out = "False"
 
