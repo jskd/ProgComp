@@ -1,8 +1,10 @@
 package prog.comp2018.scableur
 
+import java.io.FileNotFoundException
+
 import prog.comp2018.scableur.data.Matrix
 import prog.comp2018.scableur.eval.Evaluator
-import prog.comp2018.scableur.utils.Conf
+import prog.comp2018.scableur.utils.{Conf, Debug}
 
 object Scableur extends App {
   private var matrix : Matrix = null
@@ -22,8 +24,14 @@ object Scableur extends App {
   }
 
   def load_data_csv() : Unit = {
-    matrix = new Matrix(Conf.InputData.dataFile)
-    matrix.load()
+    try{
+      matrix = new Matrix(Conf.InputData.dataFile)
+      matrix.load()
+    }catch {
+      case _ : FileNotFoundException =>
+        Debug.e("Data file Not Found")
+        System.exit(0)
+    }
   }
 
   def load_users_txt() : Unit = {

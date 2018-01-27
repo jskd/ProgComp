@@ -15,4 +15,4 @@ $ make
 * Dependencies
 ** scala-csv : https://github.com/tototoshi/scala-csv
 
-** sbt-docker :
+** sbt-docker : https://github.com/marcuslonnberg/sbt-docker
