@@ -1,0 +1,9 @@
+{
+  "infos":[
+    {
+      "name":"Make mrproper",
+      "exec": ["python3", "make_mrproper.py"],
+      "expected": ""
+    }
+  ]
+}

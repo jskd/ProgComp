@@ -1,9 +1,0 @@
-{
-  "infos":[
-    {
-      "name":"Test view0.csv structure",
-      "exec": ["python3", "view0_structure.py"],
-      "expected": ""
-    }
-  ]
-}

@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-
-import json
-import os,sys
+import json, os, sys
 from os import listdir
 from os.path import isfile, join
 from subprocess import *
@@ -21,8 +19,6 @@ with open(TEST_DIR + "_tests_order.txt") as tests_order:
         if os.path.isdir(TEST_DIR + line):
             TEST_LIST += [line]
 
-#TEST_LIST = sorted([f for f in listdir(TEST_DIR) if not isfile(join(TEST_DIR, f)) and not f.startswith(".")])
-
 if __name__ == "__main__":
     targets = config["target"]
 
@@ -35,7 +31,6 @@ if __name__ == "__main__":
                 break
 
     for target in targets:
-
         NB_PASSED = 0
         print("-"*64)
         print(" #", target["name"].upper())
@@ -54,6 +49,7 @@ if __name__ == "__main__":
             try:
                 cmd = [cmd[0], exec_file, target["path"]]
                 out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+                #print(out)
             except:
                 out = "False"
 
@@ -65,8 +61,7 @@ if __name__ == "__main__":
                 result = "FAIL"
                 colorprint = 'red'
 
-            print(colored(" [{}] -> [{}] {} {}".format(i, result, test_info["name"], test_info["expected"]), colorprint))
+            print(colored(" [{}] -> [{}] {}".format(i, result, test_info["name"]), colorprint))
 
         colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
-
         print (colored("\n [{}/{}] => {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))

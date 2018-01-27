@@ -24,17 +24,26 @@ if __name__ == "__main__":
             test_info = test_data["infos"][0]
 
         # BEGIN OF SCRIPT
-        expected_path = join(test_path, EXPECTED_PATH + test_info["expected"])
-        with open(expected_path, 'r') as expected_files:
-            expected_liste = sorted(expected_files.read().strip("\n").split("\n"))
+        test_result = True
+        try:
+            #if not os.path.isdir(group_path + BIN_PATH):
+            #    raise Exception("Error: bin/ does not exist.")
 
-        files_liste = []
-        for path, subdirs, files in os.walk(group_path):
-            for name in files:
-                if not name.startswith(".") and name in expected_liste: files_liste.append(name)
+            with open(group_path + MAKEFILE_PATH, "r"): pass
+
+            cmd = ["make", "--directory=" + group_path]
+            out = check_output(cmd, stderr=STDOUT, timeout=60).decode("utf-8")
+
+            matchObj = re.match(r"make\[1\]*", out)
+            if matchObj:
+                test_result = False
+
+        except:
+            out = "False"
+            test_result = False
 
         # True for PASS, False for FAIL
-        print(sorted(expected_liste) == sorted(files_liste))
+        print(test_result)
         # END OF SCRIPT
     else:
         print("Usage: files_presence.py <expected_file>")

@@ -12,6 +12,9 @@ with open("config.json") as config_data:
     MAKEFILE_PATH = config["settings"][2]["makefile"]
     EXPECTED_PATH = config["settings"][3]["expected_dir"]
     INFOS_PATH = config["settings"][4]["infos_json"]
+    VIEW0_PATH = config["settings"][5]["view0"]
+    CHANGES_PATH = config["settings"][6]["changes"]
+    EXEC_PATH = config["settings"][7]["executable"]
 
 if __name__ == "__main__":
     if len(sys.argv) >= 1:
@@ -22,19 +25,18 @@ if __name__ == "__main__":
         with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
             test_info = test_data["infos"][0]
-
+            
         # BEGIN OF SCRIPT
-        expected_path = join(test_path, EXPECTED_PATH + test_info["expected"])
-        with open(expected_path, 'r') as expected_files:
-            expected_liste = sorted(expected_files.read().strip("\n").split("\n"))
-
-        files_liste = []
-        for path, subdirs, files in os.walk(group_path):
-            for name in files:
-                if not name.startswith(".") and name in expected_liste: files_liste.append(name)
+        test_result = True
+        try:
+            cmd = [group_path + EXEC_PATH, group_path + "input/data.csv", group_path + "input/user.txt", group_path + VIEW0_PATH, group_path + CHANGES_PATH]
+            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
+        except:
+            out = "False"
+            test_result = False
 
         # True for PASS, False for FAIL
-        print(sorted(expected_liste) == sorted(files_liste))
+        print(test_result)
         # END OF SCRIPT
     else:
         print("Usage: files_presence.py <expected_file>")

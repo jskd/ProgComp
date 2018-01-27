@@ -1,2 +1,11 @@
+SHELL = /bin/sh
+
+GO = go
+
+.PHONY: all clean
+
 all:
-	go build
+	$(GO) build ./*.go
+
+clean:
+	$(GO) clean

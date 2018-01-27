@@ -1,7 +1,13 @@
 {
   "settings": [
     { "test_dir": "tests/" },
-    { "expected_dir": "expected/" }
+    { "bin_dir": "bin/" },
+    { "makefile": "Makefile" },
+    { "expected_dir": "expected/" },
+    { "infos_json": "infos.json" },
+    { "view0": "output/view0.csv" },
+    { "changes": "output/changes.txt" },
+    { "executable": "bin/ws" }
   ],
   "tests": [
     { "name": "Fichier vide" },
@@ -29,12 +35,8 @@
       "path":"../Scableur"
     },
     {
-      "name":"nw-group-ocaml",
-      "path":"../nw-group/OCaml"
-    },
-    {
-      "name":"nw-group-go",
-      "path":"../nw-group/Go"
+      "name":"nw-group",
+      "path":"../nw-group"
     },
     {
       "name":"test",
