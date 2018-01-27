@@ -1,0 +1,19 @@
+#!/bin/sh
+
+docker_volume_flag() {
+    echo -n "-v $(readlink -m $1):/go/src/$(basename $1)"
+}
+
+docker_volume_flags() {
+    for arg in $@; do
+        docker_volume_flag $arg
+        echo -n " "
+    done
+}
+
+run_in_docker_container() {
+    docker run --rm $(docker_volume_flags $@) nw-group/ws       \
+           $(basename -a $@ 2> /dev/null)
+}
+
+run_in_docker_container $@
