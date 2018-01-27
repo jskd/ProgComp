@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, sys, re
+import json, os, sys, re, filecmp
 from subprocess import *
 from os import listdir
 from os.path import isfile, join
@@ -36,12 +36,16 @@ if __name__ == "__main__":
             view0_output = test_path + "output/view0.csv"
 
             with open(changes_expected, 'r') as expected, open(changes_output, 'r') as output:
-                # Compute diff
-                pass
+                expected_strip = expected.read().strip("\n")
+                output_strip = output.read().strip("\n")
+
+                test_result = (output_strip == expected_strip)
 
             with open(view0_expected, 'r') as expected, open(view0_output, 'r') as output:
-                # Compute diff
-                pass
+                expected_strip = expected.read().strip("\n")
+                output_strip = output.read().strip("\n")
+
+                test_result = test_result and (output_strip == expected_strip)
 
         except:
             test_result = False
