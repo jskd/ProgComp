@@ -6,9 +6,10 @@
 
 FROM ubuntu:latest
 LABEL maintainer="Luxon JEAN-PIERRE <luxon.jean.pierre@gmail.com>"
+WORKDIR /tmp/
 COPY *.c ./
 COPY *.h ./
 COPY Makefile ./
+RUN ls -l
 #RUN apt-get update && apt-get install -y make gcc
 #RUN make all
-RUN echo "OK"
