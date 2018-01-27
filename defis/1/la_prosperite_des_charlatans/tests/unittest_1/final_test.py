@@ -27,13 +27,15 @@ if __name__ == "__main__":
         # BEGIN OF SCRIPT
         test_result = True
         try:
-            cmd = [group_path + EXEC_PATH, test_path + "input/data.csv", test_path + "input/user.txt", test_path + "output/view0.csv", test_path + "output/changes.txt"]
+            view0_output = test_path + "output/view0.csv"
+            changes_output = test_path + "output/changes.txt"
+
+            cmd = [group_path + EXEC_PATH, test_path + "input/data.csv", test_path + "input/user.txt", view0_output, changes_output]
             out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
 
             changes_expected = test_path + EXPECTED_PATH + "changes_expected.txt"
-            changes_output = test_path + "output/changes.txt"
             view0_expected = test_path + EXPECTED_PATH + "view0_expected.csv"
-            view0_output = test_path + "output/view0.csv"
+            
 
             with open(changes_expected, 'r') as expected, open(changes_output, 'r') as output:
                 expected_strip = expected.read().strip("\n")
