@@ -1,8 +1,11 @@
 package prog.comp2018.scableur
 
+import prog.comp2018.scableur.data.Matrix
+import prog.comp2018.scableur.eval.Evaluator
 import prog.comp2018.scableur.utils.Conf
 
 object Scableur extends App {
+  private var matrix : Matrix = null
 
   override def main(args : Array[String]): Unit = {
     if(args.length < 4 || args.length > 4){
@@ -10,8 +13,38 @@ object Scableur extends App {
       System.exit(0)
     }
     load_args(args)
-    Conf.InputData.print
+    load_data_csv()
+    evaluate_data_csv()
+    load_users_txt()
+    evaluate_user_actions()
+    print_data()
+    print_user_actions()
+  }
 
+  def load_data_csv() : Unit = {
+    matrix = new Matrix(Conf.InputData.dataFile)
+    matrix.load()
+  }
+
+  def load_users_txt() : Unit = {
+    //TODO
+  }
+
+  def evaluate_data_csv() : Unit = {
+    val eval : Evaluator = new Evaluator
+    eval.eval(matrix.getMatrix)
+  }
+
+  def evaluate_user_actions() : Unit = {
+    //TODO
+  }
+
+  def print_data() : Unit = {
+    //TODO
+  }
+
+  def print_user_actions() : Unit = {
+    //TODO
   }
 
   def load_args(args : Array[String]) : Unit = {
@@ -20,21 +53,4 @@ object Scableur extends App {
     Conf.InputData.viewFile(args(2))
     Conf.InputData.changesFile(args(3))
   }
-
-
-  /* main method :
-   *  parse arguments
-   *
-   *    - build view (partials ...)
-   *    - run evaluator
-   *    - compile result
-   */
-
-  /*
-  objects:
-
-    - evaluator : class (interface + abstract for extensibility different evaluation methods)
-    - function parser ( contains algorithm to do lazy and optimised evaluation )
-    - Data structure for matrix => partial view (!! dependencies)
-   */
 }

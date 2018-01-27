@@ -7,6 +7,7 @@ import java.util.ArrayList
 import prog.comp2018.scableur.utils.{Conf, FileReader}
 import prog.comp2018.scableur.data.functions._
 
+//FIXME: deprecated class to be delete
 object ViewBuilder {
   // Build a Partial View from data
 

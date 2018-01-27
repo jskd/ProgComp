@@ -2,6 +2,7 @@ package prog.comp2018.scableur.data
 
 import java.util.ArrayList
 
+//FIXME: deprecated
 class View(private var i: Int, private var j : Int, private var height : Int, private var width : Int) {
   private var matrix : ArrayList[ArrayList[Value]] = ViewBuilder.build(i,j,height,width)
 

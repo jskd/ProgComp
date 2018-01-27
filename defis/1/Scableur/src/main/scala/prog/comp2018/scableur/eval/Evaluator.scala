@@ -1,16 +1,17 @@
 package prog.comp2018.scableur.eval
 
-import java.util
-
 import prog.comp2018.scableur.data.Value
 
+import scala.collection.mutable.ArrayBuffer
 
-class Evaluator(private var matrix :util.ArrayList[util.ArrayList[Value]]) {
-  private var result : util.ArrayList[util.ArrayList[Option[Int]]] = new util.ArrayList[util.ArrayList[Option[Int]]]()
+/**
+  * Evaluates a Matrix given as parameter
+  */
+class Evaluator {
 
-
-  def eval : util.ArrayList[util.ArrayList[Option[Int]]] = {
+  def eval(matrix: ArrayBuffer[ArrayBuffer[Value]]) : ArrayBuffer[ArrayBuffer[Option[Int]]] = {
     //TODO evaluate lines of Array
-    result
+    null
   }
+
 }
