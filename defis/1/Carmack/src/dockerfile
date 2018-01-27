@@ -3,6 +3,11 @@
 #   sudo docker build <path> -t <tag_name>  // Create image
 #   sudo docker images                      // List of images
 #   sudo docker rmi <image_id>              // Remove an image
+#
+# Run the conatiner
+#
+#   sudo docker run -it <tag_name>
+#
 
 FROM ubuntu:latest
 LABEL maintainer="Luxon JEAN-PIERRE <luxon.jean.pierre@gmail.com>"
@@ -10,6 +15,5 @@ WORKDIR /tmp/
 COPY *.c ./
 COPY *.h ./
 COPY Makefile ./
-RUN ls -l
-#RUN apt-get update && apt-get install -y make gcc
-#RUN make all
+RUN apt-get update && apt-get install -y make gcc
+RUN make all
