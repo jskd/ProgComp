@@ -12,7 +12,7 @@ trait Value {
 }
 
 //Constant value (0-255)
-case class ConstantType(private var value: Option[Int]) extends Value {
+case class ConstantType(var value: Option[Int]) extends Value {
 
   override def ==(v: Value): Boolean = this.getClass == v.getClass && compareValue(v)
 

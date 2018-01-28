@@ -14,9 +14,10 @@ class MatrixToCSV(private var matrix : ArrayBuffer[ArrayBuffer[Option[Int]]],
   def echo(col : Int, row : Int) : Unit = {
     if(row != 0 && col == 0)  writer.write("\n")
     matrix(row)(col) match {
-      case Some(x: Int) => writer.write(x + ";")
-      case None => writer.write("P" + ";")
+      case Some(x: Int) => writer.write(x)
+      case None => writer.write("P")
     }
+    if(col < cols) writer.write(";")
   }
 
   def print() : Unit = {

@@ -3,8 +3,11 @@ package prog.comp2018.scableur
 import java.io.FileNotFoundException
 
 import prog.comp2018.scableur.data.Matrix
-import prog.comp2018.scableur.eval.Evaluator
+import prog.comp2018.scableur.eval.{ArrayBufferEvaluator, Evaluator}
+import prog.comp2018.scableur.utils.print.MatrixToCSV
 import prog.comp2018.scableur.utils.{Conf, Debug}
+
+import scala.collection.mutable.ArrayBuffer
 
 object Scableur extends App {
   private var matrix : Matrix = null
@@ -16,10 +19,10 @@ object Scableur extends App {
     }
     load_args(args)
     load_data_csv()
-    evaluate_data_csv()
+    val result_data : ArrayBuffer[ArrayBuffer[Option[Int]]] = evaluate_data_csv()
     load_users_txt()
     evaluate_user_actions()
-    print_data()
+    print_data(result_data)
     print_user_actions()
   }
 
@@ -38,17 +41,17 @@ object Scableur extends App {
     //TODO
   }
 
-  def evaluate_data_csv() : Unit = {
-    val eval : Evaluator = new Evaluator
-    eval.eval(matrix.getMatrix)
+  def evaluate_data_csv() :  ArrayBuffer[ArrayBuffer[Option[Int]]] = {
+    val eval : ArrayBufferEvaluator = new ArrayBufferEvaluator(matrix.getMatrix)
+    eval.eval
   }
 
   def evaluate_user_actions() : Unit = {
     //TODO
   }
 
-  def print_data() : Unit = {
-    //TODO
+  def print_data(data : ArrayBuffer[ArrayBuffer[Option[Int]]]) : Unit = {
+    //FIXME: val printer : MatrixToCSV = new MatrixToCSV(data)
   }
 
   def print_user_actions() : Unit = {
