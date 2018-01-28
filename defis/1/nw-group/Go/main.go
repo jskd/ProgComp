@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"parse"
 )
 
 func main() {
@@ -31,9 +32,8 @@ func test_ocaml_call() {
 
 func unit_test() {
 	test_ocaml_call()
-	writeFile()
-	userActions()
-	toFormula("=#(0,0,50,50,1)")
+	parse.ToFormula("=#(0,0,50,50,1)")
+	parse.WriteFile()
 }
 
 func main_program() {
