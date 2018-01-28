@@ -50,6 +50,9 @@ impl Cellule for Formule
 {
     fn evaluate(&self, grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32,i32,i32)>) -> i32
     {
+        if !is_dependency_ok(self,current_evaluation) {
+            panic!("Bad dependency");
+        }
 
         calcul_occ(self,grill,current_evaluation)
             
@@ -81,18 +84,15 @@ impl Cellule for Formule
     }
 }
 
-fn is_dependency_ok(current_evaluation : &Vec<(i32,i32,i32,i32)>,row:i32,column:i32) -> bool
+fn is_dependency_ok(cell : &Formule, current_evaluation : &Vec<(i32,i32,i32,i32)>) -> bool
 {
-    println!("__________________________________");
     for &(r1,c1,r2,c2) in current_evaluation {
-        println!("IDOK {} {}",row,column);
-        println!("{} {} {} {}",r1,c1,r2,c2);
-        if row >= r1 && row <= r2 
-          && column >= c1 && column <= c2 {
+        if cell.r1 >= r1 && cell.r2 <= r2 
+          && cell.c1 >= c1 && cell.c2 <= c2 {
             return false;
           }
-    }
-    true
+        }
+        true
 }
 
 fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32,i32,i32)>) ->i32
@@ -105,10 +105,8 @@ fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mu
     let mut val_num = 0;
     for i in r1..r2+1{
         for j in c1..c2+1{
-//              if !is_dependency_ok(current_evaluation,i as i32,j as i32){ return -1}
              let val = grill[i][j].evaluate(grill,current_evaluation);
             if val == cell.v{
-//                 cell.set_value(cell.num+1);
                 val_num = val_num+1;
             }
                 
