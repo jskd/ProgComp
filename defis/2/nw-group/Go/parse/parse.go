@@ -117,3 +117,10 @@ func userActions() {
 	fmt.Println("%q", s)
 	writeFile("changes.txt", " ", s)
 }
+
+func main(){
+	s := make([][]string, 0, 0)
+	s = readFile("data.csv", ",")
+	writeFile("view0.csv", ";", s)
+	userActions()
+}
