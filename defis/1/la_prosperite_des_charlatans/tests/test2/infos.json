@@ -1,0 +1,9 @@
+{
+  "infos":[
+    {
+      "name":"Test 2: user.txt change a number",
+      "exec": ["python3", "test.py"],
+      "expected": ["changes_expected.txt", "view0_expected.csv"],
+    }
+  ]
+}

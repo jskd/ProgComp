@@ -1,4 +1,4 @@
 make_mrproper
 make_target
 files_presence
-unittest_1
+testall
