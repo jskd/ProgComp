@@ -79,4 +79,3 @@ void print_user(struct user_data *user_mods);
 enum cell_ty token_type(const char *token);
 
 #endif
-
