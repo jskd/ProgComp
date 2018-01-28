@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"parse"
 )
 
 func main() {
@@ -31,11 +32,10 @@ func test_ocaml_call() {
 
 func unit_test() {
 	test_ocaml_call()
+	parse.ToFormula("=#(0,0,50,50,1)")
 	s := make([][]string, 0, 0)
-	s = readFile("data.csv", ",")
-	writeFile("view0.csv", ";", s)
-	userActions()
-	toFormula("=#(0,0,50,50,1)")
+	s = parse.ReadCsv("data.csv", ",")
+	parse.WriteFile("view0.csv", ";", s)
 }
 
 func main_program() {

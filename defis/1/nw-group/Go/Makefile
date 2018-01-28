@@ -1,11 +1,15 @@
-SHELL = /bin/sh
+GOPATH:=$(shell pwd)
 
-GO = go
+all: export_gopath build
 
-.PHONY: all clean
+export_gopath:
+	export GOPATH=$(GOPATH)
 
-all:
-	$(GO) build ./*.go
+build:
+	go build -o main.exe ./*.go
+
+test:
+	go test ./... -v
 
 clean:
-	$(GO) clean
+	go clean

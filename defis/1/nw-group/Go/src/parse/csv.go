@@ -1,4 +1,4 @@
-package main
+package parse
 
 import (
 	"fmt"
@@ -47,7 +47,7 @@ func convertInt2String(i int) string {
 	return s
 }
 
-func toFormula(formuleLue string) Formula {
+func ToFormula(formuleLue string) Formula {
 	formule := new(Formula)
 	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
 	if trimedFormule != formuleLue {
@@ -63,7 +63,7 @@ func toFormula(formuleLue string) Formula {
 }
 
 /*read File and returns there content in a 2D slice of strings*/
-func readFile(fileToRead string, sep string) [][]string {
+func ReadCsv(fileToRead string, sep string) [][]string {
 	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
 	fmt.Println("hellooooo")
@@ -93,7 +93,7 @@ func evaluate(formula Formula, spreadSheet [][]string) int {
 }
 
 /*write in File the 2D slice of strings*/
-func writeFile(fileToWrite string, sep string, s [][]string) {
+func WriteFile(fileToWrite string, sep string, s [][]string) {
 	fmt.Printf("%q\n", s)
 	f, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
@@ -101,7 +101,7 @@ func writeFile(fileToWrite string, sep string, s [][]string) {
 	}
 	for i := 0; i < len(s); i++ {
 		for j := 0; j < len(s[i]); j++ {
-			formula := toFormula(s[i][j])
+			formula := ToFormula(s[i][j])
 			_, err = f.WriteString(convertInt2String(evaluate(formula, s)) + sep)
 			checkError(err)
 		}
@@ -113,7 +113,7 @@ func writeFile(fileToWrite string, sep string, s [][]string) {
 /* user actions */
 func userActions() {
 	s := make([][]string, 0, 0)
-	s = readFile("user.txt", " ")
+	s = ReadCsv("user.txt", " ")
 	fmt.Println("%q", s)
-	writeFile("changes.txt", " ", s)
+	WriteFile("changes.txt", " ", s)
 }
