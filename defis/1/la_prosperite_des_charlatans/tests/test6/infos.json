@@ -3,7 +3,7 @@
     {
       "name":"Test 6: calculation of invalid formulas F1->F2->F1",
       "exec": ["python3", "test.py"],
-      "expected": ["changes_expected.txt", "view0_expected.csv"],
+      "expected": ["changes_expected.txt", "view0_expected.csv"]
     }
   ]
 }
