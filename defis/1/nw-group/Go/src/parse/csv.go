@@ -66,6 +66,7 @@ func ToFormula(formuleLue string) Formula {
 func ReadCsv(fileToRead string, sep string) [][]string {
 	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
+	fmt.Println("hellooooo")
 	lines := strings.Split(string(file), "\n")
 	car := make([][]string, 0, 0)
 	for i := 0; i < len(lines); i++ {
@@ -75,11 +76,6 @@ func ReadCsv(fileToRead string, sep string) [][]string {
 	}
 	return car
 }
-
-//
-//func readCsv(strLocation string) [][]string {
-//	csvReader := Reader()
-//}
 
 /* Evaluates a formula.  On success, a formula evaluates into an
    integer.  Returns an error when the dependency graph of the formula
@@ -97,23 +93,19 @@ func evaluate(formula Formula, spreadSheet [][]string) int {
 }
 
 /*write in File the 2D slice of strings*/
-func WriteFile() {
-	taille := len(ReadCsv("data.csv", ","))
-	s := make([][]string, taille, taille)
-	s = ReadCsv("data.csv", ",")
+func WriteFile(fileToWrite string, sep string, s [][]string) {
 	fmt.Printf("%q\n", s)
-	f, err := os.OpenFile("view0.csv", os.O_RDWR|os.O_CREATE, 0755)
+	f, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		panic(err)
 	}
-	sep := "\n"
 	for i := 0; i < len(s); i++ {
 		for j := 0; j < len(s[i]); j++ {
 			formula := ToFormula(s[i][j])
-			_, err = f.WriteString(convertInt2String(evaluate(formula, s)) + ",")
+			_, err = f.WriteString(convertInt2String(evaluate(formula, s)) + sep)
 			checkError(err)
 		}
-		_, err = f.WriteString(sep)
+		_, err = f.WriteString("/n")
 		checkError(err)
 	}
 }
@@ -123,4 +115,5 @@ func userActions() {
 	s := make([][]string, 0, 0)
 	s = ReadCsv("user.txt", " ")
 	fmt.Println("%q", s)
+	WriteFile("changes.txt", " ", s)
 }

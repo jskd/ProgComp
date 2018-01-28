@@ -5,7 +5,9 @@ use std::env;
 trait Cellule {
     fn get_value(&self) -> i32;
     fn set_value(&mut self,val:i32);
-    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ();
+    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>,&mut Vec<(i32,i32,i32,i32)>) -> i32;
+    fn copy_cell(&self) -> Box<Cellule>;
+    fn print_cell(&self) -> ();
 }
 struct Number {value:i32}
 struct Formule {
@@ -21,9 +23,9 @@ struct Formule {
 
 impl Cellule for Number
 {
-    fn evaluate(&mut self, t:&mut Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32,i32,i32)>) -> i32
     {
-        
+        self.value
     }
     fn get_value(&self) -> i32
     {
@@ -34,12 +36,25 @@ impl Cellule for Number
     {
         self.value = n;
     }
+    fn copy_cell(&self) ->Box<Cellule>
+    {
+        let cell = Number{value:self.value,};
+        Box::new(cell)
+    }
+    
+    fn print_cell(&self)
+    {
+    }
 }
 impl Cellule for Formule
 {
-    fn evaluate(&mut self, grill:&mut Vec<Vec<Box<Cellule>>>) -> ()
+    fn evaluate(&self, grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32,i32,i32)>) -> i32
     {
-        calcul_occ(self,grill)
+        if !is_dependency_ok(self,current_evaluation) {
+            panic!("Bad dependency");
+        }
+
+        calcul_occ(self,grill,current_evaluation)
             
     }
     fn get_value(&self) -> i32
@@ -51,33 +66,74 @@ impl Cellule for Formule
     {
         self.num = n;
     }
+    fn copy_cell(&self) -> Box<Cellule>
+    {
+        let cell = Formule{
+            num:0,
+            r1:self.r1,
+            c1:self.c1,
+            r2:self.r2,
+            c2:self.c2,
+            v:self.v,
+        };
+        Box::new(cell)
+    }
+    fn print_cell(&self)
+    {
+        println!("b evaluateCell: {} {} {} {} {} {}",self.r1,self.r2,self.c1,self.c2,self.v,self.num);
+    }
 }
 
-fn calcul_occ(cell:&mut Formule,grill:&mut Vec<Vec<Box<Cellule>>>)
+fn is_dependency_ok(cell : &Formule, current_evaluation : &Vec<(i32,i32,i32,i32)>) -> bool
+{
+    for &(r1,c1,r2,c2) in current_evaluation {
+        if cell.r1 >= r1 && cell.r2 <= r2 
+          && cell.c1 >= c1 && cell.c2 <= c2 {
+            return false;
+          }
+        }
+        true
+}
+
+fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32,i32,i32)>) ->i32
 {
     let r1 = cell.r1 as usize;
     let r2 = cell.r2 as usize;
     let c1 = cell.c1 as usize;
     let c2 = cell.c2 as usize;
-    for i in r1..r2{
-        for j in c1..c2{
-             grill[i][j].evaluate(grill);
-            if grill[i][j].get_value() == cell.v{
-                cell.set_value(cell.num+1);
+    current_evaluation.push((cell.r1,cell.c1,cell.r2,cell.c2));
+    let mut val_num = 0;
+    for i in r1..r2+1{
+        for j in c1..c2+1{
+             let val = grill[i][j].evaluate(grill,current_evaluation);
+            if val == cell.v{
+                val_num = val_num+1;
             }
                 
         }
     } 
+    val_num
 
 }
 
-fn evaluate(grill: &mut Vec<Vec<Box<Cellule>>>)
+fn evaluate(grill: &Vec<Vec<Box<Cellule>>>) -> Vec<Vec<Box<Cellule>>>
 {
-    for row in grill{
-        for case in row{
-            case.evaluate(grill);
+    let mut new_grill: Vec<Vec<Box<Cellule>>> =  Vec::new(); 
+    for i in 0..grill.len(){
+        let mut row: Vec<Box<Cellule>> =  Vec::new(); 
+        for j in 0..grill[i].len(){
+            let mut cell = grill[i][j].copy_cell();
+            let mut current_evaluation : Vec<(i32,i32,i32,i32)> = Vec::new();
+            cell.print_cell();
+            let val = cell.evaluate(grill,&mut current_evaluation);
+            cell.set_value(val);
+            cell.print_cell();
+            row.push(cell);
+            
         }
+        new_grill.push(row);
     }
+    new_grill
 }
 fn read_file(f :&str) -> String
 {
@@ -198,8 +254,10 @@ fn main()
     let data = read_file(&args[1]);
 
     let t = gen_table(data);
-
+    
     print_table(&t);
-    write_view0(&args[3],&t);
+    let grill = evaluate(&t);
+    write_view0(&args[3],&grill);
+    
 
 }    

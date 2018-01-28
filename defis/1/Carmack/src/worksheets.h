@@ -33,6 +33,7 @@ struct cell {
 		int value;
 		struct formula st_formula;
 	} udata;
+	int old_value;
 };
 
 struct line_data {
@@ -66,7 +67,7 @@ int parse_user(const char *path, struct user_data *user_mods);
 void evaluate_worksheet(struct worksheet *ws); // Maybe add other parameters ?
 void apply_user(struct worksheet *ws, struct user_data *user_mods);
 int produce_view(struct worksheet *ws, const char *path); // other parameters ?
-void produce_changes(struct worksheet *ws, const char *path); // same thing ?
+int produce_changes(struct worksheet *ws, struct user_data *user_mods, const char *path); // same thing ?
 void release_worksheet(struct worksheet *ws);
 void release_user(struct user_data *user_mods);
 

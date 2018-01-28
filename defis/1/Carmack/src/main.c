@@ -31,17 +31,19 @@ int main(int argc, const char* argv[]) {
 	evaluate_worksheet(&current_worksheet);
 	print_worksheet(&current_worksheet);
 
-	print_user(&current_user);
+	// print_user(&current_user);
 
 	if (produce_view(&current_worksheet, argv[3])) {
 		fprintf(stderr, "Error while writing to `%s` file", argv[3]);
 	}
 
-	/*
-	if (produce_changes(&copy_worksheet, argv[4])) {
-		// fprintf(stderr, "Error while writing to  i%s` file", argv[4]);
+	
+	if (produce_changes(&current_worksheet, &current_user, argv[4])) {
+		 fprintf(stderr, "Error while writing to  i%s` file", argv[4]);
 	}
-	*/
+	
+	print_worksheet(&current_worksheet);
+
 
 	release_worksheet(&current_worksheet);
 	// release_worksheet(&copy_worksheet);

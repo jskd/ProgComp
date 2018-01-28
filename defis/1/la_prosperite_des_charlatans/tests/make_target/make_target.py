@@ -26,18 +26,18 @@ if __name__ == "__main__":
         # BEGIN OF SCRIPT
         test_result = True
         try:
-            if not os.path.isdir(group_path + BIN_PATH):
-                raise Exception("Error: bin/ does not exist.")
+            #if not os.path.isdir(group_path + BIN_PATH):
+            #    raise Exception("Error: bin/ does not exist.")
 
             with open(group_path + MAKEFILE_PATH, "r"): pass
 
             cmd = ["make", "--directory=" + group_path]
-            out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
-
+            out = check_output(cmd, stderr=STDOUT, timeout=60).decode("utf-8")
+            """
             matchObj = re.match(r"make\[1\]*", out)
             if matchObj:
                 test_result = False
-
+            """
         except:
             out = "False"
             test_result = False

@@ -30,10 +30,11 @@ if __name__ == "__main__":
 
             cmd = ["make", "--directory=" + group_path, "mrproper"]
             out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
-
+            """
             matchObj = re.match(r"make\[1\]*", out)
             if matchObj:
                 test_result = False
+            """
         except:
             out = "False"
             test_result = False

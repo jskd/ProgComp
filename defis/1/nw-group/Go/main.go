@@ -33,7 +33,9 @@ func test_ocaml_call() {
 func unit_test() {
 	test_ocaml_call()
 	parse.ToFormula("=#(0,0,50,50,1)")
-	parse.WriteFile()
+	s := make([][]string, 0, 0)
+	s = parse.ReadCsv("data.csv", ",")
+	parse.WriteFile("view0.csv", ";", s)
 }
 
 func main_program() {
