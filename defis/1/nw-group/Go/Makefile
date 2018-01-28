@@ -6,7 +6,7 @@ export_gopath:
 	export GOPATH=$(GOPATH)
 
 build:
-	go build -o main.exe ./*.go
+	go build -o main.exe src/*.go
 
 test:
 	go test ./... -v
