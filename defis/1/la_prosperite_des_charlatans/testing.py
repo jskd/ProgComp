@@ -22,7 +22,7 @@ with open(TEST_DIR + "_tests_order.txt") as tests_order:
 if __name__ == "__main__":
     targets = config["target"]
     grp_name = ""
-    
+
     if len(sys.argv) > 1:
         grp_name = sys.argv[1]
     if len(sys.argv) > 2:
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         print(" #", target["name"].upper())
         print("-"*64)
 
-        result_file = "results/" + target["name"].lower()
+        result_file = "results/" + target["name"]
         if not os.path.exists(result_file):
             os.makedirs(result_file)
 
