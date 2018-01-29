@@ -1,7 +1,7 @@
 {
   "infos":[
     {
-      "name":"Test files presence",
+      "name":"Test files presence: expected 'ws' and 'Makefile' ",
       "exec": ["python3", "files_presence.py"],
       "expected": "list_files.txt"
     }

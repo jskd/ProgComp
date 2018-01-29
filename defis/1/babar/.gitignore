@@ -1,5 +1,4 @@
 tableur
-ws
 Cargo.lock
 target/*
 target/debug/*
