@@ -39,6 +39,7 @@
 ** <2018-01-29>
 *** DONE Nettoyer le code
 *** DONE Docker
+*** DONE Passage à 
 * Carmack.org
 ** <2018-01-22>
 *** DONE Une première implémentation de l'évaluation des formules
