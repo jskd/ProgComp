@@ -1,21 +1,22 @@
 CC     = gcc
 CFLAGS = -g -std=gnu99 -Wall -pedantic
-OBJECTS = main.o worksheets.o
+OBJECTS = src/main.o src/worksheets.o
 TARGET = ws
+
 
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CC) $^ -o $(TARGET) $(CFLAGS)
 
-worksheets.o : worksheets.c worksheets.h
+src/worksheets.o : src/worksheets.c src/worksheets.h
 	$(CC) -c $< -o $@ $(CFLAGS)
 
-main.o : main.c worksheets.h
+src/main.o : src/main.c src/worksheets.h
 	$(CC) -c $< -o $@ $(CFLAGS)
 
 clean:
-	rm -rf *.o
+	rm -rf src/*.o
 
 mrproper: clean
 		rm -rf $(TARGET)
