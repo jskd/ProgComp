@@ -13,6 +13,8 @@
 * nw-group
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: babar
+     * rajout de : pour .phony dans le makefile
+     * qd on fait appel a make dans la racine du projet, ca lancais pas le programme dans le container docker, ca le lancait dans la machine locale
 * scableur.org
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: carmark
