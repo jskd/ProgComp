@@ -32,6 +32,7 @@ if __name__ == "__main__":
         for path, subdirs, files in os.walk(group_path):
             for name in files:
                 if not name.startswith(".") and name in expected_liste: files_liste.append(name)
+        files_liste = list(set(files_liste))
 
         # True for PASS, False for FAIL
         print(sorted(expected_liste) == sorted(files_liste))
