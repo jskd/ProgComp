@@ -14,3 +14,5 @@
 * scableur.org
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: carmark
+   - On n'a pas pu compiler le projet -> corrigé
+   - Les fichiers n'ont pu être lus
