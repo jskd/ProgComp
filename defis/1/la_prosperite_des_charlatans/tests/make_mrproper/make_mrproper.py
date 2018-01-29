@@ -12,6 +12,7 @@ with open("config.json") as config_data:
     MAKEFILE_PATH = config["settings"][2]["makefile"]
     EXPECTED_PATH = config["settings"][3]["expected_dir"]
     INFOS_PATH = config["settings"][4]["infos_json"]
+    RESULT_PATH = config["settings"][8]["result_dir"]
 
 if __name__ == "__main__":
     if len(sys.argv) >= 1:
@@ -23,6 +24,9 @@ if __name__ == "__main__":
             test_data = json.load(data)
             test_info = test_data["infos"][0]
 
+        LOG_FILE = RESULT_PATH + os.path.basename(os.path.normpath(group_path)) + "/rapport.txt"
+
+        out = ""
         # BEGIN OF SCRIPT
         test_result = True
         try:
@@ -35,7 +39,24 @@ if __name__ == "__main__":
             if matchObj:
                 test_result = False
             """
+
+            with open(LOG_FILE, 'a') as log:
+                log.write("#"*64 + "\n")
+                log.write("TEST : " + test_data["infos"][0]["name"] + "\n")
+                log.write("#"*64 + "\n\n")
+                log.write("OUTPUT :" + "\n")
+                log.write("-"*64 + "\n")
+                log.write(out + "\n")
+
         except:
+            with open(LOG_FILE, 'a') as log:
+                log.write("#"*64 + "\n")
+                log.write("TEST : " + test_data["infos"][0]["name"] + "\n")
+                log.write("#"*64 + "\n\n")
+                log.write("OUTPUT :" + "\n")
+                log.write("-"*64 + "\n")
+                log.write(out + "\n")
+
             out = "False"
             test_result = False
 

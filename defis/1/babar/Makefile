@@ -1,4 +1,7 @@
-.PHONY: all run build rund mrproper
+.PHONY: all run build rund mrproper clean
+
+build:
+	@docker build -t ws .
 
 all:
 	@cargo build
@@ -6,11 +9,13 @@ all:
 run:
 	@cargo run ressources/data.csv ressources/user.txt ressources/view0.csv ressources/changes.txt
 
-build:
-	@docker build -t ws .
-
 rund:
 	@docker run ws
 
 mrproper:
+	@docker run ws make clean
+
+clean:
 	@cargo clean
+
+
