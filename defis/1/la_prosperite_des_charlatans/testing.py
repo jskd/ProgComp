@@ -5,65 +5,87 @@ from os.path import isfile, join
 from subprocess import *
 from termcolor import colored
 
-TEST_DIR = ""
-TEST_LIST = []
-
 with open("config.json") as data:
     config = json.load(data)
-    TEST_DIR = config["settings"][0]["test_dir"]
 
-with open(TEST_DIR + "_tests_order.txt") as tests_order:
-    for line in tests_order.readlines():
-        line = line.strip("\n")
+def parseArgs(args):
+    grp_name = None
+    test_number = None
+    for arg in args:
+        splited = arg.split("=")
+        if splited[0] == "grp":
+            grp_name = splited[1]
+        elif splited[0] == "number":
+            try: test_number = int(splited[1])
+            except: pass
+    return grp_name, test_number
 
-        if os.path.isdir(TEST_DIR + line):
-            TEST_LIST += [line]
 
-if __name__ == "__main__":
+def getTargets(grp_name = None):
     targets = config["target"]
-    grp_name = ""
-
-    if len(sys.argv) > 1:
-        grp_name = sys.argv[1]
-    if len(sys.argv) > 2:
-    	test_number = sys.argv[2]
-    	TEST_LIST = [TEST_LIST[int(test_number)]]
-
     for target in targets:
         if target["name"] == grp_name:
             targets = [target]
             break
+    return targets
+
+
+def getTestList():
+    TEST_LIST = []
+    with open("tests/_tests_order.txt") as tests_order:
+        for line in tests_order.readlines():
+            line = line.strip("\n")
+            if os.path.isdir("tests/" + line):
+                TEST_LIST += [line]
+    return TEST_LIST
+
+
+def createDirLogs(target):
+    result_file = "results/" + target["name"]
+    if not os.path.exists(result_file):
+        os.makedirs(result_file)
+    with open(result_file + "/rapport.txt","w"): pass
+
+
+def executeTest(executable, test_file, target):
+    try:
+        cmd = [executable, test_file, target["path"]]
+        out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+        #print(out)
+    except:
+        out = "False"
+    return out.strip("\n")
+
+if __name__ == "__main__":
+    grp_name, test_number = parseArgs(sys.argv[1::])
+    targets = getTargets(grp_name)
+    TEST_LIST = getTestList()
+
+    if test_number != None:
+        TEST_LIST = [TEST_LIST[int(test_number)]]
 
     for target in targets:
-        NB_PASSED = 0
         print("-"*64)
         print(" #", target["name"].upper())
         print("-"*64)
 
-        result_file = "results/" + target["name"]
-        if not os.path.exists(result_file):
-            os.makedirs(result_file)
+        createDirLogs(target)
 
-        with open(result_file + "/rapport.txt","w"): pass
+        NB_PASSED = 0
+        for test in TEST_LIST:
+            TEST_PATH = config["settings"][0]["test_dir"] + test + "/"
+            TEST_INFO = None
 
-        for i, test in enumerate(TEST_LIST):
-            infos_path = join(TEST_DIR + test + "/", "infos.json")
-
-            with open(infos_path) as data:
+            with open(join(TEST_PATH, "infos.json")) as data:
                 test_data = json.load(data)
+                TEST_INFO = test_data["infos"][0]
 
-            test_info = test_data["infos"][0]
-            cmd = test_info["exec"]
-            exec_file = join(TEST_DIR + test + "/", cmd[1])
+            EXEC = TEST_INFO["exec"][0]
+            TEST_FILE = join(TEST_PATH, TEST_INFO["exec"][1])
 
-            try:
-                cmd = [cmd[0], exec_file, target["path"]]
-                out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-                #print(out)
-            except:
-                out = "False"
+            out = executeTest(EXEC, TEST_FILE, target)
 
-            if out.strip("\n") == "True" :
+            if out == "True" :
                 result = "PASS"
                 colorprint = 'green'
                 NB_PASSED += 1
@@ -71,7 +93,7 @@ if __name__ == "__main__":
                 result = "FAIL"
                 colorprint = 'red'
 
-            print(colored(" [{}] -> [{}] {}".format(i, result, test_info["name"]), colorprint))
+            print(colored(" [{}] {}".format(result, TEST_INFO["name"]), colorprint))
 
         colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
-        print (colored("\n [{}/{}] => {}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))
+        print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))

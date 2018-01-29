@@ -9,3 +9,14 @@ rm -rf project/project
 rm -rf project/target
 rm -rf out/
 
+################################################################
+TEST : Make mrproper: just do 'make mrproper' 
+################################################################
+
+OUTPUT :
+----------------------------------------------------------------
+rm -rf target
+rm -rf project/project
+rm -rf project/target
+rm -rf out/
+

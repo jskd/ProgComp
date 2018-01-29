@@ -7,7 +7,7 @@
     { "infos_json": "infos.json" },
     { "view0": "output/view0.csv" },
     { "changes": "output/changes.txt" },
-    { "executable": "bin/ws" },
+    { "executable": "ws" },
     { "result_dir": "results/" }
   ],
   "target":[
