@@ -1,43 +1,25 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"log"
 	"os"
-	"os/exec"
 	"parse"
 )
 
 func main() {
 	args := os.Args[1:]
-	if len(args) == 0 {
-		main_program()
+	if len(args) > 0 {
+		main_program(args)
 	} else {
-		unit_test()
+		print_usage()
 	}
 }
 
-func test_ocaml_call() {
-	fmt.Println("Testing OCaml Call...")
-	cmd := exec.Command("ocaml", "../OCaml/test.ml")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("%q\n", out.String())
-}
-
-func unit_test() {
-	test_ocaml_call()
-	parse.ToFormula("=#(0,0,50,50,1)")
-	s := make([][]string, 0, 0)
-	s = parse.ReadCsv("data.csv", ",")
+func main_program(args []string) {
+	s := parse.ReadCsv(args[0], ",")
 	parse.WriteFile("view0.csv", ";", s)
 }
 
-func main_program() {
-	fmt.Println("TODO: Main program")
+func print_usage() {
+	fmt.Println("Usage: main.exe dataset/data.csv")
 }

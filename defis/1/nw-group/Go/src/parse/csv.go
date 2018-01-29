@@ -109,11 +109,3 @@ func WriteFile(fileToWrite string, sep string, s [][]string) {
 		checkError(err)
 	}
 }
-
-/* user actions */
-func userActions() {
-	s := make([][]string, 0, 0)
-	s = ReadCsv("user.txt", " ")
-	fmt.Println("%q", s)
-	WriteFile("changes.txt", " ", s)
-}
