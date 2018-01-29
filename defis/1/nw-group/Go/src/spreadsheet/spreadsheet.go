@@ -51,7 +51,7 @@ func (i *immediate) String() string {
 
 func toData(s string) data {
 	if data := toImmediate(s); data == nil {
-		return toFormula(s)
+		return ToFormula(s)
 	} else {
 		return data
 	}
@@ -65,7 +65,7 @@ func toImmediate(s string) *immediate {
 	return &immediate{i}
 }
 
-func toFormula(s string) *formula {
+func ToFormula(s string) *formula {
 	var xSrc, ySrc, xDst, yDst, val int
 
 	count, _ :=
