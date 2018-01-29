@@ -2,4 +2,4 @@ FROM rust:1.23.0
 WORKDIR /app
 ADD . /app
 RUN cargo install
-CMD ["ws","res/data.csv", "res/user.txt", "res/view0.csv", "res/changes.txt"]
+CMD ["ws","ressources/data.csv", "ressources/user.txt", "ressources/view0.csv", "ressources/changes.txt"]
