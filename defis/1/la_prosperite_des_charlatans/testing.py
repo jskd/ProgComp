@@ -20,7 +20,6 @@ def parseArgs(args):
             except: pass
     return grp_name, test_number
 
-
 def getTargets(grp_name = None):
     targets = config["target"]
     for target in targets:
@@ -28,7 +27,6 @@ def getTargets(grp_name = None):
             targets = [target]
             break
     return targets
-
 
 def getTestList():
     TEST_LIST = []
@@ -39,13 +37,17 @@ def getTestList():
                 TEST_LIST += [line]
     return TEST_LIST
 
+def getTestInfos(test_path):
+    with open(join(test_path, "infos.json")) as data:
+        test_data = json.load(data)
+        TEST_INFO = test_data["infos"][0]
+    return TEST_INFO
 
 def createDirLogs(target):
     result_file = "results/" + target["name"]
     if not os.path.exists(result_file):
         os.makedirs(result_file)
     with open(result_file + "/rapport.txt","w"): pass
-
 
 def executeTest(executable, test_file, target):
     try:
@@ -56,6 +58,7 @@ def executeTest(executable, test_file, target):
         out = "False"
     return out.strip("\n")
 
+
 if __name__ == "__main__":
     grp_name, test_number = parseArgs(sys.argv[1::])
     targets = getTargets(grp_name)
@@ -65,21 +68,14 @@ if __name__ == "__main__":
         TEST_LIST = [TEST_LIST[int(test_number)]]
 
     for target in targets:
-        print("-"*64)
-        print(" #", target["name"].upper())
-        print("-"*64)
-
         createDirLogs(target)
-
         NB_PASSED = 0
+
+        print(("-"*64) + "\n # " + target["name"].upper() + "\n" + ("-"*64))
+
         for test in TEST_LIST:
             TEST_PATH = config["settings"][0]["test_dir"] + test + "/"
-            TEST_INFO = None
-
-            with open(join(TEST_PATH, "infos.json")) as data:
-                test_data = json.load(data)
-                TEST_INFO = test_data["infos"][0]
-
+            TEST_INFO = getTestInfos(TEST_PATH)
             EXEC = TEST_INFO["exec"][0]
             TEST_FILE = join(TEST_PATH, TEST_INFO["exec"][1])
 
