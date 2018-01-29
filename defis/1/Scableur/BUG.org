@@ -1,0 +1,3 @@
+
+* Programme qui ne compile pas -> corrigé
+* Fichiers .csv qui ne s'ouvrent pas -> bizarre

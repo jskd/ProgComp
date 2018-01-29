@@ -2,7 +2,7 @@ package prog.comp2018.scableur
 
 import java.io.FileNotFoundException
 
-import prog.comp2018.scableur.data.Matrix
+import prog.comp2018.scableur.data.BuildMatrix
 import prog.comp2018.scableur.eval.{ArrayBufferEvaluator, Evaluator}
 import prog.comp2018.scableur.utils.print.MatrixToCSV
 import prog.comp2018.scableur.utils.{Conf, Debug}
@@ -10,11 +10,11 @@ import prog.comp2018.scableur.utils.{Conf, Debug}
 import scala.collection.mutable.ArrayBuffer
 
 object Scableur {
-  private var matrix : Matrix = null
+  private var matrix : BuildMatrix = null
 
   def main(args : Array[String]): Unit = {
 
-    check_args(args)
+    // check_args(args)
     load_data_csv()
     val result_data : ArrayBuffer[ArrayBuffer[Option[Int]]] = evaluate_data_csv()
     load_users_txt()
@@ -25,7 +25,8 @@ object Scableur {
 
   def load_data_csv() : Unit = {
     try{
-      matrix = new Matrix(Conf.Arguments.dataFile)
+      matrix = new BuildMatrix(Conf.Arguments.dataFile)
+      //new Matrix(Conf.Arguments.dataFile)
       matrix.load()
     }catch {
       case _ : FileNotFoundException =>

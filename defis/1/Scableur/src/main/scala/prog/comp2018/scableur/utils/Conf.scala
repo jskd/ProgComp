@@ -10,22 +10,22 @@ object Conf {
     private var _changesTXTPath:String = ""
 
     def dataFile (filepath : String): Unit = {
-     if (! (  """\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
+     // if (! (  """\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
       _dataCSVPath = filepath
     }
 
     def userFile (filepath : String) : Unit = {
-      if (!("""\w*.txt""".r =~ filepath )) throw new NotTXTFileException(filepath)
+      // if (!("""\w*.txt""".r =~ filepath )) throw new NotTXTFileException(filepath)
       _userTXTPath = filepath
     }
 
     def viewFile (filepath : String) : Unit = {
-      if (!("""\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
+      // if (!("""\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
       _viewCSVPath = filepath
     }
 
     def changesFile (filepath : String ) : Unit = {
-      if (!("""\w*.txt""".r =~ filepath)) throw new NotTXTFileException(filepath)
+      // if (!("""\w*.txt""".r =~ filepath)) throw new NotTXTFileException(filepath)
       _changesTXTPath = filepath
     }
 

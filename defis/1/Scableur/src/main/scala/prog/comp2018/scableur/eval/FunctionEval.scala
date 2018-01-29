@@ -1,6 +1,6 @@
 package prog.comp2018.scableur.eval
 
-import prog.comp2018.scableur.data.{FunctionType, Matrix, Value}
+import prog.comp2018.scableur.data.{FunctionType, BuildMatrix, Value}
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -12,12 +12,12 @@ trait FunctionEval[T] {
 }
 
 
-object NbrIterationEval extends FunctionEval[Matrix] {
+object NbrIterationEval extends FunctionEval[BuildMatrix] {
   var counter = 0
 
   def count_iterations(v : Value, cmp: Value) : Unit = if( v == cmp) counter = counter + 1
 
-  override def eval(f: FunctionType, m: Matrix): Option[Int] =  {
+  override def eval(f: FunctionType, m: BuildMatrix): Option[Int] =  {
     val table : ArrayBuffer[ArrayBuffer[Value]] = m.getMatrix
     for{
       i <- Range(f.coord(0), f.coord(1),1)
