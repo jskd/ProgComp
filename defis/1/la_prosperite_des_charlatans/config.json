@@ -1,15 +1,15 @@
 {
-  "settings": [
-    { "test_dir": "tests/" },
-    { "bin_dir": "bin/" },
-    { "makefile": "Makefile" },
-    { "expected_dir": "expected/" },
-    { "infos_json": "infos.json" },
-    { "view0": "output/view0.csv" },
-    { "changes": "output/changes.txt" },
-    { "executable": "ws" },
-    { "result_dir": "results/" }
-  ],
+  "settings": {
+    "test_dir": "tests/",
+    "bin_dir": "bin/",
+    "makefile": "Makefile",
+    "expected_dir": "expected/",
+    "infos_json": "infos.json",
+    "view0": "output/view0.csv",
+    "changes": "output/changes.txt",
+    "executable": "ws",
+    "result_dir": "results/" }
+  ,
   "target":[
     {
       "name":"babar",

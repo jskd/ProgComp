@@ -7,12 +7,14 @@ from os.path import isfile, join
 # OPEN CONSTANTS IN config.json
 with open("config.json") as config_data:
     config = json.load(config_data)
+    settings = config["settings"]
 
-    BIN_PATH = config["settings"][1]["bin_dir"]
-    MAKEFILE_PATH = config["settings"][2]["makefile"]
-    EXPECTED_PATH = config["settings"][3]["expected_dir"]
-    INFOS_PATH = config["settings"][4]["infos_json"]
-    EXEC_PATH = config["settings"][7]["executable"]
+    BIN_PATH = settings["bin_dir"]
+    MAKEFILE_PATH = settings["makefile"]
+    EXPECTED_PATH = settings["expected_dir"]
+    INFOS_PATH = settings["infos_json"]
+    RESULT_PATH = settings["result_dir"]
+    EXEC_PATH = settings["executable"]
 
 if __name__ == "__main__":
     if len(sys.argv) >= 1:
@@ -22,7 +24,7 @@ if __name__ == "__main__":
         # INIT DATA
         with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
-            test_info = test_data["infos"][0]
+            test_info = test_data["infos"]
 
         # BEGIN OF SCRIPT
         test_result = True

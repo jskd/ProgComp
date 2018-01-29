@@ -40,7 +40,7 @@ def getTestList():
 def getTestInfos(test_path):
     with open(join(test_path, "infos.json")) as data:
         test_data = json.load(data)
-        TEST_INFO = test_data["infos"][0]
+        TEST_INFO = test_data["infos"]
     return TEST_INFO
 
 def createDirLogs(target):
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         print(("-"*64) + "\n # " + target["name"].upper() + "\n" + ("-"*64))
 
         for test in TEST_LIST:
-            TEST_PATH = config["settings"][0]["test_dir"] + test + "/"
+            TEST_PATH = config["settings"]["test_dir"] + test + "/"
             TEST_INFO = getTestInfos(TEST_PATH)
             EXEC = TEST_INFO["exec"][0]
             TEST_FILE = join(TEST_PATH, TEST_INFO["exec"][1])
