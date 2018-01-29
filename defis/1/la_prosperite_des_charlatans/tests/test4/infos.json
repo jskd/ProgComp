@@ -1,0 +1,9 @@
+{
+  "infos":[
+    {
+      "name":"Test 4: calculation of two formulas F1->F2->",
+      "exec": ["python3", "test.py"],
+      "expected": ["changes_expected.txt", "view0_expected.csv"]
+    }
+  ]
+}

@@ -12,7 +12,6 @@ int main(int argc, const char* argv[]) {
 	}
 
 	struct worksheet current_worksheet;
-	// struct worksheet copy_worksheet;
 	struct user_data current_user;
 
 	if (parse_data(argv[1], &current_worksheet) != 0) {
@@ -25,27 +24,24 @@ int main(int argc, const char* argv[]) {
 		return EXIT_FAILURE;
 	}
 
-	// make a copy of current_worksheet into copy_worksheet
 
 	print_worksheet(&current_worksheet);
 	evaluate_worksheet(&current_worksheet);
 	print_worksheet(&current_worksheet);
 
-	print_user(&current_user);
-
 	if (produce_view(&current_worksheet, argv[3])) {
 		fprintf(stderr, "Error while writing to `%s` file", argv[3]);
 	}
-
-	/*
-	if (produce_changes(&copy_worksheet, argv[4])) {
-		// fprintf(stderr, "Error while writing to  i%s` file", argv[4]);
+	
+	if (produce_changes(&current_worksheet, &current_user, argv[4])) {
+		 fprintf(stderr, "Error while writing to  i%s` file", argv[4]);
 	}
-	*/
+	
+	print_worksheet(&current_worksheet);
 
 	release_worksheet(&current_worksheet);
-	// release_worksheet(&copy_worksheet);
 	release_user(&current_user);
 
 	return EXIT_SUCCESS;
 }
+

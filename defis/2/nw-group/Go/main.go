@@ -31,7 +31,9 @@ func test_ocaml_call() {
 
 func unit_test() {
 	test_ocaml_call()
-	writeFile()
+	s := make([][]string, 0, 0)
+	s = readFile("data.csv", ",")
+	writeFile("view0.csv", ";", s)
 	userActions()
 	toFormula("=#(0,0,50,50,1)")
 }
