@@ -15,16 +15,16 @@ trait Evaluator[T] {
 class ArrayBufferEvaluator(private var matrix : ArrayBuffer[ArrayBuffer[Value]]  )
   extends Evaluator[ArrayBuffer[ArrayBuffer[Option[Int]]]] {
 
-  private val result = new ArrayBuffer[ArrayBuffer[Option[Int]]]() //FIXME: size of array
+  private val result = new ArrayBuffer[ArrayBuffer[Option[Int]]]()() //FIXME: size of array
 
-  def eval_function(i: Int, j: Int): Unit = {
+  private def eval_function(i: Int, j: Int): Unit = {
     matrix(i)(j) match {
-      case f1 : NbrIteration => result(i)(j) = None //TODO : f1.eval(matrix)
+      case f1 : NbrIteration => result(i)(j) = None //TODO : eval(f1, matrix)
       case _ => result(i)(j) = None
     }
   }
 
-  def eval_cell(i: Int, j: Int) : Unit = {
+  private def eval_cell(i: Int, j: Int) : Unit = {
     matrix(i)(j) match {
       case v : ConstantType => result(i)(j) = v.value
       case _ : FunctionType => eval_function(i,j)

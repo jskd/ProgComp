@@ -9,15 +9,12 @@ import prog.comp2018.scableur.utils.{Conf, Debug}
 
 import scala.collection.mutable.ArrayBuffer
 
-object Scableur extends App {
+object Scableur {
   private var matrix : Matrix = null
 
-  override def main(args : Array[String]): Unit = {
-    if(args.length < 4 || args.length > 4){
-      println("use : ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>")
-      System.exit(0)
-    }
-    load_args(args)
+  def main(args : Array[String]): Unit = {
+
+    check_args(args)
     load_data_csv()
     val result_data : ArrayBuffer[ArrayBuffer[Option[Int]]] = evaluate_data_csv()
     load_users_txt()
@@ -28,7 +25,7 @@ object Scableur extends App {
 
   def load_data_csv() : Unit = {
     try{
-      matrix = new Matrix(Conf.InputData.dataFile)
+      matrix = new Matrix(Conf.Arguments.dataFile)
       matrix.load()
     }catch {
       case _ : FileNotFoundException =>
@@ -58,10 +55,15 @@ object Scableur extends App {
     //TODO
   }
 
-  def load_args(args : Array[String]) : Unit = {
-    Conf.InputData.dataFile(args(0))
-    Conf.InputData.userFile(args(1))
-    Conf.InputData.viewFile(args(2))
-    Conf.InputData.changesFile(args(3))
+  def check_args(args : Array[String]) : Unit = {
+    if(args.length < 4 || args.length > 4){
+      println("use : ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>")
+      System.exit(0)
+    }
+
+    Conf.Arguments.dataFile(args(0))
+    Conf.Arguments.userFile(args(1))
+    Conf.Arguments.viewFile(args(2))
+    Conf.Arguments.changesFile(args(3))
   }
 }
