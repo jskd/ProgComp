@@ -15,7 +15,10 @@
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: babar
      * rajout de : pour .phony dans le makefile
-     * qd on fait appel a make dans la racine du projet, ca lancais pas le programme dans le container docker, ca le lancait dans la machine locale
+     * Avant : qd on faisais appel a make dans la racine du projet, 
+       	       ca ne lancais pas le programme dans le container docker, ca le lancait dans la machine locale
+	Apres correction de makefile : ca lance le programme dans le docker;
+	      		    	       mrproper marche bien
 * scableur.org
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: carmark
