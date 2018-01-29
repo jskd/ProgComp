@@ -1,18 +1,108 @@
 ################################################################
-TEST : Make mrproper: just do 'make mrproper' 
+# GROUP : GroupTest
+# COMMIT : c806e8f4c917ebd06245365d03c0ad592aa548d7
 ################################################################
-
-OUTPUT :
+================================================================
+# TEST : Make mrproper: just do 'make mrproper' 
+# RESULT : PASS
 ----------------------------------------------------------------
+# OUTPUT :
+
 rm -rf bin/*.o
 rm -rf bin/*
 
-################################################################
-TEST : Make mrproper: just do 'make mrproper' 
-################################################################
-
-OUTPUT :
+================================================================
+# TEST : Make target: just do 'make' 
+# RESULT : PASS
 ----------------------------------------------------------------
+# OUTPUT :
+
+g++ --std=c++11 -Wall -c -o bin/main.o src/main.cpp
+src/main.cpp:7:11: warning: unused variable 'data_path' [-Wunused-variable]
+    char* data_path = argv[0];
+          ^
+src/main.cpp:8:11: warning: unused variable 'user_path' [-Wunused-variable]
+    char* user_path = argv[1];
+          ^
+src/main.cpp:9:11: warning: unused variable 'view0_path' [-Wunused-variable]
+    char* view0_path = argv[2];
+          ^
+src/main.cpp:10:11: warning: unused variable 'changes_path' [-Wunused-variable]
+    char* changes_path = argv[3];
+          ^
+4 warnings generated.
+g++ --std=c++11 -Wall -o bin/ws bin/main.o 
+
+================================================================
+# TEST : Test files presence: expected 'ws' and 'Makefile' 
+# RESULT : PASS
+----------------------------------------------------------------
+# OUTPUT :
+
+
+
+================================================================
+# TEST : Test 1: calculation of one formula
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test1/output/view0.csv'
+
+================================================================
+# TEST : Test 2: user.txt change a number
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test2/output/view0.csv'
+
+================================================================
+# TEST : Test 3: user.txt change a formula
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test3/output/view0.csv'
+
+================================================================
+# TEST : Test 4: calculation of two formulas F1->F2->
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test4/output/view0.csv'
+
+================================================================
+# TEST : Test 5: change of two formulas F1->F2-> change F2
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test5/output/view0.csv'
+
+================================================================
+# TEST : Test 6: calculation of invalid formulas F1->F2->F1
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/test6/output/view0.csv'
+
+================================================================
+# TEST : Final Test: Test All
+# RESULT : FAIL
+----------------------------------------------------------------
+# OUTPUT :
+
+[Errno 2] No such file or directory: 'tests/testall/output/view0.csv'
+
+================================================================
+# TEST : Make mrproper: just do 'make mrproper' 
+# RESULT : PASS
+----------------------------------------------------------------
+# OUTPUT :
+
 rm -rf bin/*.o
 rm -rf bin/*
 

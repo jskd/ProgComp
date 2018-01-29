@@ -55,11 +55,12 @@ if __name__ == "__main__":
 
                 test_result = test_result and (output_strip == expected_strip)
 
-        except:
+        except Exception as e:
+            out = str(e)
             test_result = False
 
         # True for PASS, False for FAIL
-        print(test_result)
+        print("{}#{}".format(test_result, out))
         # END OF SCRIPT
     else:
         print("Usage: files_presence.py <expected_file>")
