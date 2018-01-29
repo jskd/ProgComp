@@ -1,3 +1,5 @@
+package prog.comp2018.scableur.data
+
 import prog.comp2018.scableur.data.Value
 
 import scala.collection.mutable.ArrayBuffer
