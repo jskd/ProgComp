@@ -11,6 +11,9 @@ compile: ENV_VERIFICATION
 package: ENV_VERIFICATION
 	$(CC) assembly
 
+docker: ENV_VERIFICATION
+    $(CC) docker:publishLocal
+
 ENV_VERIFICATION:
 
 ifeq (, $(shell which $(JAVA)))

@@ -1,4 +1,4 @@
-.PHONY all run build rund mrproper
+.PHONY: all run build rund mrproper
 
 all:
 	@cargo build

@@ -1,0 +1,18 @@
+* Version 1 - Scableur
+
+* Compilation
+$ make
+
+* Run
+./ws data.csv user.txt view0.csv changes.txt
+
+* Run Internal Tests
+./ws test
+
+* Generate Docker Files
+
+
+* Dependencies
+** scala-csv : https://github.com/tototoshi/scala-csv
+
+** sbt-docker : https://github.com/marcuslonnberg/sbt-docker
