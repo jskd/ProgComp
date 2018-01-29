@@ -39,6 +39,12 @@ if __name__ == "__main__":
         print(" #", target["name"].upper())
         print("-"*64)
 
+        result_file = "results/" + target["name"].lower()
+        if not os.path.exists(result_file):
+            os.makedirs(result_file)
+
+        with open(result_file + "/rapport.txt","w"): pass
+
         for i, test in enumerate(TEST_LIST):
             infos_path = join(TEST_DIR + test + "/", "infos.json")
 
