@@ -1,7 +1,7 @@
 {
   "infos":[
     {
-      "name":"Make target",
+      "name":"Make target: just do 'make' ",
       "exec": ["python3", "make_target.py"],
       "expected": "ws"
     }
