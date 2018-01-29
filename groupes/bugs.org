@@ -6,6 +6,7 @@
      pensons que le probleme vient de Docker lors de la creation
      (probablement dans docker_volume_flag).
 * Carmack.org
+**correction bug du makefile passe les 3 premier tests
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: scableur
 * la_prosperite_des_charlatans
