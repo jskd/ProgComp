@@ -47,26 +47,25 @@ func convertInt2String(i int) string {
 	return s
 }
 
-func ToFormula(formuleLue string) Formula {
-	formule := new(Formula)
-	trimedFormule := strings.TrimPrefix(formuleLue, "=#(")
-	if trimedFormule != formuleLue {
-		arg_list := strings.Split(trimedFormule, ",")
+func ToFormula(text string) Formula {
+	f := new(Formula)
+	trimedText := strings.TrimPrefix(text, "=#(")
+	if trimedText != text {
+		arg_list := strings.Split(trimedText, ",")
 		arg_list[4] = strings.Replace(arg_list[4], ")", "", -1)
-		formule.xSource = convertString2Int(arg_list[0])
-		formule.ySource = convertString2Int(arg_list[1])
-		formule.xDestination = convertString2Int(arg_list[2])
-		formule.yDestination = convertString2Int(arg_list[3])
-		formule.value = convertString2Int(arg_list[4])
+		f.xSource = convertString2Int(arg_list[0])
+		f.ySource = convertString2Int(arg_list[1])
+		f.xDestination = convertString2Int(arg_list[2])
+		f.yDestination = convertString2Int(arg_list[3])
+		f.value = convertString2Int(arg_list[4])
 	}
-	return *formule
+	return *f
 }
 
 /*read File and returns there content in a 2D slice of strings*/
 func ReadCsv(fileToRead string, sep string) [][]string {
 	file, err := ioutil.ReadFile(fileToRead)
 	checkError(err)
-	fmt.Println("hellooooo")
 	lines := strings.Split(string(file), "\n")
 	car := make([][]string, 0, 0)
 	for i := 0; i < len(lines); i++ {

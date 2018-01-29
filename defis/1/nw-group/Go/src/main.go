@@ -8,7 +8,7 @@ import (
 
 func main() {
 	args := os.Args[1:]
-	if len(args) > 0 {
+	if len(args) == 2 {
 		main_program(args)
 	} else {
 		print_usage()
@@ -16,10 +16,15 @@ func main() {
 }
 
 func main_program(args []string) {
-	s := parse.ReadCsv(args[0], ",")
-	parse.WriteFile("view0.csv", ";", s)
+	if args[0] == "-p" {
+		s := parse.ReadCsv(args[1], ",")
+		parse.WriteFile("view0.csv", ";", s)
+	} else {
+		print_usage()
+	}
 }
 
 func print_usage() {
-	fmt.Println("Usage: main.exe dataset/data.csv")
+	fmt.Println("Usage: ")
+	fmt.Println("       main.exe -p dataset/data.csv (to process dataset/data.csv)")
 }

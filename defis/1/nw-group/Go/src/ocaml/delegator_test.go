@@ -1,12 +1,11 @@
 package ocaml
 
 import (
-	"fmt"
+	"share"
 	"testing"
 )
 
 func TestOCamlCall(t *testing.T) {
-	fmt.Println("Testing OCaml Call...")
-	out := Execute("../OCaml/test.ml")
-	fmt.Printf("%q\n", out)
+	out := Execute("../../../OCaml/test.ml")
+	share.AssertEqual(t, out, "Hello from OCaml!\n", "Incorrect OCaml return value.")
 }
