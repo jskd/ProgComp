@@ -1,6 +1,8 @@
 * babar.org
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: nw-group
+        - Entrer ./ws data.csv user.txt view0.csv changes.txt cree des repertoires a ces noms si les fichiers n'existent pas.
+            Nous pensons que le probleme vient de Docker lors de la creation (probablement dans docker_volume_flag).
 * Carmack.org
 ** <2018-01-29>
    - Prise en charge des bugs du défi 1: scableur
