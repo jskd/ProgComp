@@ -24,11 +24,14 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:
         grp_name = sys.argv[1]
+    if len(sys.argv) > 2:
+    	test_number = sys.argv[2]
+    	TEST_LIST = [TEST_LIST[int(test_number)]]
 
-        for target in targets:
-            if target["name"] == grp_name:
-                targets = [target]
-                break
+    for target in targets:
+        if target["name"] == grp_name:
+            targets = [target]
+            break
 
     for target in targets:
         NB_PASSED = 0
