@@ -2,7 +2,8 @@ all:
 	@cargo build
 
 run:
-	@cargo run res/data.csv res/user.txt res/view0.csv res/changes.txt
+	@cargo run ressources/data.csv ressources/user.txt 
+	ressources/view0.csv ressources/changes.txt
 
 build:
 	@docker build -t ws .
