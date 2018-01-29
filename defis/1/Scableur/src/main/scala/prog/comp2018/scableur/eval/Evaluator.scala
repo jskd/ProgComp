@@ -15,7 +15,7 @@ trait Evaluator[T] {
 class ArrayBufferEvaluator(private var matrix : ArrayBuffer[ArrayBuffer[Value]]  )
   extends Evaluator[ArrayBuffer[ArrayBuffer[Option[Int]]]] {
 
-  private val result = new ArrayBuffer[ArrayBuffer[Option[Int]]]()() //FIXME: size of array
+  private val result = new ArrayBuffer[ArrayBuffer[Option[Int]]] //FIXME: size of array
 
   private def eval_function(i: Int, j: Int): Unit = {
     matrix(i)(j) match {
