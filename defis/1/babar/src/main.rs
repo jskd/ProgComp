@@ -8,6 +8,7 @@ trait Cellule {
     fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>,ce :&mut Vec<(i32,i32)>,r:i32,c:i32) -> i32;
     fn copy_cell(&self) -> Box<Cellule>;
     fn print_cell(&self) -> ();
+    fn get_string_value(&self) -> String;
 }
 struct Number {value:i32}
 struct Formule {
@@ -43,6 +44,11 @@ impl Cellule for Number
         Box::new(cell)
     }
     
+    fn get_string_value(&self) -> String
+    {
+        self.value.to_string()
+    }
+    
     fn print_cell(&self)
     {
     }
@@ -54,14 +60,22 @@ impl Cellule for Formule
         current_evaluation.push((posr,posc));
         
         if !is_dependency_ok(self, current_evaluation) {
-            panic!("bad dependency");
+            return -1;
         }
-        
         
 
         calcul_occ(self,grill,current_evaluation)
             
     }
+    
+    fn get_string_value(&self) -> String
+    {
+        if self.num < 0 {
+            return "P".to_string();
+        }
+        self.num.to_string()
+    }
+    
     fn get_value(&self) -> i32
     {
         return self.num;
@@ -112,10 +126,12 @@ fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mu
     for i in r1..r2+1{
         for j in c1..c2+1{
             let val = grill[i][j].evaluate(grill,current_evaluation,i as i32,j as i32);
+            if val < 0{
+                return val;
+            }
             if val == cell.v{
                 val_num = val_num+1;
             }
-                
         }
     } 
     val_num
@@ -135,7 +151,6 @@ fn evaluate(grill: &Vec<Vec<Box<Cellule>>>) -> Vec<Vec<Box<Cellule>>>
             cell.set_value(val);
             cell.print_cell();
             row.push(cell);
-            
         }
         new_grill.push(row);
     }
@@ -242,7 +257,7 @@ fn write_view0(view0: &str,t:&Vec<Vec<Box<Cellule>>>)
                 mystring += ";";
             }
             i+=1;
-            let tmp = b.get_value().to_string();
+            let tmp = b.get_string_value();
             mystring.push_str(&tmp);
         }
         i=0;
