@@ -6,7 +6,7 @@ import prog.comp2018.scableur.data.functions.NbrIteration
 import scala.util.matching.Regex
 import scala.collection.mutable.ArrayBuffer
 
-class Matrix(private var filename: String) {
+class BuildMatrix(private var filename: String) {
 
   var matrix : ArrayBuffer[ArrayBuffer[Value]] = new ArrayBuffer[ArrayBuffer[Value]]()
 
@@ -18,19 +18,6 @@ class Matrix(private var filename: String) {
     //TODO read list and create values in matrix
   }
 
-  /*
-
-  val pattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
-
-  val string = "#=(1,2,3,4,5)"
-
-  pattern.findAllIn(string).matchData foreach {
-     |    m => println(m.group(1)) ; println(m.group(2)) ; println(m.group(3));
-     | println(m.group(4)); println(m.group(5)) }
-
-
-
-   */
 
   def StringToValue(lls : List[List[String]]) : ArrayBuffer[ArrayBuffer[Value]] = {
 
