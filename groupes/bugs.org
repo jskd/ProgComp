@@ -1,0 +1,14 @@
+* babar.org
+** <2018-01-29>
+   - Prise en charge des bugs du défi 1: nw-group
+* Carmack.org
+** <2018-01-29>
+   - Prise en charge des bugs du défi 1: scableur
+* la_prosperite_des_charlatans
+** <2018-01-29>
+* nw-group
+** <2018-01-29>
+   - Prise en charge des bugs du défi 1: babar
+* scableur.org
+** <2018-01-29>
+   - Prise en charge des bugs du défi 1: carmark

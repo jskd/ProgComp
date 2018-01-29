@@ -3,7 +3,7 @@ import prog.comp2018.scableur.utils.exceptions.{NotCSVFileException, NotTXTFileE
 import prog.comp2018.scableur.utils.RegexUtils._
 
 object Conf {
-  object InputData {
+  object Arguments {
     private var _dataCSVPath:String = ""
     private var _userTXTPath:String = ""
     private var _viewCSVPath:String = ""
@@ -34,14 +34,13 @@ object Conf {
     def viewFile : String = _viewCSVPath
     def changesFile : String = _changesTXTPath
 
-    def print : Unit = {
+    def print() : Unit = {
       Debug.d("data=" + _dataCSVPath)
       Debug.d("user=" + _userTXTPath)
       Debug.d("view=" + _viewCSVPath)
       Debug.d("changes=" + _changesTXTPath)
     }
   }
-
 
 }
 

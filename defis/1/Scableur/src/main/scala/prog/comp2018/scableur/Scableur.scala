@@ -1,40 +1,69 @@
 package prog.comp2018.scableur
 
-import prog.comp2018.scableur.utils.Conf
+import java.io.FileNotFoundException
 
-object Scableur extends App {
+import prog.comp2018.scableur.data.Matrix
+import prog.comp2018.scableur.eval.{ArrayBufferEvaluator, Evaluator}
+import prog.comp2018.scableur.utils.print.MatrixToCSV
+import prog.comp2018.scableur.utils.{Conf, Debug}
 
-  override def main(args : Array[String]): Unit = {
+import scala.collection.mutable.ArrayBuffer
+
+object Scableur {
+  private var matrix : Matrix = null
+
+  def main(args : Array[String]): Unit = {
+
+    check_args(args)
+    load_data_csv()
+    val result_data : ArrayBuffer[ArrayBuffer[Option[Int]]] = evaluate_data_csv()
+    load_users_txt()
+    evaluate_user_actions()
+    print_data(result_data)
+    print_user_actions()
+  }
+
+  def load_data_csv() : Unit = {
+    try{
+      matrix = new Matrix(Conf.Arguments.dataFile)
+      matrix.load()
+    }catch {
+      case _ : FileNotFoundException =>
+        Debug.e("Data file Not Found")
+        System.exit(0)
+    }
+  }
+
+  def load_users_txt() : Unit = {
+    //TODO
+  }
+
+  def evaluate_data_csv() :  ArrayBuffer[ArrayBuffer[Option[Int]]] = {
+    val eval : ArrayBufferEvaluator = new ArrayBufferEvaluator(matrix.getMatrix)
+    eval.eval
+  }
+
+  def evaluate_user_actions() : Unit = {
+    //TODO
+  }
+
+  def print_data(data : ArrayBuffer[ArrayBuffer[Option[Int]]]) : Unit = {
+    //FIXME: val printer : MatrixToCSV = new MatrixToCSV(data)
+  }
+
+  def print_user_actions() : Unit = {
+    //TODO
+  }
+
+  def check_args(args : Array[String]) : Unit = {
     if(args.length < 4 || args.length > 4){
       println("use : ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>")
       System.exit(0)
     }
-    load_args(args)
-    Conf.InputData.print
 
+    Conf.Arguments.dataFile(args(0))
+    Conf.Arguments.userFile(args(1))
+    Conf.Arguments.viewFile(args(2))
+    Conf.Arguments.changesFile(args(3))
   }
-
-  def load_args(args : Array[String]) : Unit = {
-    Conf.InputData.dataFile(args(0))
-    Conf.InputData.userFile(args(1))
-    Conf.InputData.viewFile(args(2))
-    Conf.InputData.changesFile(args(3))
-  }
-
-
-  /* main method :
-   *  parse arguments
-   *
-   *    - build view (partials ...)
-   *    - run evaluator
-   *    - compile result
-   */
-
-  /*
-  objects:
-
-    - evaluator : class (interface + abstract for extensibility different evaluation methods)
-    - function parser ( contains algorithm to do lazy and optimised evaluation )
-    - Data structure for matrix => partial view (!! dependencies)
-   */
 }
