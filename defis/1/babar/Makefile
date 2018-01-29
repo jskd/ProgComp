@@ -1,3 +1,5 @@
+.PHONY all run build rund mrproper
+
 all:
 	@cargo build
 
@@ -6,5 +8,9 @@ run:
 
 build:
 	@docker build -t ws .
+
 rund:
 	@docker run ws
+
+mrproper:
+	@cargo clean
