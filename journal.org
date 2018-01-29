@@ -52,12 +52,13 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 ** Séance 4
 *** TODO Point sur le défi 1 et le défi 2
 *** TODO L'équipe de tests fait son rapport!
+*** TODO Expérience : Corriger un bug dans un code écrit par quelqu'un d'autre, avec son aide.
+*** TODO Défi 2, brainstorming
 *** TODO Hypothèse de Shafir
 *** TODO Les paradigmes de programmation
 *** TODO La programmation structurée
 *** TODO Présentation du défi 3
 *** TODO Calendrier des exposés techniques
-*** TODO Expérience : Corriger un bug dans un code écrit par quelqu'un d'autre, avec son aide.
 *** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
 * Notes de cours
 
