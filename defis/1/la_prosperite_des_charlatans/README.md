@@ -9,7 +9,6 @@
 ```sh
   pip install termcolor
 ```
-## Development:
 
 ### Makefile rules
 
@@ -18,9 +17,9 @@
 
 ### Files description
 
-```results/group_name/rapport.html``` : Tests report html format
-```tests/test_name/``` : Script test and informations
-```tests/_tests_order.txt``` : Order of tests, indexed by lines numbers.
 ```config.json``` : Paths configurations
 ```testing.py``` : Main script
 ```TestReport.py``` : Class TestReport
+```results/group_name/rapport.html``` : Tests report html format
+```tests/test_name/``` : Script test and informations
+```tests/_tests_order.txt``` : Order of tests, indexed by lines numbers.
