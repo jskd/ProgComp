@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile, join
 from subprocess import *
 from termcolor import colored
+from TestReport import TestReport
 
 with open("config.json") as data:
     config = json.load(data)
@@ -48,20 +49,6 @@ def createDirLogs(target):
     if not os.path.exists(result_file):
         os.makedirs(result_file)
 
-    try:
-        cmd = ["git", "rev-parse", "HEAD"]
-        sha = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-        #print(out)
-    except:
-        sha = ""
-
-    with open(result_file + "/rapport.txt","w") as rapport:
-        rapport.write("{}\n".format("#"*64))
-        rapport.write("# GROUP : {}\n".format(target["name"]))
-        rapport.write("# COMMIT : {}\n".format(sha.strip("\n")))
-        rapport.write("{}\n".format("#"*64))
-
-
 def executeTest(executable, test_file, target):
     try:
         cmd = [executable, test_file, target["path"]]
@@ -70,15 +57,6 @@ def executeTest(executable, test_file, target):
     except:
         out = "False"
     return out.strip("\n")
-
-def writeLog(rapport_file, test_info, result, output):
-    with open(rapport_file, 'a') as rapport:
-        rapport.write("="*64 + "\n")
-        rapport.write("# TEST : " + test_info["name"] + "\n")
-        rapport.write("# RESULT : " + result + "\n")
-        rapport.write("-"*64 + "\n")
-        rapport.write("# OUTPUT :" + "\n\n")
-        rapport.write(output + "\n\n")
 
 if __name__ == "__main__":
     grp_name, test_number = parseArgs(sys.argv[1::])
@@ -90,7 +68,7 @@ if __name__ == "__main__":
 
     for target in targets:
         createDirLogs(target)
-        rapport_file = "results/" + target["name"] + "/rapport.txt"
+        test_report = TestReport(target, "results/" + target["name"], "rapport")
         NB_PASSED = 0
 
         print(("-"*64) + "\n # " + target["name"].upper() + "\n" + ("-"*64))
@@ -107,8 +85,6 @@ if __name__ == "__main__":
             except Exception as e:
                 pass
 
-            #print(out)
-
             if out[0] == "True" :
                 result = "PASS"
                 colorprint = 'green'
@@ -117,9 +93,10 @@ if __name__ == "__main__":
                 result = "FAIL"
                 colorprint = 'red'
 
-            writeLog(rapport_file, TEST_INFO, result, out[1] if len(out) > 1 else "")
-
+            test_report.addLog(TEST_INFO, result, out[1] if len(out) > 1 else "")
             print(colored(" [{}] {}".format(result, TEST_INFO["name"]), colorprint))
+
+        test_report.saveReport()
 
         colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
         print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))
