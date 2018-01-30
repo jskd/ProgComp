@@ -34,11 +34,19 @@ if __name__ == "__main__":
             changes_output = test_path + "output/changes.txt"
 
             # CLEAN OUTPUT
-            if os.path.isfile(view0_output):
-                os.remove(view0_output)
+            if os.path.isdir(view0_output):
+                os.rmdir(view0_output)
+            else:
+                if os.path.isfile(view0_output):
+                    os.remove(view0_output)
 
-            if os.path.isfile(changes_output):
-                os.remove(changes_output)
+            if os.path.isdir(changes_output):
+                os.rmdir(changes_output)
+            else:
+                if os.path.isfile(changes_output):
+                    os.remove(changes_output)
+
+
 
             cmd = [group_path + EXEC_PATH, test_path + "input/data.csv", test_path + "input/user.txt", view0_output, changes_output]
             out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
