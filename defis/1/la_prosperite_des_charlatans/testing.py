@@ -49,6 +49,11 @@ def createDirLogs(target):
     if not os.path.exists(result_file):
         os.makedirs(result_file)
 
+def createDirOutput(test_path):
+    output_path = test_path + "output/"
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
 def executeTest(executable, test_file, target):
     try:
         cmd = [executable, test_file, target["path"]]
@@ -78,6 +83,8 @@ if __name__ == "__main__":
             TEST_INFO = getTestInfos(TEST_PATH)
             EXEC = TEST_INFO["exec"][0]
             TEST_FILE = join(TEST_PATH, TEST_INFO["exec"][1])
+
+            createDirOutput(TEST_PATH)
 
             try:
                 out = executeTest(EXEC, TEST_FILE, target)
