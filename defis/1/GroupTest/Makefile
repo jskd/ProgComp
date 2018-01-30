@@ -2,8 +2,8 @@ CPP=g++ --std=c++11 -Wall
 EXEC = ws
 
 SRC_DIR = src
-BIN_DIR = bin
-EXEC_FILE= $(BIN_DIR)/$(EXEC)
+BIN_DIR = 
+EXEC_FILE= $(EXEC)
 
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
@@ -21,7 +21,7 @@ all: $(EXEC_FILE)
 $(EXEC_FILE): $(OBJ_FILES)
 	$(CPP) -o $@ $^ $(LIBFLAGS)
 
-$(OBJ_FILES): $(BIN_DIR)/%.o : $(SRC_DIR)/%.cpp
+$(OBJ_FILES): %.o : $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
 	$(CPP) -c -o $@ $^
 
@@ -29,7 +29,7 @@ run:
 	./$(EXEC_FILE)
 
 clean:
-	rm -rf $(BIN_DIR)/*.o
+	rm -rf *.o
 
 mrproper: clean
-	rm -rf $(BIN_DIR)/*
+	rm -rf ws

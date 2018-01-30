@@ -1,9 +1,0 @@
-{
-  "infos":
-    {
-      "name":"Final Test: Test All",
-      "exec": ["python3", "final_test.py"],
-      "expected": ["changes_expected.txt", "view0_expected.csv"],
-      "comment" : "view0 contains the result of formula"
-    }
-}
