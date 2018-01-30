@@ -66,6 +66,12 @@ if __name__ == "__main__":
 
                 test_result = test_result and (output_strip == expected_strip)
 
+            if test_result:
+                out = "(changes.txt == changes_expected.txt) AND (view0.csv == view0_expected.csv)"
+            else:
+                out = "(changes.txt != changes_expected.txt) OR (view0.csv != view0_expected.csv)"
+
+
         except Exception as e:
             out = str(e)
             test_result = False
