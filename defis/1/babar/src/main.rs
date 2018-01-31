@@ -270,7 +270,7 @@ fn main()
     let args: Vec<String> = env::args().collect();
     if args.len() != 5
     {
-        panic!("Erreur d'arguments");
+        panic!("Erreur d'arguments, nombre : {}", args.len());
     }
     let data = read_file(&args[1]);
 
