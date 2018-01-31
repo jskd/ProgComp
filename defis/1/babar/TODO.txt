@@ -1,2 +1,11 @@
 - Commenter le code
-- Evaluer les formules
+
+Poser la question arguments ./ws
+Traduire fr -> eng nomenclature
+Refactoring en plusiuers fichiers : IO, Eval, et main
+	    IO prend chemin fichier source et chemin fichier cible evalue grace a Eval le buffeur et imprime dans le fichier source.
+Trouver une Structure adapté pour l'incrementalité
+Trouver une solution pour imprimer view0.csv et changes.txt
+Suppression warnings
+Reflechir à la gestion du "big data".
+
