@@ -1,11 +1,16 @@
 - Commenter le code
 
 Poser la question arguments ./ws
-Traduire fr -> eng nomenclature
-Refactoring en plusiuers fichiers : IO, Eval, et main
+1) Traduire fr -> eng nomenclature
+2) Refactoring en plusiuers fichiers : IO, Eval, et main
 	    IO prend chemin fichier source et chemin fichier cible evalue grace a Eval le buffeur et imprime dans le fichier source.
-Trouver une Structure adapté pour l'incrementalité
-Trouver une solution pour imprimer view0.csv et changes.txt
-Suppression warnings
-Reflechir à la gestion du "big data".
+3) Trouver une Structure adapté pour l'incrementalité
+4) Trouver une solution pour imprimer view0.csv et changes.txt
+5) Suppression warnings
+6) Reflechir à la gestion du "big data".
+
+Thomas : 1, 2, 5, 6
+Binta : 4, 6
+Joan : 3, 6
+Guillaume : 6 + reste si necessaire.
 
