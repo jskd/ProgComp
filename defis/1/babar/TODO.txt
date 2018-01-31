@@ -14,3 +14,4 @@ Binta : 4, 6
 Joan : 3, 6
 Guillaume : 6 + reste si necessaire.
 
+Pour le defi 1 gérer l'incrementalité de maniere naive: ie. ajouter un champ <Vec<Box<Cellule>> dans Cellule qui contient les formules dont dépend cette cellule.(faire en 2 passes, premiere mettre liste a nil)
