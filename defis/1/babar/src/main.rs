@@ -2,16 +2,16 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::env;
 
-trait Cellule {
+trait Cell {
     fn get_value(&self) -> i32;
     fn set_value(&mut self,val:i32);
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>,ce :&mut Vec<(i32,i32)>,r:i32,c:i32) -> i32;
-    fn copy_cell(&self) -> Box<Cellule>;
+    fn evaluate(&self, t:&Vec<Vec<Box<Cell>>>,ce :&mut Vec<(i32,i32)>,r:i32,c:i32) -> i32;
+    fn copy_cell(&self) -> Box<Cell>;
     fn print_cell(&self) -> ();
     fn get_string_value(&self) -> String;
 }
 struct Number {value:i32}
-struct Formule {
+struct Formula {
     num:i32,
     r1:i32,
     c1:i32,
@@ -23,9 +23,9 @@ struct Formule {
 
 
 
-impl Cellule for Number
+impl Cell for Number
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cellule>>>,current_evaluation : &mut Vec<(i32,i32)>,r:i32,c:i32)-> i32
+    fn evaluate(&self, t:&Vec<Vec<Box<Cell>>>,current_evaluation : &mut Vec<(i32,i32)>,r:i32,c:i32)-> i32
     {
         self.value
     }
@@ -38,7 +38,7 @@ impl Cellule for Number
     {
         self.value = n;
     }
-    fn copy_cell(&self) ->Box<Cellule>
+    fn copy_cell(&self) ->Box<Cell>
     {
         let cell = Number{value:self.value,};
         Box::new(cell)
@@ -53,9 +53,9 @@ impl Cellule for Number
     {
     }
 }
-impl Cellule for Formule
+impl Cell for Formula
 {
-    fn evaluate(&self, grill:&Vec<Vec<Box<Cellule>>>,current_evaluation: &mut Vec<(i32,i32)>,posr:i32,posc:i32) -> i32
+    fn evaluate(&self, grid:&Vec<Vec<Box<Cell>>>,current_evaluation: &mut Vec<(i32,i32)>,posr:i32,posc:i32) -> i32
     {
         current_evaluation.push((posr,posc));
         
@@ -64,7 +64,7 @@ impl Cellule for Formule
         }
         
 
-        calcul_occ(self,grill,current_evaluation)
+        calcul_occ(self,grid,current_evaluation)
             
     }
     
@@ -85,9 +85,9 @@ impl Cellule for Formule
     {
         self.num = n;
     }
-    fn copy_cell(&self) -> Box<Cellule>
+    fn copy_cell(&self) -> Box<Cell>
     {
-        let cell = Formule{
+        let cell = Formula{
             num:0,
             r1:self.r1,
             c1:self.c1,
@@ -103,7 +103,7 @@ impl Cellule for Formule
     }
 }
 
-fn is_dependency_ok(cell : &Formule, current_evaluation : &Vec<(i32,i32)>) -> bool
+fn is_dependency_ok(cell : &Formula, current_evaluation : &Vec<(i32,i32)>) -> bool
 {
 
         for &(row,col) in current_evaluation {
@@ -116,7 +116,7 @@ fn is_dependency_ok(cell : &Formule, current_evaluation : &Vec<(i32,i32)>) -> bo
         true
 }
 
-fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mut Vec<(i32,i32)>) ->i32
+fn calcul_occ(cell:&Formula,grid:&Vec<Vec<Box<Cell>>>,current_evaluation:&mut Vec<(i32,i32)>) ->i32
 {
     let r1 = cell.r1 as usize;
     let r2 = cell.r2 as usize;
@@ -125,7 +125,7 @@ fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mu
     let mut val_num = 0;
     for i in r1..r2+1{
         for j in c1..c2+1{
-            let val = grill[i][j].evaluate(grill,current_evaluation,i as i32,j as i32);
+            let val = grid[i][j].evaluate(grid,current_evaluation,i as i32,j as i32);
             if val < 0{
                 return val;
             }
@@ -138,23 +138,23 @@ fn calcul_occ(cell:&Formule,grill:&Vec<Vec<Box<Cellule>>>,current_evaluation:&mu
 
 }
 
-fn evaluate(grill: &Vec<Vec<Box<Cellule>>>) -> Vec<Vec<Box<Cellule>>>
+fn evaluate(grid: &Vec<Vec<Box<Cell>>>) -> Vec<Vec<Box<Cell>>>
 {
-    let mut new_grill: Vec<Vec<Box<Cellule>>> =  Vec::new(); 
-    for i in 0..grill.len(){
-        let mut row: Vec<Box<Cellule>> =  Vec::new(); 
-        for j in 0..grill[i].len(){
-            let mut cell = grill[i][j].copy_cell();
+    let mut new_grid: Vec<Vec<Box<Cell>>> =  Vec::new(); 
+    for i in 0..grid.len(){
+        let mut row: Vec<Box<Cell>> =  Vec::new(); 
+        for j in 0..grid[i].len(){
+            let mut cell = grid[i][j].copy_cell();
             let mut current_evaluation : Vec<(i32,i32)> = Vec::new();
             cell.print_cell();
-            let val = cell.evaluate(grill,&mut current_evaluation,i as i32,j as i32);
+            let val = cell.evaluate(grid,&mut current_evaluation,i as i32,j as i32);
             cell.set_value(val);
             cell.print_cell();
             row.push(cell);
         }
-        new_grill.push(row);
+        new_grid.push(row);
     }
-    new_grill
+    new_grid
 }
 fn read_file(f :&str) -> String
 {
@@ -164,15 +164,15 @@ fn read_file(f :&str) -> String
     return data.trim().to_string();
 }
 
-fn parsetab(d: &str) -> Vec<Vec<Box<Cellule>>>
+fn parsetab(d: &str) -> Vec<Vec<Box<Cell>>>
 {
-    let t: Vec<Vec<Box<Cellule>>> =  Vec::new();
+    let t: Vec<Vec<Box<Cell>>> =  Vec::new();
     return t; 
 }
 
-fn init_formule(form_dec_vec: Vec<&str>) -> Box<Cellule>
+fn init_formula(form_dec_vec: Vec<&str>) -> Box<Cell>
 {
-    let cell = Formule{
+    let cell = Formula{
             num:0,
             r1:form_dec_vec[0].trim().parse()
             .expect("Erreur format"),
@@ -190,7 +190,7 @@ fn init_formule(form_dec_vec: Vec<&str>) -> Box<Cellule>
          
 }
 
-fn create_cell(str:String) -> Box<Cellule>
+fn create_cell(str:String) -> Box<Cell>
 {
     if Some('=') == str.chars().next() {
         let form : String = str.trim_matches(|c| c == '(' || c == ')' 
@@ -201,7 +201,7 @@ fn create_cell(str:String) -> Box<Cellule>
             panic!("Erreur format");
          }
          
-        init_formule(form_dec_vec)
+        init_formula(form_dec_vec)
     }else {
         let val : i32 = str.trim().parse()
         .expect("Erreur format");
@@ -210,7 +210,7 @@ fn create_cell(str:String) -> Box<Cellule>
     }
     
 }
-fn gen_table(data: String) -> Vec<Vec<Box<Cellule>>>
+fn gen_table(data: String) -> Vec<Vec<Box<Cell>>>
 {
     let mut t = Vec::new();
     let a =  data.split("\n");
@@ -229,7 +229,7 @@ fn gen_table(data: String) -> Vec<Vec<Box<Cellule>>>
     }
     return t;
 }
-fn print_table(t:&Vec<Vec<Box<Cellule>>>)
+fn print_table(t:&Vec<Vec<Box<Cell>>>)
 {
     let mut i:i32 = 0;
     for k in t{
@@ -245,7 +245,7 @@ fn print_table(t:&Vec<Vec<Box<Cellule>>>)
         println!("");
     }
 }
-fn write_view0(view0: &str,t:&Vec<Vec<Box<Cellule>>>)
+fn write_view0(view0: &str,t:&Vec<Vec<Box<Cell>>>)
 {
     let mut file = File::create(view0).expect("Error writing file");
     let mut mystring = String::new();
@@ -277,8 +277,8 @@ fn main()
     let t = gen_table(data);
     
     print_table(&t);
-    let grill = evaluate(&t);
-    write_view0(&args[3],&grill);
+    let grid = evaluate(&t);
+    write_view0(&args[3],&grid);
     
 
 }    
