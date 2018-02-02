@@ -1,19 +1,24 @@
 #!/bin/sh
+platform='unknown'
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   platform='linux'
+elif [[ "$unamestr" == 'Darwin' ]]; then
+   platform='macOS'
+fi
 
 docker_volume_flag() {
-    echo -n "-v $(readlink -m $1):/go/src/$(basename $1)"
-}
-
-docker_volume_flags() {
-    for arg in $@; do
-        docker_volume_flag $arg
-        echo -n " "
-    done
+    if [[ $platform == 'macOS' ]]; then
+        echo "-v $(greadlink -m $1):/go/src/$(basename $1)"
+    else
+	echo "-v $(readlink -m $1):/go/src/$(basename $1)"
+    fi
 }
 
 run_in_docker_container() {
-    docker run --rm $(docker_volume_flags $@) nw-group/ws       \
-           $(basename -a $@ 2> /dev/null)
+    dvf_list=$(docker_volume_flag $@)
+    echo $dvf_list
+    docker run --rm $dvf_list nw-group/ws $(basename -a $@)
 }
 
 run_in_docker_container $@
