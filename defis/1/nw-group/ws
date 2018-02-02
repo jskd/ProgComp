@@ -8,7 +8,7 @@ elif [[ "$unamestr" == 'Darwin' ]]; then
 fi
 
 docker_volume_flag() {
-    if [[ $platform == 'macOS' ]]; then
+    if [[ "$platform" == 'macOS' ]]; then
         echo "-v $(greadlink -m $1):/go/src/$(basename $1)"
     else
 	echo "-v $(readlink -m $1):/go/src/$(basename $1)"
@@ -17,7 +17,7 @@ docker_volume_flag() {
 
 run_in_docker_container() {
     dvf_list=$(docker_volume_flag $@)
-    echo $dvf_list
+    echo "Volume list: $dvf_list"
     docker run --rm $dvf_list nw-group/ws $(basename -a $@)
 }
 
