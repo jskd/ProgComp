@@ -6,7 +6,7 @@ EXEC = main.exe
 
 .PHONY: all export_gopath build test clean
 
-all: export_gopath build
+all: export_gopath build test
 
 export_gopath:
 	export GOPATH=$(GOPATH)
