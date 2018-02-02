@@ -2,7 +2,7 @@ CPP=g++ --std=c++11 -Wall
 EXEC = ws
 
 SRC_DIR = src
-BIN_DIR = 
+BIN_DIR = ./
 EXEC_FILE= $(EXEC)
 
 UNAME_S := $(shell uname -s)
