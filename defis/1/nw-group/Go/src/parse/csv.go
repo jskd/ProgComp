@@ -2,7 +2,6 @@ package parse
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"strconv"
 )
@@ -37,29 +36,12 @@ func ReadCsv(fileToRead string, sep rune) [][]string {
 	return res
 }
 
-/*write in File the 2D slice of strings*/
-func WriteFile(fileToWrite string, sep string, s [][]string) {
-	fmt.Printf("%q\n", s)
-	f, err := os.OpenFile(fileToWrite, os.O_RDWR|os.O_CREATE, 0755)
-	if err != nil {
-		panic(err)
-	}
-	for i := 0; i < len(s); i++ {
-		for j := 0; j < len(s[i]); j++ {
-			// formula, err := spreadsheet.ToData(s[i][j])
-			// _, err = f.WriteString(convertInt2String(spreadsheet.Evaluate(formula, s)) + sep)
-			// checkError(err)
-		}
-		_, err = f.WriteString("\n")
-		checkError(err)
-	}
-}
-
 func WriteCsv(filename string, data [][]string, sep rune) {
 	file, err := os.Create(filename)
 	checkError(err)
-	csvReader := csv.NewWriter(file)
-	csvReader.Comma = sep
-	err = csvReader.WriteAll(data)
+	csvWriter := csv.NewWriter(file)
+	csvWriter.Comma = sep
+	err = csvWriter.WriteAll(data)
 	checkError(err)
+	//TODO: Close file?
 }

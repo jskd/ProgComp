@@ -2,9 +2,8 @@ package spreadsheet
 
 import (
 	"fmt"
-	"strconv"
-
 	"parse"
+	"strconv"
 )
 
 type Cell struct {
@@ -31,6 +30,14 @@ type formula struct {
 
 type immediate struct {
 	value int
+}
+
+type FormulaError struct {
+	msg string
+}
+
+func (e *FormulaError) Error() string {
+	return fmt.Sprintf("FormulaError: %v", e.msg)
 }
 
 /*
@@ -73,6 +80,9 @@ func ToFormula(s string) *formula {
 			&ySrc, &xSrc, &yDst, &xDst, &val)
 	if count != 5 {
 		return nil
+	}
+	if xSrc > xDst || ySrc > yDst {
+		panic(FormulaError{"Source x or y must greater than destination x or y."})
 	}
 	return &formula{xSrc, ySrc, xDst, yDst, val}
 }
