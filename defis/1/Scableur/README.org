@@ -16,3 +16,17 @@ $ make
 ** scala-csv : https://github.com/tototoshi/scala-csv
 
 ** sbt-docker : https://github.com/marcuslonnberg/sbt-docker
+
+** Spark-sbt : https://github.com/databricks/sbt-spark-package
+
+** Spark-csv : https://github.com/databricks/spark-csv
+
+* Documentation
+
+** Scala : http://docs.scala-lang.org/
+
+** Spark : https://spark.apache.org/docs/latest/
+
+** SBT : http://www.scala-sbt.org/documentation.html
+
+** Docker : https://docs.docker.com/
