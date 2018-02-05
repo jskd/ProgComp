@@ -67,6 +67,7 @@ if __name__ == "__main__":
     CLEANUP_TEST = ["make_mrproper"]
 
     TEST_LIST = getTestList()
+    nb_tests_total = len(TEST_LIST) - len(CLEANUP_TEST)
     TEST_LIST = [t for t in TEST_LIST if t not in INIT_TEST and t not in CLEANUP_TEST]
 
     if test_number != None:
@@ -75,7 +76,6 @@ if __name__ == "__main__":
     for target in targets:
         createDirLogs(target)
         test_report = TestReport(target, "results/" + target["name"], "rapport")
-        NB_PASSED = 0
 
         print(("-"*64) + "\n # " + target["name"].upper() + "\n" + ("-"*64))
 
@@ -85,5 +85,5 @@ if __name__ == "__main__":
         executeTestList(CLEANUP_TEST)
 
         test_report.saveReport()
-        colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
-        print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))
+        colortotal = "green" if test_report.NB_PASSED == nb_tests_total else "yellow"
+        print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(test_report.NB_PASSED, nb_tests_total, (test_report.NB_PASSED / nb_tests_total) * 20 ), colortotal))

@@ -8,6 +8,7 @@ class TestReport():
         self.report_name = report_name
         self.logs = []
         self.target = target
+        self.NB_PASSED = 0
 
     def addLog(self, threadExec):
         log = {
@@ -15,6 +16,8 @@ class TestReport():
             "result" : threadExec.result,
             "output" : threadExec.out[1] if len(threadExec.out) > 1 else ""
         }
+
+        if log["result"] == "PASS": self.NB_PASSED += 1
         self.logs.append(log)
 
     def saveReport(self):
