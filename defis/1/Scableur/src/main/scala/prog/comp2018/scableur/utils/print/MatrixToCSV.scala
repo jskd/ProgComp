@@ -1,29 +1,27 @@
 package prog.comp2018.scableur.utils.print
 
-import java.io.{BufferedWriter, FileOutputStream, OutputStreamWriter}
+import java.io._
 
-import scala.collection.mutable.ArrayBuffer
+import prog.comp2018.scableur.data.EvaluatedMatrix
 
-
-class MatrixToCSV(private var matrix : ArrayBuffer[ArrayBuffer[Option[Int]]],
-                  private var filename : String,
-                  private var rows: Int,
-                  private var cols:Int ) {
-  val writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename)))
-
-  def echo(col : Int, row : Int) : Unit = {
-    if(row != 0 && col == 0)  writer.write("\n")
-    matrix(row)(col) match {
-      case Some(x: Int) => writer.write(x)
-      case None => writer.write("P")
-    }
-    if(col < cols) writer.write(";")
-  }
+class MatrixToCSV(private var matrix : EvaluatedMatrix,
+                  private var filename : String) {
+  val writer = new PrintWriter(new File(filename))
 
   def print() : Unit = {
     for{
-      i <- 0 until rows
-      j <- 0 until cols
-    } echo(i,j)
+      i <- Range(0,matrix.height)
+      j <- Range(0,matrix.width)
+    }{
+      if(i != 0 && j == 0)  writer.append("\n")
+
+      matrix.get(i,j) match {
+        case Some(x: Int) => writer.append(x.toString)
+        case None => writer.append("P")
+      }
+      if(j < matrix.width-1) writer.append(";")
+      writer.flush()
+    }
+    writer.close()
   }
 }
