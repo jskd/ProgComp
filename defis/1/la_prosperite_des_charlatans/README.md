@@ -12,7 +12,7 @@
 
 ### Makefile rules
 
-```make test``` :  Run the file testing.py for all group
+```make test-all``` :  Run the file testing.py for all group
 ```make test grp=group_name number=1``` : Run test 1 on group_name target
 
 ### Files description
