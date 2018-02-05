@@ -1,6 +1,8 @@
 package prog.comp2018.scableur.utils
 
 object Conf {
+  val MAX_VALUE : Int = 255
+
   object Arguments {
     private var _dataCSVPath:String = ""
     private var _userTXTPath:String = ""
