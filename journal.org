@@ -1,4 +1,3 @@
-
 #+STARTUP: hidestars
 #+TODO: TODO(t!) FOCUSED (f@/!) STARTED(s@/!) WAITING(w@/!) SOMEDAY(S@/!) URGENT (u!) | DONE(d!) CANCELLED(c@!)
 
@@ -54,11 +53,36 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 *** TODO L'équipe de tests fait son rapport!
 *** TODO Expérience : Corriger un bug dans un code écrit par quelqu'un d'autre, avec son aide.
 *** TODO Défi 2, brainstorming
-*** TODO Hypothèse de Shafir
 *** TODO Les paradigmes de programmation
 *** TODO La programmation structurée
 *** TODO Présentation du défi 3
 *** TODO Calendrier des exposés techniques
+*** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
+** Séance 5
+*** TODO Séance brainstorming sur le défi 2
+**** Les questions
+     - Comment accéder aux données sans les charger entièrement en
+       mémoire vive?
+     - Comment créer le fichier view0.csv (qui est un gros fichier)?
+     - Comment mettre à jour incrémentalement le calcul en fonction
+       des changements de user.txt?
+**** Les solutions
+     - babar: Ne charger que les formules en mémoire et faire des
+       accès direct aux données dans le fichier data.
+     - scableur: Utiliser HDFS pour stocker les données et le
+       design-pattern proxy pour y accéder comme ci elles étaient
+       chargées en mémoire.
+     - carmack: Construire une structure de données qui (i) permet
+       d'ordonnancer les calculs sous la forme d'une séquence de
+       calculs travaillant sur des flots de données faciles à
+       transmettre au GPU ; (ii) de mettre à jour incrémentalement
+       les calculs en fournissant les formules impactés par un
+       changement à une coordonnée donnée.
+*** TODO Présentation du défi 3
+*** TODO Calendrier des exposés techniques
+*** TODO Les paradigmes de programmation
+*** TODO La programmation structurée
+
 *** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
 * Notes de cours
 
