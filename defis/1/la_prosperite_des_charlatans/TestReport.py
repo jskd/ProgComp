@@ -9,11 +9,11 @@ class TestReport():
         self.logs = []
         self.target = target
 
-    def addLog(self, test_info, result, output):
+    def addLog(self, threadExec):
         log = {
-            "test_info" : test_info,
-            "result" : result,
-            "output" : output
+            "test_info" : threadExec.TEST_INFO,
+            "result" : threadExec.result,
+            "output" : threadExec.out[1] if len(threadExec.out) > 1 else ""
         }
         self.logs.append(log)
 

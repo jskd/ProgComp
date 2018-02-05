@@ -5,6 +5,7 @@ from os.path import isfile, join
 from subprocess import *
 from termcolor import colored
 from TestReport import TestReport
+from ThreadExec import ThreadExec
 
 with open("config.json") as data:
     config = json.load(data)
@@ -38,35 +39,35 @@ def getTestList():
                 TEST_LIST += [line]
     return TEST_LIST
 
-def getTestInfos(test_path):
-    with open(join(test_path, "infos.json")) as data:
-        test_data = json.load(data)
-        TEST_INFO = test_data["infos"]
-    return TEST_INFO
-
 def createDirLogs(target):
     result_file = "results/" + target["name"]
     if not os.path.exists(result_file):
         os.makedirs(result_file)
 
-def createDirOutput(test_path):
-    output_path = test_path + "output/"
-    if not os.path.exists(output_path):
-        os.makedirs(output_path)
+def executeTestList(test_list, test_report=None, wait=True):
+    running_tests = []
 
-def executeTest(executable, test_file, target):
-    try:
-        cmd = [executable, test_file, target["path"]]
-        out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-        #print(out)
-    except:
-        out = "False"
-    return out.strip("\n")
+    for test in test_list:
+        TEST_PATH = config["settings"]["test_dir"] + test + "/"
+
+        threadExec = ThreadExec(TEST_PATH, target, test_report)
+        running_tests.append(threadExec)
+        threadExec.start()
+
+        if wait : threadExec.join()
+
+    for test in running_tests:
+        test.join()
 
 if __name__ == "__main__":
     grp_name, test_number = parseArgs(sys.argv[1::])
     targets = getTargets(grp_name)
+
+    INIT_TEST = ["make_target"]
+    CLEANUP_TEST = ["make_mrproper"]
+
     TEST_LIST = getTestList()
+    TEST_LIST = [t for t in TEST_LIST if t not in INIT_TEST and t not in CLEANUP_TEST]
 
     if test_number != None:
         TEST_LIST = [TEST_LIST[int(test_number)]]
@@ -78,32 +79,11 @@ if __name__ == "__main__":
 
         print(("-"*64) + "\n # " + target["name"].upper() + "\n" + ("-"*64))
 
-        for test in TEST_LIST:
-            TEST_PATH = config["settings"]["test_dir"] + test + "/"
-            TEST_INFO = getTestInfos(TEST_PATH)
-            EXEC = TEST_INFO["exec"][0]
-            TEST_FILE = join(TEST_PATH, TEST_INFO["exec"][1])
-
-            createDirOutput(TEST_PATH)
-
-            try:
-                out = executeTest(EXEC, TEST_FILE, target)
-                out = out.split("#")
-            except Exception as e:
-                pass
-
-            if out[0] == "True" :
-                result = "PASS"
-                colorprint = 'green'
-                NB_PASSED += 1
-            else:
-                result = "FAIL"
-                colorprint = 'red'
-
-            test_report.addLog(TEST_INFO, result, out[1] if len(out) > 1 else "")
-            print(colored(" [{}] {}".format(result, TEST_INFO["name"]), colorprint))
+        executeTestList(CLEANUP_TEST, test_report)
+        executeTestList(INIT_TEST, test_report)
+        executeTestList(TEST_LIST, test_report, wait=False)
+        executeTestList(CLEANUP_TEST)
 
         test_report.saveReport()
-
         colortotal = "green" if NB_PASSED == len(TEST_LIST) else "yellow"
         print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(NB_PASSED, len(TEST_LIST), (NB_PASSED / len(TEST_LIST)) * 20 ), colortotal))
