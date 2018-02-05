@@ -1,9 +1,7 @@
 package prog.comp2018.scableur.eval
 
 import prog.comp2018.scableur.data.functions.NbrIteration
-import prog.comp2018.scableur.data.{ConstantType, FunctionType, Value}
-
-import scala.collection.mutable.ArrayBuffer
+import prog.comp2018.scableur.data.{EvaluatedMatrix, _}
 
 trait Evaluator[T] {
   def eval : T
@@ -12,31 +10,43 @@ trait Evaluator[T] {
 /**
   * Evaluates a Matrix given as parameter
   */
-class ArrayBufferEvaluator(private var matrix : ArrayBuffer[ArrayBuffer[Value]]  )
-  extends Evaluator[ArrayBuffer[ArrayBuffer[Option[Int]]]] {
-
-  private val result = new ArrayBuffer[ArrayBuffer[Option[Int]]] //FIXME: size of array
+class MatrixEvaluator(private var matrix : Matrix  )
+  extends Evaluator[EvaluatedMatrix] {
+  private val result = new EvaluatedMatrix(matrix.height,matrix.width)
 
   private def eval_function(i: Int, j: Int): Unit = {
-    matrix(i)(j) match {
-      case f1 : NbrIteration => result(i)(j) = None //TODO : eval(f1, matrix)
-      case _ => result(i)(j) = None
+    matrix.get(i,j) match {
+      case f1 : NbrIteration =>
+        matrix.functionStack.append(f1)
+        result.set(None,i,j)
+      case _ => result.set(None,i,j)
     }
   }
 
   private def eval_cell(i: Int, j: Int) : Unit = {
-    matrix(i)(j) match {
-      case v : ConstantType => result(i)(j) = v.value
+    matrix.get(i,j) match {
+      case v : ConstantType => result.set(v.value, i, j)
       case _ : FunctionType => eval_function(i,j)
-      case _ => result(i)(j) = None
+      case _ => result.set(None,i,j)
     }
   }
 
-  def eval : ArrayBuffer[ArrayBuffer[Option[Int]]] = {
+  def eval_stack() = {
+    //TODO read function stack and find cycles
+    for(f <- matrix.functionStack){
+      f match {
+        case f1 : NbrIteration => result.set(NbrIterationEval.eval(f1,matrix), f.coordinates._1,f.coordinates._2)
+        case _ =>
+      }
+    }
+  }
+
+  def eval : EvaluatedMatrix = {
     for{
-      i <- 0 until matrix.length
-      j <- 0 until matrix(0).length
+      i <- Range(0,matrix.height)
+      j <- Range(0, matrix.width)
     } eval_cell(i,j)
+    eval_stack()
     result //return
   }
 }

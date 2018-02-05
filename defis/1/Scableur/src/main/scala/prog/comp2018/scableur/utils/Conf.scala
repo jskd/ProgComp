@@ -1,6 +1,4 @@
 package prog.comp2018.scableur.utils
-import prog.comp2018.scableur.utils.exceptions.{NotCSVFileException, NotTXTFileException}
-import prog.comp2018.scableur.utils.RegexUtils._
 
 object Conf {
   object Arguments {
@@ -10,22 +8,18 @@ object Conf {
     private var _changesTXTPath:String = ""
 
     def dataFile (filepath : String): Unit = {
-     // if (! (  """\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
       _dataCSVPath = filepath
     }
 
     def userFile (filepath : String) : Unit = {
-      // if (!("""\w*.txt""".r =~ filepath )) throw new NotTXTFileException(filepath)
       _userTXTPath = filepath
     }
 
     def viewFile (filepath : String) : Unit = {
-      // if (!("""\w*.csv""".r =~ filepath)) throw new NotCSVFileException(filepath)
       _viewCSVPath = filepath
     }
 
     def changesFile (filepath : String ) : Unit = {
-      // if (!("""\w*.txt""".r =~ filepath)) throw new NotTXTFileException(filepath)
       _changesTXTPath = filepath
     }
 
@@ -34,13 +28,15 @@ object Conf {
     def viewFile : String = _viewCSVPath
     def changesFile : String = _changesTXTPath
 
-    def print() : Unit = {
-      Debug.d("data=" + _dataCSVPath)
-      Debug.d("user=" + _userTXTPath)
-      Debug.d("view=" + _viewCSVPath)
-      Debug.d("changes=" + _changesTXTPath)
+    def print(printer: String => Unit) : Unit = {
+      var str = "===== Arguments ===== \n"
+      str += "data=" + _dataCSVPath + "\n"
+      str += "user=" + _userTXTPath + "\n"
+      str += "view=" + _viewCSVPath + "\n"
+      str += "changes=" + _changesTXTPath + "\n"
+      str += "==========================\n"
+      printer(str)
     }
   }
-
 }
 

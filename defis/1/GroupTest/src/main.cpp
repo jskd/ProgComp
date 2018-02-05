@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
     string changes_path = argv[4];
 
     ofstream out_view0(view0_path);
-    out_view0 << "1,1,1,3" << endl;
+    out_view0 << "1;1;1;3" << endl;
     out_view0.close();
 
     ofstream out_changes(changes_path);
