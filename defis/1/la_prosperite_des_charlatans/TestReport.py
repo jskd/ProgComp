@@ -14,11 +14,23 @@ class TestReport():
         log = {
             "test_info" : threadExec.TEST_INFO,
             "result" : threadExec.result,
-            "output" : threadExec.out[1] if len(threadExec.out) > 1 else ""
+            "output" : threadExec.out[1] if len(threadExec.out) > 1 else "",
+            "exec_time" : threadExec.execution_time
         }
 
         if log["result"] == "PASS": self.NB_PASSED += 1
         self.logs.append(log)
+
+    def get_total_exec_time(self):
+        total = 0.0
+        for log in self.logs:
+            total += log["exec_time"]
+
+        seconds = int(total)
+        m, s = divmod(seconds, 60)
+        h, m = divmod(m, 60)
+
+        return total, "{}:{:02d}:{:02d}".format(h, m, s)
 
     def saveReport(self):
         self.report_name += ".html"
@@ -56,6 +68,8 @@ class TestReport():
             <p> \n\
             ${OUTPUT} \n\
             </p> \n\
+            <hr> \n\
+            Executed in : <strong>${EXEC_TIME} sec.</strong> \n\
             </div> \n"
 
             current_log = current_log.replace("${TEST_NAME}", log["test_info"]["name"])
@@ -63,6 +77,7 @@ class TestReport():
 
             output = log["output"].replace("\n", "<br/>")
             current_log = current_log.replace("${OUTPUT}", output)
+            current_log = current_log.replace("${EXEC_TIME}", "{:0.5f}".format(log["exec_time"]))
 
             if log["result"] == "FAIL":
                 current_log = current_log.replace("#2dae5b", "red")

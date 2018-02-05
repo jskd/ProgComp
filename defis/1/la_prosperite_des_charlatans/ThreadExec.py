@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, sys, threading
+import json, os, sys, threading, time
 from subprocess import *
 from os.path import isfile, join
 from termcolor import colored
@@ -12,6 +12,7 @@ class ThreadExec(threading.Thread):
         self.test_report = test_report
         self.out = ["False", ""]
         self.result = "FAIL"
+        self.execution_time = 0.0
 
         self.TEST_INFO = self.getTestInfos(test_path)
         self.EXEC = self.TEST_INFO["exec"][0]
@@ -37,7 +38,9 @@ class ThreadExec(threading.Thread):
     def executeTest(self, executable, test_file, target):
         try:
             cmd = [executable, test_file, target["path"]]
+            begin = time.time()
             out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+            self.execution_time = time.time() - begin
         except:
             out = "False"
         return out.strip("\n")
@@ -55,4 +58,6 @@ class ThreadExec(threading.Thread):
             os.makedirs(output_path)
 
     def printResult(self):
-        print(colored(" [{}] {}".format(self.result, self.TEST_INFO["name"]), 'green' if self.out[0] == "True" else 'red'))
+        seconds = self.execution_time
+
+        print(colored(" [{}] {:<8} : {} ".format(self.result, "{:0.3f}s".format(seconds) , self.TEST_INFO["name"]), 'green' if self.out[0] == "True" else 'red'))

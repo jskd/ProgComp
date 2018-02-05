@@ -85,5 +85,7 @@ if __name__ == "__main__":
         executeTestList(CLEANUP_TEST)
 
         test_report.saveReport()
+        total_exec_time = test_report.get_total_exec_time()[1]
+
         colortotal = "green" if test_report.NB_PASSED == nb_tests_total else "yellow"
-        print (colored("\n [{}/{}] => {:0.1f}/20 avec félicitations du jury\n".format(test_report.NB_PASSED, nb_tests_total, (test_report.NB_PASSED / nb_tests_total) * 20 ), colortotal))
+        print (colored("\n [{}/{}] {}s => {:0.1f}/20 avec félicitations du jury\n".format(test_report.NB_PASSED, nb_tests_total, total_exec_time, (test_report.NB_PASSED / nb_tests_total) * 20 ), colortotal))
