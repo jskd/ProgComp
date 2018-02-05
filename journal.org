@@ -59,7 +59,8 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
 *** TODO Calendrier des exposés techniques
 *** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
 ** Séance 5
-*** TODO Séance brainstorming sur le défi 2
+*** DONE Séance brainstorming sur le défi 2
+    - State "DONE"       from "TODO"       [2018-02-05 Mon 12:26]
 **** Les questions
      - Comment accéder aux données sans les charger entièrement en
        mémoire vive?
@@ -78,9 +79,27 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
        transmettre au GPU ; (ii) de mettre à jour incrémentalement
        les calculs en fournissant les formules impactés par un
        changement à une coordonnée donnée.
-*** TODO Présentation du défi 3
+     - nw-group: Voir une table comme une fonction des valeurs vers
+       les ensembles de points qui ont cette valeur. 
+*** DONE Présentation du défi 3
+    - State "DONE"       from "TODO"       [2018-02-05 Mon 12:28]
+    - Voir https://blacs.github.io/API/index.html
 *** TODO Calendrier des exposés techniques
+    - <2018-02-12> "Test driven development" par les charlatans
+    - <2018-02-19> "Spark" par Scableur
+    - <2018-02-26> "Programmation SIMD sur GPU" par Carmack
+    - <2018-03-05> "Go" par nw-group
+    - <2018-03-12> "Rust" par Babar
 *** TODO Les paradigmes de programmation
+    - POO : Interaction entre entité autonome qui collabore pour
+      résoudre un problème.
+    - Impérative : Résoudre un problème en modifiant le monde par une séquence
+      d'actions bien déterminé.
+    - Logique : Modéliser le monde  comme un ensemble de règles et un problème
+      est une requête de satisfiabilité dans vis-à-vis de ces règles.
+    - Fonctionnelle : Le monde est composée de valeurs (mathématiques) et
+      la résolution d'un problème c'est écrire une fonction qui produit
+      les valeurs recherchées à partir des valeurs que l'on donne.
 *** TODO La programmation structurée
 
 *** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
