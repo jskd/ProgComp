@@ -11,6 +11,12 @@ class BuildMatrix(private var filename: String) {
     override val delimiter = ';'
   }
 
+  def inInterval(x:Int, min:Int, max:Int):Int = {
+   if(x<min) min
+    else
+    if(x>max) max
+      else x
+  }
   def load() : Matrix = {
      val reader = CSVReader.open(filename)
      val unevaluatedMatrix : List[List[String]] = reader.all()
@@ -28,7 +34,7 @@ class BuildMatrix(private var filename: String) {
         matrix.set(parseFunction(str,i,j), i, j)
       }else{
         try{
-          matrix.set(ConstantType(Some(str.toInt)), i,j)
+          matrix.set(ConstantType(Some(inInterval(str.toInt,0,255)) ), i,j)
         }catch {
           case _ : Exception =>
             matrix.set(ConstantType(None), i,j)
