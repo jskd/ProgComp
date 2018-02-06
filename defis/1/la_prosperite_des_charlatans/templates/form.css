@@ -138,6 +138,17 @@ aside
 	font-family:Verdana, Geneva, sans-serif;
 }
 
+.block_test a
+{
+  text-decoration: none;
+  color: #CCC;
+}
+
+.block_test a:hover
+{
+  color: darkgrey;
+}
+
 .title_test{
 	width: 100%;
 	height: 40px;
