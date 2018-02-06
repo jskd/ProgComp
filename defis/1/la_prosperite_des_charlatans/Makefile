@@ -1,6 +1,6 @@
 PY=python3
 
 test-all:
-	${PY} testing.py
+	${PY} src/testing.py
 test:
-	${PY} testing.py grp=${grp} number=${number}
+	${PY}  src/testing.py grp=${grp} number=${number}

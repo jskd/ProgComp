@@ -10,12 +10,18 @@ class TestReport():
         self.target = target
         self.NB_PASSED = 0
 
+        try:
+            cmd = ["git", "rev-parse", "HEAD"]
+            self.commit = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+        except: self.commit = ""
+
     def addLog(self, threadExec):
         log = {
             "test_info" : threadExec.TEST_INFO,
             "result" : threadExec.result,
             "output" : threadExec.out[1] if len(threadExec.out) > 1 else "",
-            "exec_time" : threadExec.execution_time
+            "exec_time" : threadExec.execution_time,
+            "commit" : self.commit
         }
 
         if log["result"] == "PASS": self.NB_PASSED += 1
@@ -36,23 +42,25 @@ class TestReport():
         self.report_name += ".html"
 
         try:
-            cmd = ["git", "rev-parse", "HEAD"]
-            sha = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-        except: sha = ""
-
-        try:
-            cmd = ["cp", "results/form.html", self.report_path + "/" + self.report_name]
+            cmd = ["cp", "templates/form.html", self.report_path + "/" + self.report_name]
             cmd_out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
-        except: pass
+
+            cmd = ["cp", "templates/form.css", self.report_path + "/"]
+            cmd_out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+
+            cmd = ["cp", "-r", "templates/img", self.report_path + "/"]
+            cmd_out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+        except Exception as e:
+            print(str(e))
 
         with open(self.report_path + "/" + self.report_name, "r") as rapport:
             rapport_string = rapport.read()
 
 
-        rapport_string = rapport_string.replace("form.css", "../form.css")
-        rapport_string = rapport_string.replace("img/", "../img/")
+        #rapport_string = rapport_string.replace("form.css", "../form.css")
+        #rapport_string = rapport_string.replace("img/", "../img/")
         rapport_string = rapport_string.replace("${GROUP}", self.target["name"])
-        rapport_string = rapport_string.replace("${SHA}", sha)
+        rapport_string = rapport_string.replace("${SHA}", self.commit)
         rapport_string = rapport_string.replace("${NB_PASSED}", str(self.NB_PASSED) + "/" + str(len(self.logs)))
         rapport_string = rapport_string.replace("${NB_FAILED}", str(len(self.logs) - self.NB_PASSED) + "/" + str(len(self.logs)))
         rapport_string = rapport_string.replace("${TOTAL_TIME}", self.get_total_exec_time()[1])
