@@ -11,9 +11,38 @@
     <p> ${GROUP} - ${SHA} </p>
   </header>
 
-  <article>
-    ${TEST_LIST}
-  </article>
+  <section id="content">
+
+    <aside>
+      <section class="title_bloc">
+        <img src="img/reports_icon2.png"/>
+        <p>Results</p>
+      </section>
+
+      <br>
+
+      <section class="result_bloc">
+        <img src="img/pass_icon.png"/>
+        <p style="color: rgb(0,200,0);">PASS : ${NB_PASSED}</p>
+      </section>
+
+      <section class="result_bloc">
+        <img src="img/fail_icon.png"/>
+        <p style="color: rgb(200,0,0);">FAIL : ${NB_FAILED}</p>
+      </section>
+
+      <section class="result_bloc">
+        <img src="img/time_icon.png"/>
+        <p style="color: rgb(190,140,80);">${TOTAL_TIME}</p>
+      </section>
+
+    </aside>
+
+    <article>
+      ${TEST_LIST}
+    </article>
+
+  </section>
 
 </body>
 </html>

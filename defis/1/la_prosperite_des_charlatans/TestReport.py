@@ -30,7 +30,7 @@ class TestReport():
         m, s = divmod(seconds, 60)
         h, m = divmod(m, 60)
 
-        return total, "{}:{:02d}:{:02d}".format(h, m, s)
+        return total, "{:02d}:{:02d}:{:02d}".format(h, m, s)
 
     def saveReport(self):
         self.report_name += ".html"
@@ -50,8 +50,12 @@ class TestReport():
 
 
         rapport_string = rapport_string.replace("form.css", "../form.css")
+        rapport_string = rapport_string.replace("img/", "../img/")
         rapport_string = rapport_string.replace("${GROUP}", self.target["name"])
         rapport_string = rapport_string.replace("${SHA}", sha)
+        rapport_string = rapport_string.replace("${NB_PASSED}", str(self.NB_PASSED) + "/" + str(len(self.logs)))
+        rapport_string = rapport_string.replace("${NB_FAILED}", str(len(self.logs) - self.NB_PASSED) + "/" + str(len(self.logs)))
+        rapport_string = rapport_string.replace("${TOTAL_TIME}", self.get_total_exec_time()[1])
 
         test_list = ""
         for log in self.logs:
