@@ -84,7 +84,9 @@ if __name__ == "__main__":
         executeTestList(TEST_LIST, test_report, wait=False)
         executeTestList(CLEANUP_TEST)
 
-        test_report.saveReport()
+        test_report.saveReportDatabase()
+        test_report.saveReportHtml()
+
         total_exec_time = test_report.get_total_exec_time()[1]
 
         colortotal = "green" if test_report.NB_PASSED == nb_tests_total else "yellow"

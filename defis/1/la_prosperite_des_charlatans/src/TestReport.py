@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, sys
+import json, os, sys, datetime
 from subprocess import *
 
 class TestReport():
@@ -13,6 +13,7 @@ class TestReport():
         try:
             cmd = ["git", "rev-parse", "HEAD"]
             self.commit = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
+            self.commit = self.commit.strip("\n")
         except: self.commit = ""
 
     def addLog(self, threadExec):
@@ -38,7 +39,20 @@ class TestReport():
 
         return total, "{:02d}:{:02d}:{:02d}".format(h, m, s)
 
-    def saveReport(self):
+    def saveReportDatabase(self):
+        now = datetime.datetime.now()
+        with open("database.csv", "a") as database:
+            for log in self.logs:
+
+                database.write("{};{};{};{};{}\n".format(
+                self.commit,
+                now.strftime("%Y-%m-%d %H:%M"),
+                self.target["name"],
+                log["test_info"]["name"],
+                log["result"]))
+
+
+    def saveReportHtml(self):
         self.report_name += ".html"
 
         try:

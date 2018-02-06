@@ -6,3 +6,4 @@ results/nw-group/
 results/Scableur/
 tests/*/output/*.txt
 tests/*/output/*.csv
+database.csv
