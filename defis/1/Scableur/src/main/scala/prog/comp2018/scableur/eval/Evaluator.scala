@@ -2,6 +2,7 @@ package prog.comp2018.scableur.eval
 
 import prog.comp2018.scableur.data.functions.NbrIteration
 import prog.comp2018.scableur.data.{EvaluatedMatrix, _}
+import prog.comp2018.scableur.utils.Debug
 
 trait Evaluator[T] {
   def eval : T
@@ -31,12 +32,33 @@ class MatrixEvaluator(private var matrix : Matrix  )
     }
   }
 
+  // def find_cycle(f:FunctionType, m: Matrix, dep:List[Int] = List()): Unit = {
+  //   for{
+  //     i <- Range(f.from._1, f.to._1)
+  //     j <- Range(f.from._2, f.to._2)
+  //   }{
+  //     m.get(i,j) match{
+  //       case g:FunctionType => 
+  //         if(dep.exists(i=> i==(m.functionStack.indexOf(g))))
+  //           m.set(ConstantType(None), g.coordinates._1, g.coordinates._2)
+  //         else{
+  //           dep.+: (m.functionStack.indexOf(f))
+  //           find_cycle(g,m,(dep.+: (m.functionStack.indexOf(f))))
+  //         }
+  //       case _ =>
+  //     }
+
+  //   }
+  // }
+
   def eval_stack() = {
     //TODO read function stack and find cycles
     for(f <- matrix.functionStack){
       f match {
-        case f1 : NbrIteration => result.set(NbrIterationEval.eval(f1,matrix), f.coordinates._1,f.coordinates._2)
-        case _ =>
+        case f1: NbrIteration => {
+          result.set(NbrIterationEval.eval(f1,matrix,List()),
+                            f.coordinates._1,f.coordinates._2)}
+        case _ => 
       }
     }
   }

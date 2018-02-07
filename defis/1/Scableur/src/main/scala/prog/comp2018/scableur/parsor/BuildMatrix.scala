@@ -3,6 +3,7 @@ package prog.comp2018.scableur.parsor
 import com.github.tototoshi.csv.{CSVReader, DefaultCSVFormat}
 import prog.comp2018.scableur.data.functions.NbrIteration
 import prog.comp2018.scableur.data.{ConstantType, Matrix, Value}
+import prog.comp2018.scableur.utils.Conf
 
 
 class BuildMatrix(private var filename: String) {
@@ -11,7 +12,8 @@ class BuildMatrix(private var filename: String) {
     override val delimiter = ';'
   }
 
-  def inInterval(x:Int, min:Int = 0, max:Int = 255):Int = {
+  def inInterval(x:Int, min:Int = Conf.MIN_VALUE,
+  						max:Int = Conf.MAX_VALUE):Int = {
    if(x<min) min
     else
     if(x>max) max
@@ -21,7 +23,8 @@ class BuildMatrix(private var filename: String) {
   def load() : Matrix = {
      val reader = CSVReader.open(filename)
      val unevaluatedMatrix : List[List[String]] = reader.all()
-     val matrix : Matrix = new Matrix(unevaluatedMatrix.size,unevaluatedMatrix.head.size)
+     val matrix : Matrix = 
+     		new Matrix(unevaluatedMatrix.size,unevaluatedMatrix.head.size)
      StringToValue(unevaluatedMatrix, matrix)
   }
 
@@ -31,7 +34,7 @@ class BuildMatrix(private var filename: String) {
       j <- Range(0,matrix.width)
     }{
       val str = lls(i)(j)
-      if(str(0) == '#'){
+      if(str(0) == '='){
         matrix.set(parseFunction(str,i,j), i, j)
       }else{
         try{
@@ -46,8 +49,8 @@ class BuildMatrix(private var filename: String) {
   }
 
   def parseFunction(str: String, i: Int, j: Int): Value = {
-    val pattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
-    if(str(1)=='='){
+    val pattern = """[=#(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
+    if(str(1)=='#'){
       val parts=pattern.findAllIn(str)
       val i1=parts.group(1)
       val j1=parts.group(2)
@@ -55,7 +58,8 @@ class BuildMatrix(private var filename: String) {
       val j2=parts.group(4)
       val value=parts.group(5)
       try{
-        new NbrIteration((i,j),(i1.toInt,j1.toInt),(i2.toInt,j2.toInt), ConstantType(Some(value.toInt)))
+        new NbrIteration((i,j),(i1.toInt,j1.toInt),(i2.toInt,j2.toInt),
+        								 ConstantType(Some(value.toInt)))
       }catch {
         case _ : Exception => ConstantType(None)
       }

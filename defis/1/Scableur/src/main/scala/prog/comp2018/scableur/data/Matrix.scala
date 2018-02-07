@@ -24,7 +24,7 @@ class Matrix(private var h : Int, private var w : Int) extends TableType[Value] 
   override def height : Int = h
   override def width : Int = w
   override def get(i: Int, j: Int) : Value = matrix(i)(j)
-  override def set(v: Value, i: Int, j: Int): Unit = matrix(i)(j) = v
+  override def set(v: Value, i: Int, j: Int): Unit ={ matrix(i)(j) = v}
 }
 
 class EvaluatedMatrix(private var h: Int, private var w : Int) extends TableType[Option[Int]] {
@@ -32,7 +32,7 @@ class EvaluatedMatrix(private var h: Int, private var w : Int) extends TableType
   override def height : Int = h
   override def width : Int = w
   override def get(i: Int, j: Int) : Option[Int] = matrix(i)(j)
-  override def set(v: Option[Int], i: Int, j: Int): Unit = matrix(i)(j) = v
+  override def set(v: Option[Int], i: Int, j: Int): Unit = { matrix(i)(j) = v}
 }
 
 

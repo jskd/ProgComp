@@ -13,6 +13,7 @@ case class ConstantType(var value: Option[Int]) extends Value {
       case _ : FunctionType => false
     }
   }
+
 }
 //Type for functions
 abstract case class FunctionType(var coordinates  : (Int, Int),
