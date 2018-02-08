@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"parse"
 	"strconv"
+	"os"
+	"log"
 )
 
 type Cell struct {
@@ -127,7 +129,23 @@ func evaluate(row int, col int, spreadSheet [][]Cell) int {
 	default:
 		res = -1
 	}
+	fmt.Println("heloooooo %d",res)
+	write(row,col,res)
 	return res
+}
+
+func write(row int, col int, value int){
+		// If the file doesn't exist, create it, or append to the file
+		f, err := os.OpenFile(fmt.Sprintf("views/%d",value), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if _, err := f.Write([]byte(fmt.Sprintf("%d;%d \n",row,col))); err != nil {
+			log.Fatal(err)
+		}
+		if err := f.Close(); err != nil {
+			log.Fatal(err)
+		}
 }
 
 func cells(spreadSheet [][]string) [][]Cell {
