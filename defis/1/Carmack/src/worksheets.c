@@ -292,6 +292,26 @@ int produce_view(struct worksheet *ws, const char *path) {
 	return 0;
 }
 
+void write_change_prologue(FILE* stream, struct user_component mod) {
+	fprintf(stream, "after \"%d %d ", mod.r, mod.c);
+	switch (mod.st_value.ty) {
+		case VALUE:
+			fprintf(stream, "V%d\":\n", mod.st_value.udata.value);
+			break;
+		case FORMULA:
+			fprintf(stream, "=#(%d,%d,%d,%d,%d)\":\n",
+					mod.st_value.udata.st_formula.r1,
+					mod.st_value.udata.st_formula.r2,
+					mod.st_value.udata.st_formula.c1,
+					mod.st_value.udata.st_formula.c2,
+					mod.st_value.udata.st_formula.val);
+			break;
+		default:
+			fprintf(stream, "?\":\n");
+			break;
+	}
+}
+
 void write_change(FILE* stream, int line, int col, struct cell value, char verbose) {
 	int val;
 	switch (value.ty) {
@@ -312,7 +332,6 @@ void write_change(FILE* stream, int line, int col, struct cell value, char verbo
 		printf("(%d,%d) %d -> %d\n", line, col, value.old_value, val);
 	fprintf(stream, "%d %d %d\n", line, col, val);
 }
-
 
 void reset_table(struct worksheet *ws){
 	//added old_value to all cells, super memory-consumung, redo later with log
@@ -350,11 +369,12 @@ node->udata.st_formula.res = -1
 	}
 }
 
-
 int produce_changes(struct worksheet *ws,  struct user_data *user_mods, const char *path) {
+	int changes_counter = 0;
+
 	reset_table(ws);
 	apply_user(ws, user_mods);
-	
+
 	FILE *p_file = fopen(path, "w");
 	
 	if (p_file == NULL)
@@ -369,13 +389,17 @@ int produce_changes(struct worksheet *ws,  struct user_data *user_mods, const ch
 			if ((node.ty == INVALID && node.old_value != -1) ||
 			(node.ty == VALUE && node.old_value != node.udata.value) ||
 			(node.ty == FORMULA && node.old_value != node.udata.st_formula.res))
+			{
+				write_change_prologue(p_file,
+						user_mods->pst_content[changes_counter]);
 				write_change(p_file, i, j, node, 1); //change verbose to 0 here
+				changes_counter++;
+			}
 		}
 		//fprintf(p_file, "\n");
 	}
 
 	return 0;
-
 }
 
 void release_worksheet(struct worksheet *ws) {
