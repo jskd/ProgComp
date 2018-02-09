@@ -293,21 +293,27 @@ int produce_view(struct worksheet *ws, const char *path) {
 }
 
 void write_change_prologue(FILE* stream, struct user_component mod) {
-	fprintf(stream, "after \"%d %d ", mod.r, mod.c);
 	switch (mod.st_value.ty) {
 		case VALUE:
-			fprintf(stream, "V%d\":\n", mod.st_value.udata.value);
+			fprintf(stream, "after \"%d %d %d\":\n",
+					mod.r,
+					mod.c,
+					mod.st_value.udata.value);
 			break;
 		case FORMULA:
-			fprintf(stream, "=#(%d,%d,%d,%d,%d)\":\n",
-					mod.st_value.udata.st_formula.r1,
-					mod.st_value.udata.st_formula.r2,
-					mod.st_value.udata.st_formula.c1,
-					mod.st_value.udata.st_formula.c2,
-					mod.st_value.udata.st_formula.val);
+			if (mod.st_value.udata.st_formula.val != '?') {
+				fprintf(stream, "after \"%d %d =#(%d,%d,%d,%d,%d)\":\n",
+						mod.r,
+						mod.c,
+						mod.st_value.udata.st_formula.r1,
+						mod.st_value.udata.st_formula.r2,
+						mod.st_value.udata.st_formula.c1,
+						mod.st_value.udata.st_formula.c2,
+						mod.st_value.udata.st_formula.val);
+			}
 			break;
+		case INVALID: // Do nothing
 		default:
-			fprintf(stream, "?\":\n");
 			break;
 	}
 }
@@ -392,7 +398,7 @@ int produce_changes(struct worksheet *ws,  struct user_data *user_mods, const ch
 			{
 				write_change_prologue(p_file,
 						user_mods->pst_content[changes_counter]);
-				write_change(p_file, i, j, node, 1); //change verbose to 0 here
+				write_change(p_file, i, j, node, 0); //change verbose to 0 here
 				changes_counter++;
 			}
 		}
