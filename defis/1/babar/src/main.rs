@@ -2,18 +2,18 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::env;
 use std::io::{BufReader,BufRead};
-
+use std::collections::BTreeMap;
 
 trait Cell {
     fn get_value(&self) -> i32;
     fn set_value(&mut self,val:i32);
-    fn evaluate(&self, t:&Vec<Vec<Box<Cell>>>,ce :&mut Vec<(i32,i32)>,r:i32,c:i32) -> (i32,Vec<(i32,i32,i32,i32)>);
+    fn evaluate(&self, t:&Vec<Vec<Box<Cell>>>,ce :&mut Vec<(i32,i32)>,r:i32,c:i32) -> (i32,BTreeMap<(i32,i32),Vec<(i32,i32)>>);
     fn copy_cell(&self) -> Box<Cell>;
     fn print_cell(&self) -> ();
     fn get_string_value(&self) -> String;
-    fn add_dependency(&mut self,dep : (i32,i32)) ->();
+    fn get_region(&self) -> (i32,i32,i32,i32);
 }
-struct Number {value:i32,dependencies : Vec<(i32,i32)>,}
+struct Number {value:i32,}
 struct Formula {
     num:i32,
     r1:i32,
@@ -21,17 +21,15 @@ struct Formula {
     r2:i32,
     c2:i32,
     v:i32,
-    dependencies :Vec<(i32,i32)>,
  
 }
 
-
-
 impl Cell for Number
 {
-    fn evaluate(&self, t:&Vec<Vec<Box<Cell>>>,current_evaluation : &mut Vec<(i32,i32)>,r:i32,c:i32)-> (i32,Vec<(i32,i32,i32,i32)>)
+    fn evaluate(&self, _t:&Vec<Vec<Box<Cell>>>,_current_evaluation : &mut Vec<(i32,i32)>,_r:i32,_c:i32)
+    -> (i32,BTreeMap<(i32,i32),Vec<(i32,i32)>>)
     {
-        (self.value,Vec::new())
+        (self.value,BTreeMap::new())
     }
     fn get_value(&self) -> i32
     {
@@ -44,8 +42,7 @@ impl Cell for Number
     }
     fn copy_cell(&self) ->Box<Cell>
     {
-        let cell = Number{value:self.value,
-            dependencies:self.dependencies.clone()};
+        let cell = Number{value:self.value};
         Box::new(cell)
     }
     
@@ -58,30 +55,23 @@ impl Cell for Number
     {
     }
     
-    fn add_dependency(&mut self,dep : (i32,i32))
-    {
-        self.dependencies.push((dep));
+    fn get_region(&self) -> (i32,i32,i32,i32){
+        (-1,-1,-1,-1)
     }
 }
 
 impl Cell for Formula
 {
-    fn evaluate(&self, grid:&Vec<Vec<Box<Cell>>>,current_evaluation: &mut Vec<(i32,i32)>,posr:i32,posc:i32) -> (i32,Vec<(i32,i32,i32,i32)>)
+    fn evaluate(&self, grid:&Vec<Vec<Box<Cell>>>,current_evaluation: &mut Vec<(i32,i32)>,posr:i32,posc:i32) 
+        -> (i32,BTreeMap<(i32,i32),Vec<(i32,i32)>>)
     {
         current_evaluation.push((posr,posc));
         
         if !is_dependency_ok(self, current_evaluation) {
-            return (-1,Vec::new());
+            return (-1,BTreeMap::new());
         }
-        
 
         calcul_occ(self,grid,current_evaluation,posr,posc)
-            
-    }
-    
-    fn add_dependency(&mut self,dep : (i32,i32))
-    {
-        self.dependencies.push((dep));
     }
     
     fn get_string_value(&self) -> String
@@ -110,13 +100,20 @@ impl Cell for Formula
             r2:self.r2,
             c2:self.c2,
             v:self.v,
-            dependencies : self.dependencies.clone()
         };
         Box::new(cell)
     }
     fn print_cell(&self)
     {
         println!("b evaluateCell: {} {} {} {} {} {}",self.r1,self.c1,self.r2,self.c2,self.v,self.num);
+    }
+    
+    fn get_region(&self) -> (i32,i32,i32,i32){
+        let r1 = self.r1;
+        let r2 = self.r2;
+        let c1 = self.c1;
+        let c2 = self.c2;
+        (r1,r2,c1,c2)
     }
 }
 
@@ -126,7 +123,6 @@ fn is_dependency_ok(cell : &Formula, current_evaluation : &Vec<(i32,i32)>) -> bo
         for &(row,col) in current_evaluation {
         if row >= cell.r1  && row <= cell.r2
           && col >= cell.c1 && col <= cell.c2 {
-             println!("r1:{} row:{} r2:{} c1:{} col: {} c2:{}",cell.r1,row,cell.r2,cell.c1,col,cell.c2);
             return false;
           }
         }
@@ -134,55 +130,61 @@ fn is_dependency_ok(cell : &Formula, current_evaluation : &Vec<(i32,i32)>) -> bo
 }
 
 fn calcul_occ(cell:&Formula,grid:&Vec<Vec<Box<Cell>>>,current_evaluation:&mut Vec<(i32,i32)>,
-    posr:i32,posc:i32) ->(i32,Vec<(i32,i32,i32,i32)>)
+    posr:i32,posc:i32) ->(i32,BTreeMap<(i32,i32),Vec<(i32,i32)>>)
 {
     let r1 = cell.r1 as usize;
     let r2 = cell.r2 as usize;
     let c1 = cell.c1 as usize;
     let c2 = cell.c2 as usize;
-    let mut dependencies : Vec<(i32,i32,i32,i32)> = Vec::new();
+    let mut dependences = BTreeMap::new();
     let mut val_num = 0;
     for i in r1..r2+1{
         for j in c1..c2+1{
-            let (val,dep) = grid[i][j].evaluate(grid,current_evaluation,i as i32,j as i32);
+            let (val,_) = grid[i][j].evaluate(grid,current_evaluation,i as i32,j as i32);
             if val < 0{
-                return (val,Vec::new());
+                return (val,BTreeMap::new());
             }
-            dependencies.push((i as i32,j as i32,posr,posc));
+            dependences.insert((i as i32,j as i32),Vec::new());
+            
+            match dependences.get_mut(&(i as i32,j as i32)) {
+                Some(dependency) => dependency.push((posr,posc)),
+                _ => println!("err"),
+            }
             if val == cell.v{
                 val_num = val_num+1;
             }
         }
     }
-    (val_num,dependencies)
+    (val_num,dependences)
 
 }
 
-fn evaluate(grid: &Vec<Vec<Box<Cell>>>) -> (Vec<Vec<Box<Cell>>>,Vec<(i32,i32,i32,i32)>)
+fn evaluate(grid: &Vec<Vec<Box<Cell>>>) -> (Vec<Vec<Box<Cell>>>,BTreeMap<(i32,i32),Vec<(i32,i32)>>)
 {
     let mut new_grid: Vec<Vec<Box<Cell>>> =  Vec::new();
-    let mut dependencies : Vec<(i32,i32,i32,i32)> = Vec::new();
+    let mut dependences : BTreeMap<(i32,i32),Vec<(i32,i32)>> =  BTreeMap::new();
     for i in 0..grid.len(){
         let mut row: Vec<Box<Cell>> =  Vec::new(); 
         for j in 0..grid[i].len(){
             let mut cell = grid[i][j].copy_cell();
             let mut current_evaluation : Vec<(i32,i32)> = Vec::new();
-            cell.print_cell();
-            let (val,dep) = cell.evaluate(grid,&mut current_evaluation,i as i32,j as i32);
-            dependencies.extend(dep);
+            let (val,d) = cell.evaluate(grid,&mut current_evaluation,i as i32,j as i32);
             cell.set_value(val);
-            cell.print_cell();
             row.push(cell);
+            for (&key, val) in d.iter(){
+                if !dependences.contains_key(&key) {
+                    dependences.insert(key,Vec::new());
+                }
+                match dependences.get_mut(&key) {
+                    Some(dependency) => dependency.extend(val),
+                    _ => println!("err"),
+                }
+                
+            }
         }
         new_grid.push(row);
     }
-    (new_grid,dependencies)
-}
-
-fn add_dependency(spread_sheet :&mut Vec<Vec<Box<Cell>>>,dependencies : &Vec<(i32,i32,i32,i32)>){
-     for &(r,c,posr,posc) in dependencies{
-        spread_sheet[r as usize][c as usize].add_dependency((posr,posc));
-     }
+    (new_grid,dependences)
 }
 
 fn read_file(f :&str) -> String
@@ -191,12 +193,6 @@ fn read_file(f :&str) -> String
     let mut data = String::new();
     file.read_to_string(&mut data).expect("Error reading file data.csv");
     return data.trim().to_string();
-}
-
-fn parsetab(d: &str) -> Vec<Vec<Box<Cell>>>
-{
-    let t: Vec<Vec<Box<Cell>>> =  Vec::new();
-    return t; 
 }
 
 fn init_formula(form_dec_vec: Vec<&str>) -> Box<Cell>
@@ -213,9 +209,7 @@ fn init_formula(form_dec_vec: Vec<&str>) -> Box<Cell>
             .expect("Erreur format"),
             v:form_dec_vec[4].trim().parse()
             .expect("Erreur format"),
-            dependencies : Vec::new(),
     };
-    println!("cell: {} {} {} {} {}",cell.r1,cell.r2,cell.c1,cell.c2,cell.v);
     Box::new(cell)
          
 }
@@ -237,7 +231,6 @@ fn create_cell(str:String) -> Box<Cell>
         .expect("Erreur format");
         let cell = Number{
             value:val,
-            dependencies : Vec::new(),
             };
         Box::new(cell)
     }
@@ -253,7 +246,6 @@ fn gen_table(data: String) -> Vec<Vec<Box<Cell>>>
         let  vec2 = temp.collect::<Vec<&str>>();
         let mut row = Vec::new();
         for d in &vec2{
-            let s = d.to_string();
             let cell = create_cell(d.to_string());
             row.push(cell);
             
@@ -299,27 +291,68 @@ fn write_view0(view0: &str,t:&Vec<Vec<Box<Cell>>>)
     write!(file, "{}", mystring).expect("Error Writing into the view0");
 }
 
-// fn write_change(user: &str,change:&str,spreadsheet:&Vec<Vec<Box<Cell>>> ){
-//     let mut file_change = File::create(change).expect("Error at file creation");
-//     let mut file_user = File::open(user).expect("Error at file opening");
-//     for line in BufReader::new(file_user).lines() {
-//         let mut line_iter = line.expect("Error write_change").trim().split_whitespace();
-//         let r = match line_iter.next(){
-//             Some(x) => x,
-//             None => continue,
-//         }
-//         let c = match line_iter.next(){
-//             Some(x) => x,
-//             None => continue,
-//         }
-//         let d = match line_iter.next(){
-//             Some(x) => x,
-//             None => continue,
-//         }
-//         spreadsheet[r as usize][c as usize].set_value(d);
-//         spreadsheet[r as usize][c as usize].evaluate(grid,&mut current_evaluation,i as i32,j as i32);
-//     }
-// }
+fn write_change(user: &str,change:&str,spreadsheet:&mut Vec<Vec<Box<Cell>>>,dependencies:&mut BTreeMap<(i32,i32),Vec<(i32,i32)>>){
+    let mut file_change = File::create(change).expect("Error at file creation");
+    let file_user = File::open(user).expect("Error at file opening");
+    for line in BufReader::new(file_user).lines() {
+        let mut line_iter = line.expect("Error write_change");
+        let mut ite = line_iter.trim().split_whitespace();
+        let r = match ite.next(){
+            Some(x) => x,
+            None => continue,
+        };
+        let c = match ite.next(){
+            Some(x) => x,
+            None => continue,
+        };
+        let d = match ite.next(){
+            Some(x) => x,  
+            None => continue,
+        };
+        let r :i32 = r.trim().parse().expect("bad format");
+        let c :i32 = c.trim().parse().expect("bad format");
+        let mut current_evaluation : Vec<(i32,i32)> = Vec::new();
+        let mut cell = create_cell(d.to_string());
+        let (r1,r2,c1,c2) = spreadsheet[r as usize][c as usize].get_region();
+        if (r1,r2,c1,c2) != (-1,-1,-1,-1) {
+            for i in r1..r2 {
+                for j in c1..c2 {
+                    match dependencies.get_mut(&(i as i32,j as i32)) {
+                        Some(dependence) => dependence.retain(|&x| x != (r,c)),
+                        _ => println!("err"),
+                    }
+                }
+            }
+        }
+        let (val,de) = cell.evaluate(spreadsheet,&mut current_evaluation,r,c);
+        cell.set_value(val);
+        for (&key, val) in de.iter(){
+            if !dependencies.contains_key(&key) {
+                dependencies.insert(key,Vec::new());
+            }
+            match dependencies.get_mut(&key) {
+                Some(dependency) => dependency.extend(val),
+                _ => (),
+            }
+                
+        }
+        spreadsheet[r as usize][c as usize] = cell;
+        write!(file_change, "after  \"{} {} {}\":\n", r,c,d).expect("Error Writing into the change");
+        match dependencies.get(&(r,c)) {
+            Some(d) => 
+                for &(x,y) in d {
+                    let mut cell = spreadsheet[x as usize][y as usize].copy_cell();
+                    let (val,_) = cell.evaluate(spreadsheet,&mut current_evaluation,x,y);
+                    if val != spreadsheet[x as usize][y as usize].get_value(){
+                        cell.set_value(val);
+                        spreadsheet[x as usize][y as usize] = cell;
+                        write!(file_change, "{} {} {}\n", x,y,val).expect("Error Writing into the change");
+                    }
+                },
+            _ => (),
+        }
+    }
+}
 
 fn main()
 {
@@ -333,9 +366,7 @@ fn main()
     let t = gen_table(data);
     
     print_table(&t);
-    let (mut grid,dependencies) = evaluate(&t);
-    add_dependency(&mut grid,&dependencies);
+    let (mut grid,mut dependences) = evaluate(&t);
     write_view0(&args[3],&grid);
-    
-
+    write_change(&args[2],&args[4],&mut grid,&mut dependences)
 }    
