@@ -1,24 +1,50 @@
-#!/bin/bash
-platform='unknown'
-unamestr=`uname`
-if [[ "$unamestr" == 'Linux' ]]; then
-   platform='linux'
-elif [[ "$unamestr" == 'Darwin' ]]; then
-   platform='macOS'
-fi
+#!/bin/sh
 
-docker_volume_flag() {
-    if [[ "$platform" == 'macOS' ]]; then
-        echo "-v $(greadlink -m $1):/go/src/$(basename $1)"
-    else
-	echo "-v $(readlink -m $1):/go/src/$(basename $1)"
-    fi
+container=nw_ws
+
+exported_name() {
+    printf "%s" /tmp/$(basename $1)
 }
 
-run_in_docker_container() {
-    dvf_list=$(docker_volume_flag $@)
-    echo "Volume list: $dvf_list"
-    docker run --rm $dvf_list nw-group/ws $(basename -a $@)
+exported_names() {
+    local names
+
+    for file in $@; do
+        names=$(printf "%s %s" "$names" $(exported_name $file))
+    done
+    printf "%s" "$names"
 }
 
-run_in_docker_container $@
+import_files() {
+    for file in $@; do
+        local exported_file=$(exported_name $file)
+
+        docker exec $container test -e $exported_file &&        \
+            docker cp $container:$exported_file $file
+    done
+}
+
+export_files() {
+    for file in $@; do
+        if [ -e $file ]; then
+            docker cp $file $container:$(exported_name $file)
+        fi
+    done
+}
+
+quiet() {
+    $@ > /dev/null
+}
+
+main() {
+    $(quiet docker run -td --name=$container nw-group/ws)
+    export_files $@
+    docker exec $container Go/main.exe $(exported_names $@)
+    status=$?
+    import_files $3 $4
+    $(quiet docker stop $container)
+    $(quiet docker rm $container)
+    return $status
+}
+
+main $@
