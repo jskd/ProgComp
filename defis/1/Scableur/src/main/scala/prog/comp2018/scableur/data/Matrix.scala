@@ -5,11 +5,11 @@ import scala.collection.mutable.ListBuffer
 /**
   * Abstract container type
   */
-trait TableType[Printable]  {
+trait TableType[T]  {
   def height : Int
   def width : Int
-  def get (i: Int, j: Int) : Printable
-  def set(v: Printable, i: Int, j: Int)
+  def get (i: Int, j: Int) : T
+  def set(v: T, i: Int, j: Int)
 
 }
 

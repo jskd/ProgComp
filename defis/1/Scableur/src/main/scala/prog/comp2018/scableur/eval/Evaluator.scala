@@ -2,7 +2,6 @@ package prog.comp2018.scableur.eval
 
 import prog.comp2018.scableur.data.functions.NbrIteration
 import prog.comp2018.scableur.data.{EvaluatedMatrix, _}
-import prog.comp2018.scableur.utils.Debug
 
 trait Evaluator[T] {
   def eval : T
