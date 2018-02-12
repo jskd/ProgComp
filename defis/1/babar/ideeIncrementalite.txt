@@ -1,8 +1,10 @@
 compteur static (de formule)
 formule.ID = compteur++
-hashmap <ID, formule>
+hashmap <formule.ID, formule>
+(lors de la premiere éval des formules)
 si cell dans formule:
 cell.listeID.append(formule.ID)
+(avec l'utilisation de user.txt)
 si cell.value != cell.oldValue
  alors si cell.listeID != vide
   alors pour tout ID de cell.listeID
@@ -10,10 +12,13 @@ si cell.value != cell.oldValue
   end si
 end si
 
-increment (int id, cellule cell)
+increment (int id, cellule cell, int oldvalue)
  formule = hashmap.get(id)
- si cell.value != formule.valueseek && cell.oldvalue != formule.valueseek
+ si cell.value != formule.valueseek && oldvalue == formule.valueseek
   alors formule.value -=1
+ end si
+ si cell.value == formule.valueseek && oldvalue != formule.valueseek
+  alors formule.value +=1
  end si
  
 
