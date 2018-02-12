@@ -1,12 +1,10 @@
-#Futur X = remplacer par X
-
 CC     = gcc
 CFLAGS = -g -std=gnu99 -Wall -pedantic
 OBJECTS = src/main.o src/worksheets.o
-TARGET = ws # Futur wso
+TARGET = wso
 DOCKER_IMAGE = carmack-image
 
-all: $(TARGET) # Futur docker
+all: docker
 
 docker:
 	docker build -t $(DOCKER_IMAGE) .
