@@ -33,7 +33,7 @@ if [ $# -eq 4 ] ; then
 #		CONTAINER=$(docker ps -aqf "ancestor=carmack-image")
 		
 #		if [ -z "$CONTAINER" ]; then
-			CONTAINER=$(docker run -it -d $IMAGE /bin/sh)
+			CONTAINER=$(docker run -it -d $IMAGE /bin/bash)
 #		fi
 
 		IDATA_PATH=$1
