@@ -90,7 +90,8 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
     - <2018-02-26> "Programmation SIMD sur GPU" par Carmack
     - <2018-03-05> "Go" par nw-group
     - <2018-03-12> "Rust" par Babar
-*** TODO Les paradigmes de programmation
+*** DONE Les paradigmes de programmation
+    - State "DONE"       from "TODO"       [2018-02-12 Mon 10:09]
     - POO : Interaction entre entité autonome qui collabore pour
       résoudre un problème.
     - Impérative : Résoudre un problème en modifiant le monde par une séquence
@@ -100,9 +101,12 @@ Sous Emacs, utiliser [TAB] pour ouvrir ou fermer les différentes sections.
     - Fonctionnelle : Le monde est composée de valeurs (mathématiques) et
       la résolution d'un problème c'est écrire une fonction qui produit
       les valeurs recherchées à partir des valeurs que l'on donne.
+** Séance 6
 *** TODO La programmation structurée
-
 *** TODO Lire https://dl.acm.org/citation.cfm?id=359140 (le PDF, bien sûr)
+
+*** TODO Défi 2: Etat des lieux
+*** TODO Défi 3: Brainstorming et plan
 * Notes de cours
 
 Ces notes sont à compléter avec vos propres remarques personnelles et

@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# En l'occurrence :
+# ./wsd = ce script qui utilise docker
+# ./ws = le vrai binaire
+
+# Normalement :
+# ./ws = ce script qui utilise Docker
+# ./wso = le vrai binaire
+
+# L'équipe de test fait 'make' puis './ws data.csv user.txt foo bar'
+# C'est ce script qui sera appelé.
+# Cependant, on ne peut pas faire 'docker run $1 $2 $3 $4' car 
+# les fichiers fournis ne sont pas dans le container.
+# On crée donc le container (qui contient les sources et 'wso')
+# on copie les fichiers les entrées, on exec notre ws compilé
+# Puis on rappatrie les sorties 'view0.csv' et 'changes.txt'
+
+# Si l'on time ./ws, on time aussi toutes ces opérations...
+
+# D'ailleurs, sous Linux, Docker requiert sudo (pas sous Mac)
+# Mais sous Mac, Docker tourne dans une VM donc bon...
+
+EXEC=wso
+DST=/usr/src/carmack
+NAME=carmack
+IMAGE=carmack-image
+
+if [ $# -eq 4 ] ; then
+	if [[ "$(docker images -q $IMAGE:latest 2> /dev/null)" == "" ]]; then
+		echo "No images found. Please run 'make' first!"
+	else
+#		CONTAINER=$(docker ps -aqf "ancestor=carmack-image")
+		
+#		if [ -z "$CONTAINER" ]; then
+			CONTAINER=$(docker run -it -d $IMAGE /bin/bash)
+#		fi
+
+		IDATA_PATH=$1
+		IUSER_PATH=$2
+		IVIEW_PATH=$3
+		ICHGS_PATH=$4
+		
+		if [[ "$(pwd)" = *"charlatans"* ]] ; then
+			GIT_PATH=$(git rev-parse --show-toplevel)
+			IDATA_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$1"
+			IUSER_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$2"
+			IVIEW_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$3"
+			ICHGS_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$4"
+		fi
+
+		IDATA=$(basename $IDATA_PATH)
+		IUSER=$(basename $IUSER_PATH)
+		IVIEW=$(basename $IVIEW_PATH)
+		ICHGS=$(basename $ICHGS_PATH)
+
+		docker cp $IDATA_PATH $CONTAINER:"$DST/$IDATA"
+		docker cp $IUSER_PATH $CONTAINER:"$DST/$IUSER"
+		docker exec -it $CONTAINER \
+			./$EXEC $IDATA $IUSER $IVIEW $ICHGS
+		docker cp $CONTAINER:"$DST/$IVIEW" $IVIEW_PATH
+		docker cp $CONTAINER:"$DST/$ICHGS" $ICHGS_PATH
+		docker stop $CONTAINER
+		docker rm $CONTAINER
+	fi
+else
+	echo "usage: ./ws data.csv user.txt view0.csv changes.txt"
+fi
