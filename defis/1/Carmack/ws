@@ -21,7 +21,7 @@
 # D'ailleurs, sous Linux, Docker requiert sudo (pas sous Mac)
 # Mais sous Mac, Docker tourne dans une VM donc bon...
 
-EXEC=ws
+EXEC=wso
 DST=/usr/src/carmack
 NAME=carmack
 IMAGE=carmack-image
@@ -30,13 +30,11 @@ if [ $# -eq 4 ] ; then
 	if [[ "$(docker images -q $IMAGE:latest 2> /dev/null)" == "" ]]; then
 		echo "No images found. Please run 'make' first!"
 	else
-		CONTAINER=$(docker ps -aqf "ancestor=carmack-image")
+#		CONTAINER=$(docker ps -aqf "ancestor=carmack-image")
 		
-		if [ -z "$CONTAINER" ]; then
+#		if [ -z "$CONTAINER" ]; then
 			CONTAINER=$(docker run -it -d $IMAGE /bin/bash)
-		fi
-
-		# Bon j'ai tenté pleins de trucs...
+#		fi
 
 		IDATA_PATH=$1
 		IUSER_PATH=$2
@@ -51,18 +49,20 @@ if [ $# -eq 4 ] ; then
 			ICHGS_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$4"
 		fi
 
-		IDATA=$(basename $1)
-		IUSER=$(basename $2)
-		IVIEW=$(basename $3)
-		ICHGS=$(basename $4)
+		IDATA=$(basename $IDATA_PATH)
+		IUSER=$(basename $IUSER_PATH)
+		IVIEW=$(basename $IVIEW_PATH)
+		ICHGS=$(basename $ICHGS_PATH)
 
 		docker cp $IDATA_PATH $CONTAINER:"$DST/$IDATA"
 		docker cp $IUSER_PATH $CONTAINER:"$DST/$IUSER"
-		docker exec -it $CONTAINER ./$EXEC $IDATA $IUSER $IVIEW $ICHGS
+		docker exec -it $CONTAINER \
+			./$EXEC $IDATA $IUSER $IVIEW $ICHGS \
+			2>/dev/null 1>&2
 		docker cp $CONTAINER:"$DST/$IVIEW" $IVIEW_PATH
 		docker cp $CONTAINER:"$DST/$ICHGS" $ICHGS_PATH
-		docker stop $CONTAINER # à arrêter peut-être pour les tests
-		docker rm $CONTAINER
+		docker stop $CONTAINER 2>/dev/null 1>&2
+		docker rm $CONTAINER 2>/dev/null 1>&2
 	fi
 else
 	echo "usage: ./ws data.csv user.txt view0.csv changes.txt"
