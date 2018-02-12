@@ -1,10 +1,17 @@
+#Futur X = remplacer par X
+
 CC     = gcc
 CFLAGS = -g -std=gnu99 -Wall -pedantic
 OBJECTS = src/main.o src/worksheets.o
-TARGET = ws
+TARGET = ws # Futur wso
+DOCKER_IMAGE = carmack-image
 
+all: $(TARGET) # Futur docker
 
-all: $(TARGET)
+docker:
+	docker build -t $(DOCKER_IMAGE) .
+
+fresh: mrproper $(TARGET)
 
 $(TARGET): $(OBJECTS)
 	$(CC) $^ -o $(TARGET) $(CFLAGS)
@@ -19,4 +26,6 @@ clean:
 	rm -rf src/*.o
 
 mrproper: clean
-		rm -rf $(TARGET)
+	rm -rf $(TARGET) *.csv *.txt
+
+.PHONY: all docker clean mrmroper fresh
