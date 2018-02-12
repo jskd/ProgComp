@@ -1,0 +1,20 @@
+compteur static (de formule)
+formule.ID = compteur++
+hashmap <ID, formule>
+si cell dans formule:
+cell.listeID.append(formule.ID)
+si cell.value != cell.oldValue
+ alors si cell.listeID != vide
+  alors pour tout ID de cell.listeID
+   increment(ID, cell, cell.oldvalue) end pour tout
+  end si
+end si
+
+increment (int id, cellule cell)
+ formule = hashmap.get(id)
+ si cell.value != formule.valueseek && cell.oldvalue != formule.valueseek
+  alors formule.value -=1
+ end si
+ 
+
+ 
