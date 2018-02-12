@@ -20,6 +20,12 @@ increment (int id, cellule cell, int oldvalue)
  si cell.value == formule.valueseek && oldvalue != formule.valueseek
   alors formule.value +=1
  end si
- 
 
- 
+Parcourir le fichier une fois; dresser une liste des formules qui dependent d'une autre formule (cad non evaluable tout de suite).
+On parcourt ensuite cette liste de formules :
+-on a 4 etats : blanc=non visite; noir= evalue; gris=en cours d'evalutation; rouge=evaluation impossible.
+-quand on evalue une formule contenue dans une cellule A, on colore A en gris et on evalue les cellules dont elle a besoin.
+-si au moins l'une de ces cellules est grise ou rouge, on colore la cellule A et la cellule concerneee ls
+ls
+n rouge.
+-sinon on la colore en noir et on y met la valeur obtenue.
