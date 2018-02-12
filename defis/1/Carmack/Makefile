@@ -7,7 +7,7 @@ DOCKER_IMAGE = carmack-image
 all: docker
 
 docker:
-	docker build -t $(DOCKER_IMAGE) .
+	@docker build -t $(DOCKER_IMAGE) .
 
 fresh: mrproper $(TARGET)
 

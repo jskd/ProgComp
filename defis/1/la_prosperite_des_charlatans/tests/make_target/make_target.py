@@ -4,6 +4,8 @@ from subprocess import *
 from os import listdir
 from os.path import isfile, join
 
+TIMEOUT = 300
+
 # OPEN CONSTANTS IN config.json
 with open("config.json") as config_data:
     config = json.load(config_data)
@@ -19,7 +21,7 @@ if __name__ == "__main__":
         try:
 
             cmd = ["make", "--directory=" + group_path]
-            out = check_output(cmd, stderr=STDOUT, timeout=60).decode("utf-8")
+            out = check_output(cmd, stderr=STDOUT, timeout=TIMEOUT).decode("utf-8")
 
         except Exception as e:
             out = str(e)

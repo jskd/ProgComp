@@ -57,12 +57,11 @@ if [ $# -eq 4 ] ; then
 		docker cp $IDATA_PATH $CONTAINER:"$DST/$IDATA"
 		docker cp $IUSER_PATH $CONTAINER:"$DST/$IUSER"
 		docker exec -it $CONTAINER \
-			./$EXEC $IDATA $IUSER $IVIEW $ICHGS \
-			2>/dev/null 1>&2
+			./$EXEC $IDATA $IUSER $IVIEW $ICHGS
 		docker cp $CONTAINER:"$DST/$IVIEW" $IVIEW_PATH
 		docker cp $CONTAINER:"$DST/$ICHGS" $ICHGS_PATH
-		docker stop $CONTAINER 2>/dev/null 1>&2
-		docker rm $CONTAINER 2>/dev/null 1>&2
+		docker stop $CONTAINER
+		docker rm $CONTAINER
 	fi
 else
 	echo "usage: ./ws data.csv user.txt view0.csv changes.txt"
