@@ -1,9 +1,0 @@
-{
-  "infos":[
-    {
-      "name":"Execute bin/ws",
-      "exec": ["python3", "execute_ws.py"],
-      "expected": ""
-    }
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "infos":[
-    {
-      "name":"Empty test",
-      "exec": ["python3", "empty.py"],
-      "expected": ""
-    }
-  ]
-}

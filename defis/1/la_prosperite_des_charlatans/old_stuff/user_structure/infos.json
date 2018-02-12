@@ -1,9 +1,0 @@
-{
-  "infos":[
-    {
-      "name":"Test user.txt structure",
-      "exec": ["python3", "user_structure.py"],
-      "expected": ""
-    }
-  ]
-}
