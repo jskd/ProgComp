@@ -4,10 +4,13 @@ OBJECTS = src/main.o src/worksheets.o
 TARGET = wso
 DOCKER_IMAGE = carmack-image
 
-all: docker
+all: docker_alpine
 
-docker:
-	@docker build -t $(DOCKER_IMAGE) .
+docker_alpine:
+	@docker build -f Dockerfile_alpine -t $(DOCKER_IMAGE) .
+
+docker_gcc:
+	@docker build -f Dockerfile_gcc -t $(DOCKER_IMAGE) .
 
 fresh: mrproper $(TARGET)
 
@@ -26,4 +29,4 @@ clean:
 mrproper: clean
 	rm -rf $(TARGET) *.csv *.txt
 
-.PHONY: all docker clean mrmroper fresh
+.PHONY: all docker_alpine docker_gcc clean mrmroper fresh

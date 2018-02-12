@@ -33,7 +33,7 @@ if [ $# -eq 4 ] ; then
 #		CONTAINER=$(docker ps -aqf "ancestor=carmack-image")
 		
 #		if [ -z "$CONTAINER" ]; then
-			CONTAINER=$(docker run -it -d $IMAGE /bin/bash)
+			CONTAINER=$(docker run -it -d $IMAGE /bin/sh)
 #		fi
 
 		IDATA_PATH=$1
@@ -56,7 +56,7 @@ if [ $# -eq 4 ] ; then
 
 		docker cp $IDATA_PATH $CONTAINER:"$DST/$IDATA"
 		docker cp $IUSER_PATH $CONTAINER:"$DST/$IUSER"
-		docker exec -it $CONTAINER \
+		docker exec $CONTAINER \
 			./$EXEC $IDATA $IUSER $IVIEW $ICHGS
 		docker cp $CONTAINER:"$DST/$IVIEW" $IVIEW_PATH
 		docker cp $CONTAINER:"$DST/$ICHGS" $ICHGS_PATH
