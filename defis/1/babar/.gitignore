@@ -1,4 +1,10 @@
-tableur
+#####Rust binaries & doc generated files#####
 Cargo.lock
 target/*
-target/debug/*
+
+#####Execution generated files#####
+ressources/view0.csv
+ressources/changes.txt
+
+#####Others#####
+.gitignore~

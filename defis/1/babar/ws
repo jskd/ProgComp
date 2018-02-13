@@ -1,3 +1,2 @@
 #!/bin/sh
-
-docker run ws $@
+docker run -it --rm -v $PWD:/ws --name ws ws
