@@ -6,4 +6,4 @@ test:
 	${PY}  src/testing.py grp=${grp} number=${number}
 
 webapp:
-	${PY} web_app/server_cherry.py
+	${PY} web_app/Run.py

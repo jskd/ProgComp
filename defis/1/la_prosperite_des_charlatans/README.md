@@ -9,6 +9,7 @@
 ```sh
   pip install termcolor
   pip install cherrypy
+  pip install jinja2
 ```
 
 ### Makefile rules
@@ -26,3 +27,8 @@
 ```tests/test_name/``` : Script test and informations
 ```tests/_tests_order.txt``` : Order of tests, indexed by lines numbers.
 ```web_app/``` : Web application directory (View stats and historic)
+
+### Resources
+
+```https://simpletutorials.com/c/2535/MVC+with+CherryPy+and+Jinja2```
+```http://jinja.pocoo.org/docs/2.10/intro/```
