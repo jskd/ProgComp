@@ -1,6 +1,6 @@
 import os
 
 class SiteConfig:
-    home = "web_app/"
+    home = os.path.abspath("./") + "/web_app"
 
 site_config = SiteConfig()
