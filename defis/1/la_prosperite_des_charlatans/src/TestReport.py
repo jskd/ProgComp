@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 import json, os, sys, datetime
 from subprocess import *
+import sqlite3
+
+DB_PATH = "data/database.csv"
 
 class TestReport():
     def __init__(self, target, report_path, report_name):
@@ -43,7 +46,7 @@ class TestReport():
         group_name = self.target["name"]
         last_commit = ""
 
-        for line in self.reverse_readline("database.csv"):
+        for line in self.reverse_readline(DB_PATH):
             splited = line.split(";")
 
             if splited[2] == group_name and splited[3] == test_name  and splited[len(splited)-1] == "PASS":
@@ -54,7 +57,7 @@ class TestReport():
 
     def saveReportDatabase(self):
         now = datetime.datetime.now()
-        with open("database.csv", "a") as database:
+        with open(DB_PATH, "a") as database:
             for log in self.logs:
 
                 database.write("{};{};{};{};{}\n".format(

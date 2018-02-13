@@ -7,7 +7,7 @@ from os.path import isfile, join
 TIMEOUT = 300
 
 # OPEN CONSTANTS IN config.json
-with open("config.json") as config_data:
+with open("data/config.json") as config_data:
     config = json.load(config_data)
     settings = config["settings"]
 
