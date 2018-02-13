@@ -38,7 +38,7 @@ pub fn calcul_occ(cell:&cell::Formula,spreadsheet:&Vec<Vec<Box<cell::Cell>>>,cur
                 Some(dependency) => dependency.push((posr,posc)),
                 _ => println!("err"),
             }
-            if val == cell.v{
+            if val == cell.val{
                 val_num = val_num+1;
             }
         }

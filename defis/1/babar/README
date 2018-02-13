@@ -1,7 +1,0 @@
-Pour une utilisation sans Docker:
-	make pour compiler
-	make run pour executer
-
-Pour une utilisation avec Docker:
-	make build pour compiler
-	make rund pour executer

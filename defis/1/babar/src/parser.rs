@@ -24,7 +24,7 @@ pub fn init_formula(form_dec_vec: Vec<&str>) -> Box<cell::Cell>
             .expect("Erreur format"),
             c2:form_dec_vec[3].trim().parse()
             .expect("Erreur format"),
-            v:form_dec_vec[4].trim().parse()
+            val:form_dec_vec[4].trim().parse()
             .expect("Erreur format"),
     };
     Box::new(cell)
