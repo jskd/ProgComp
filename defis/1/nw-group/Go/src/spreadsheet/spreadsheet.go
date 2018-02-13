@@ -181,9 +181,9 @@ type Command struct {
 }
 
 type Change struct {
-	row    int
-	column int
-	value  int
+	Row    int
+	Column int
+	Value  int
 }
 
 func toCommand(s string) *Command {
@@ -215,7 +215,8 @@ func CommandsFromFile(filename string) []*Command {
 	return commands
 }
 
-func applyCommand(command *Command, view [][]int) [][]Cell {
+func applyCommand(command *Command, spreadSheetBefore [][]Cell,
+	view [][]int) [][]Cell {
 	spreadSheet := make([][]Cell, len(view))
 
 	for r, row := range view {
@@ -226,29 +227,38 @@ func applyCommand(command *Command, view [][]int) [][]Cell {
 			if r == command.Row && c == command.Column {
 				spreadSheet[r][c] = Cell{command.Command, false}
 			} else {
-				spreadSheet[r][c] =
-					Cell{&immediate{value}, false}
+				switch spreadSheetBefore[r][c].data.(type) {
+				case *formula:
+					spreadSheet[r][c] =
+						spreadSheetBefore[r][c]
+				default:
+					spreadSheet[r][c] =
+						Cell{&immediate{value}, false}
+				}
 			}
 		}
 	}
 	return spreadSheet
 }
 
-func Changes(commands []*Command, before [][]int) map[*Command][]Change {
+func Changes(commands []*Command, spreadSheetBefore [][]Cell,
+	viewBefore [][]int) map[*Command][]Change {
 	res := make(map[*Command][]Change)
 
 	for _, command := range commands {
-		spreadSheet := applyCommand(command, before)
+		spreadSheet := applyCommand(command, spreadSheetBefore, viewBefore)
 		after := Evaluate(spreadSheet)
 		for r, row := range after {
 			for c, value := range row {
-				if value != before[r][c] {
+				if value != viewBefore[r][c] {
 					change := Change{r, c, value}
 					res[command] = append(res[command],
 						change)
 				}
 			}
 		}
+		viewBefore = after
+		spreadSheetBefore = spreadSheet
 	}
 	return res
 }

@@ -23,7 +23,7 @@ func main_program(args []string) {
 	view := spreadsheet.Evaluate(spreadSheet)
 	writeView(args[2], view)
 	commands := spreadsheet.CommandsFromFile(args[1])
-	changes := spreadsheet.Changes(commands, view)
+	changes := spreadsheet.Changes(commands, spreadSheet, view)
 	writeChanges(args[3], changes)
 }
 
@@ -36,11 +36,14 @@ func writeChanges(filename string,
 	changes map[*spreadsheet.Command][]spreadsheet.Change) {
 	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
 	for command, changes := range changes {
-		msg := fmt.Sprintf("after \"%d %d %s\"", command.Row,
+		msg := fmt.Sprintf("after \"%d %d %s\":\n", command.Row,
 			command.Column, command.Command)
 		file.WriteString(msg)
-		/* TODO: Print the changes in the right format.  */
-		fmt.Println(changes)
+		for _, change := range changes {
+			s := fmt.Sprintf("%d %d %d\n", change.Row,
+				change.Column, change.Value)
+			file.WriteString(s)
+		}
 	}
 	file.Close()
 }
