@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-import json, os, sys, datetime
-from subprocess import *
-import sqlite3
+# -*- coding: utf-8 -*-
 
-DB_PATH = "data/database.csv"
+import json, os, sys, datetime, sqlite3
+from subprocess import *
+from pathlib import Path
+
+DB_PATH = "data/database.db"
 
 class TestReport():
     def __init__(self, target, report_path, report_name):
@@ -18,6 +20,20 @@ class TestReport():
             self.commit = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
             self.commit = self.commit.strip("\n")
         except: self.commit = ""
+
+    def init_database(self, path):
+        try:
+            qry = open('data/init_db.sql', 'r').read()
+            conn = sqlite3.connect(path)
+            cursor = conn.cursor()
+            cursor.executescript(qry)
+            conn.commit()
+        except Exception as e:
+            print(str(e))
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
 
     def addLog(self, threadExec):
         log = {
@@ -46,27 +62,61 @@ class TestReport():
         group_name = self.target["name"]
         last_commit = ""
 
-        for line in self.reverse_readline(DB_PATH):
-            splited = line.split(";")
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
 
-            if splited[2] == group_name and splited[3] == test_name  and splited[len(splited)-1] == "PASS":
-                last_commit = splited[0]
-                break
+            qry = "SELECT sha, date_test FROM logs WHERE \
+                name_group=\"{}\" and \
+                name_test=\"{}\" and \
+                result='PASS'\
+                ORDER BY date_test DESC LIMIT 1;".format(group_name, test_name)
+
+            cursor.execute(qry)
+            result_qry = cursor.fetchone()
+            if result_qry != None:
+                last_commit = result_qry[0]
+
+        except Exception as e:
+            print(str(e))
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
 
         return last_commit
 
     def saveReportDatabase(self):
-        now = datetime.datetime.now()
-        with open(DB_PATH, "a") as database:
+        if not Path(DB_PATH).exists():
+            self.init_database(DB_PATH)
+
+        try:
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+
             for log in self.logs:
+                qry = "INSERT INTO logs (sha, \
+                    date_test, \
+                    name_group, \
+                    name_test, \
+                    result, \
+                    bench_time \
+                    ) VALUES (\"{}\",{},\"{}\",\"{}\",\"{}\",\"{}\"); \
+                    ".format(log["commit"],
+                    "datetime()",
+                    self.target["name"],
+                    log["test_info"]["name"],
+                    log["result"],
+                    log["exec_time"])
 
-                database.write("{};{};{};{};{}\n".format(
-                self.commit,
-                now.strftime("%Y-%m-%d %H:%M"),
-                self.target["name"],
-                log["test_info"]["name"],
-                log["result"]))
-
+                cursor.execute(qry)
+                conn.commit()
+        except Exception as e:
+            print(str(e))
+            conn.rollback()
+        finally:
+            cursor.close()
+            conn.close()
 
     def saveReportHtml(self):
         self.report_name += ".html"
@@ -86,9 +136,6 @@ class TestReport():
         with open(self.report_path + "/" + self.report_name, "r") as rapport:
             rapport_string = rapport.read()
 
-
-        #rapport_string = rapport_string.replace("form.css", "../form.css")
-        #rapport_string = rapport_string.replace("img/", "../img/")
         rapport_string = rapport_string.replace("${GROUP}", self.target["name"])
         rapport_string = rapport_string.replace("${SHA}", self.commit)
         rapport_string = rapport_string.replace("${NB_PASSED}", str(self.NB_PASSED) + "/" + str(len(self.logs)))
@@ -135,36 +182,3 @@ class TestReport():
 
         with open(self.report_path + "/" + self.report_name, "w") as rapport:
             rapport.write(rapport_string)
-
-
-    def reverse_readline(self, filename, buf_size=8192):
-        """a generator that returns the lines of a file in reverse order"""
-        with open(filename) as fh:
-            segment = None
-            offset = 0
-            fh.seek(0, os.SEEK_END)
-            file_size = remaining_size = fh.tell()
-            while remaining_size > 0:
-                offset = min(file_size, offset + buf_size)
-                fh.seek(file_size - offset)
-                buffer = fh.read(min(remaining_size, buf_size))
-                remaining_size -= buf_size
-                lines = buffer.split('\n')
-                # the first line of the buffer is probably not a complete line so
-                # we'll save it and append it to the last line of the next buffer
-                # we read
-                if segment is not None:
-                    # if the previous chunk starts right from the beginning of line
-                    # do not concact the segment to the last line of new chunk
-                    # instead, yield the segment first
-                    if buffer[-1] is not '\n':
-                        lines[-1] += segment
-                    else:
-                        yield segment
-                segment = lines[0]
-                for index in range(len(lines) - 1, 0, -1):
-                    if len(lines[index]):
-                        yield lines[index]
-            # Don't yield None if the file was empty
-            if segment is not None:
-                yield segment

@@ -1,0 +1,35 @@
+{
+  "settings": {
+    "test_dir": "tests/",
+    "bin_dir": "bin/",
+    "makefile": "Makefile",
+    "expected_dir": "expected/",
+    "infos_json": "infos.json",
+    "view0": "output/view0.csv",
+    "changes": "output/changes.txt",
+    "executable": "ws",
+    "result_dir": "results/" }
+  ,
+  "target":[
+    {
+      "name":"babar",
+      "path":"../babar"
+    },
+    {
+      "name":"Carmack",
+      "path":"../Carmack"
+    },
+    {
+      "name":"Scableur",
+      "path":"../Scableur"
+    },
+    {
+      "name":"nw-group",
+      "path":"../nw-group"
+    },
+    {
+      "name":"GroupTest",
+      "path":"../GroupTest"
+    }
+  ]
+}
