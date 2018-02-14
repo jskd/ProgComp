@@ -243,11 +243,11 @@ aside
 }
 
 .result_icon_pass{
-	background-image: url(/Content/img/pass_icon.png);
+	background-image: url(/content/img/pass_icon.png);
 	background-size: contain;
 }
 
 .result_icon_fail{
-	background-image: url(/Content/img/fail_icon.png);
+	background-image: url(/content/img/fail_icon.png);
 	background-size: contain;
 }
