@@ -1,5 +1,5 @@
 import cherrypy, sqlite3
-from Controllers.Base import BaseController
+from controllers.Base import BaseController
 import os
 
 DB_PATH = "data/database.db"
