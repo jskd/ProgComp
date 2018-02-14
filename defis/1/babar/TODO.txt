@@ -3,7 +3,5 @@
 *Continuer renommage variables & indentation dans treatment.
 
 *Voir les notes laissees a ces emplacements :
-    *Cell.rs
-        *Formula : num c'est quoi ?
     *parser.rs
-        *fn create_cell -> pas claire
+        *fn create_cell -> see TODO (and fix the bug)

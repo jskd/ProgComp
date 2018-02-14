@@ -30,6 +30,8 @@ pub struct Number
 }
 
 ///A Formula represents a formula in the data.
+///num is the number of occurences of val in the range [(r1,c1); (r2;c2)].
+///num value is -1 if the Fornula does not evaluate properly.
 pub struct Formula
 {
     pub num: i32, //TODO
