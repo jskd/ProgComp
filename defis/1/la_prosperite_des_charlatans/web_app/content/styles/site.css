@@ -103,6 +103,42 @@ aside
   font-style: italic;
 }
 
+.ul_scores_list
+{
+  padding: 0px;
+  padding-left: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  list-style-type: none;
+  font-family:Verdana, Geneva, sans-serif;
+}
+
+.ul_scores_list p
+{
+  display: inline-block;
+  vertical-align: top;
+  height: 20px;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.ul_scores_list img
+{
+  width: 25px;
+  height: 25px;
+  display: inline-block;
+}
+
+.li_scores_list_pass
+{
+  color: rgb(0,200,0);
+}
+
+.li_scores_list_fail
+{
+  color: rgb(200,0,0);
+}
+
 .title_bloc
 {
   padding-top: 5px;
