@@ -31,8 +31,8 @@
 
 .inline_group_logs p{
 	float: left;
-	width: 100px;
   margin-left: 10px;
+  margin-right: 20px;
   margin-top: 10px;
   font-style: normal;
 }
@@ -66,4 +66,31 @@
 	width: 30px;
 	height: 30px;
 	margin-right: 10px;
+}
+
+.ul_result_fail{
+	color: rgb(200,0,0);
+}
+
+.ul_result_fail a{
+	color: rgb(200,0,0);
+	text-decoration: none;
+}
+
+.ul_result_fail a:hover{
+	color: rgb(50,50,50);
+}
+
+.ul_result_pass{
+	color: rgb(0,200,0);
+	text-decoration: none;
+}
+
+.ul_result_pass a{
+	color: rgb(0,200,0);
+	text-decoration: none;
+}
+
+.ul_result_pass a:hover{
+	color: rgb(50,50,50);
 }

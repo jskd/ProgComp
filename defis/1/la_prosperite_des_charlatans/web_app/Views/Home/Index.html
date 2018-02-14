@@ -6,18 +6,33 @@
 
 {% block body %}
 
+  {% for group in last_group_test %}
   <div class="inline_group_logs">
-    <ul>
-      <li><p><a href=""><font color='#2dae5b'>0fc345de</font></a></p></li>
-      <li><p><font color='#2dae5b'>Date</font></p></li>
-      <li><p><font color='#2dae5b'>Group</font></p></li>
+
+    {% if group[4] == group[5] %}
+      <ul class="ul_result_pass">
+    {% else %}
+      <ul class="ul_result_fail">
+    {% endif %}
+
+      <li><p><a href="">{{group[0]}}</a></p></li>
+      <li><p>{{ group[1] }}</p></li>
+      <li><p>{{ group[2] }}</p></li>
       <li>
         <div class='inline_group_results'>
-          <p><font color='#2dae5b'>5/9</font></p>
-          <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+          <p>{{ group[4] }}/{{ group[5] }}</font></p>
+
+          {% if group[4] == group[5] %}
+            <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+          {% else %}
+            <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
+          {% endif %}
+
         </div>
       </li>
     </ul>
   </div>
+
+  {% endfor %}
 
 {% endblock %}
