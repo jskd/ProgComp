@@ -5,11 +5,19 @@
 {% endblock %}
 
 {% block body %}
-<div id="welcome-header">
-  Hello! {{ pwd }}
-  <div id="welcome-text">
-      This is content from Views/Home/Index.html. <br/><br/>
-      The outer template is Views/Layout.html.
+
+  <div class="inline_group_logs">
+    <ul>
+      <li><p><a href=""><font color='#2dae5b'>0fc345de</font></a></p></li>
+      <li><p><font color='#2dae5b'>Date</font></p></li>
+      <li><p><font color='#2dae5b'>Group</font></p></li>
+      <li>
+        <div class='inline_group_results'>
+          <p><font color='#2dae5b'>5/9</font></p>
+          <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+        </div>
+      </li>
+    </ul>
   </div>
-</div>
+
 {% endblock %}

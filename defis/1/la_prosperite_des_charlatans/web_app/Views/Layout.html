@@ -8,13 +8,52 @@
     {% block head %}{% endblock %}
 </head>
 <body>
+  <header>
+    <h2>PyTesting - Alpha</h2>
+    <p> Framework by Charlatants© </p>
+  </header>
 
-<div id="top-section">
-</div>
+  <section id="content">
+    <aside>
+      <section class="title_bloc">
+        <img src="/Content/img/reports_icon2.png"/>
+        <p>Menu</p>
+      </section>
 
-<div id="middle-section">
-{% block body %}{% endblock %}
-</div>
+      <ul class="menu_link">
+        <li><a href="">Last tests</a></li>
+        <li><a href="">Stats</a></li>
+      </ul>
+
+      <section class="title_bloc">
+        <img src="/Content/img/reports_icon2.png"/>
+        <p>Best scores</p>
+      </section>
+
+      <br>
+
+      <ul>
+        <li>
+          <p>Groupe 1 -
+          <span style="color: rgb(0,200,0);">5</span>
+          <span style="color: rgb(200,0,0);">4</span>
+          </p>
+        </li>
+        <li>
+          <p>Groupe 2 -
+          <span style="color: rgb(0,200,0);">2</span>
+          <span style="color: rgb(200,0,0);">7</span>
+          </p>
+        </li>
+      </ul>
+
+    </aside>
+
+    <article>
+      {% block body %}{% endblock %}
+    </article>
+
+  </section>
 
 </body>
 </html>

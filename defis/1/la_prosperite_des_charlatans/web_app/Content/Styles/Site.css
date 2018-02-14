@@ -1,18 +1,253 @@
-div {
-    -webkit-box-sizing: border-box; /* safari, chrome */
-    -moz-box-sizing: border-box; /* firefox */
-    box-sizing: border-box; /* ie8+, opera */
+@charset "utf-8";
+
+body
+{
+  width:auto;
+	margin:0px;
+  background-color: #F9FAE9;
 }
 
-#top-section
+header
 {
-    height: 130px;
+	width:100%;
+	height:120px;
+	margin:auto;
+  background-color: #80704f;
+  font-style: italic;
+  font-size: 30px;
+  font-family:Verdana, Geneva, sans-serif;
+  color: #FFF;
+  padding-top: 20px;
 }
 
-#middle-section
+header p
 {
-    background-color: #7887AB;
-    min-height: 500px;
-    margin: 0;
-    padding: 100px 0;
+  width: 800px;
+  margin: auto;
+  font-size: 20px;
+  margin-top: 15px;
+}
+
+header h2
+{
+  width: 800px;
+  margin: auto;
+}
+
+#content
+{
+  width:90%;
+	margin:auto;
+  margin-top: 10px;
+}
+
+article
+{
+  float: left;
+	width:70%;
+	margin:auto;
+  padding: 10px;
+  box-sizing:border-box;
+  margin-top: 10px;
+  margin-left: 10px;
+
+  background-color: #FFF;
+  border: solid lightgrey 1px;
+  -moz-border-radius:5px;
+  -webkit-border-radius:5px;
+  border-radius:5px;
+}
+
+aside
+{
+  float: left;
+  width: 20%;
+  min-width: 200px;
+  margin-top: 10px;
+  padding: 5px;
+  background-color: white;
+  box-sizing:border-box;
+  border: solid lightgrey 1px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+}
+
+.menu_link
+{
+  text-decoration: none;
+  color: #999;
+  font-style: italic;
+}
+
+.menu_link li
+{
+  padding: 5px;
+}
+
+.menu_link a
+{
+  text-decoration: none;
+  color: #999;
+  font-style: italic;
+}
+
+.menu_link a:hover
+{
+  text-decoration: none;
+  color: #333;
+  font-style: italic;
+}
+
+.title_bloc
+{
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom: solid lightgrey 1px;
+}
+
+.title_bloc img
+{
+  display: inline-block;
+  width: 30px;
+}
+
+.title_bloc p
+{
+  display: inline-block;
+  vertical-align:top;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  font-style: italic;
+  font-weight: bold;
+	font-size: 16px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+
+.result_bloc
+{
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+.result_bloc img
+{
+  display: inline-block;
+  width: 30px;
+}
+
+.result_bloc p
+{
+  display: inline-block;
+  vertical-align:top;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  font-style: italic;
+  font-weight: bold;
+	font-size: 16px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+.block_test{
+	width: 100%;
+	height: auto;
+	margin-top:0px;
+	margin-bottom: 15px;
+	padding:10px;
+
+	background-color: #FFF;
+	border: solid lightgrey 1px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	transition:linear all 0.2s;
+
+	font-style: italic;
+	font-size: 12px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+.block_test a
+{
+  text-decoration: none;
+  color: #CCC;
+}
+
+.block_test a:hover
+{
+  color: darkgrey;
+}
+
+.title_test{
+	width: 100%;
+	height: 40px;
+	margin:auto;
+	margin-bottom: 10px;
+
+	background-color: #F9FAE9;
+	border: solid lightgrey 1px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	transition:linear all 0.2s;
+
+	font-style: italic;
+	font-size: 14px;
+	font-family:Verdana, Geneva, sans-serif;
+}
+
+.title_test:hover{
+	background-color: #E9F3F9;
+	box-shadow: 0px 0px 7px #CCC;
+	border: solid #999 1px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+	border-radius:5px;
+	transition:linear all 0.1s;
+}
+
+.title_test p{
+	float: left;
+	width: 450px;
+	margin-top: 12px;
+	margin-left: 10px;
+  font-weight: bold;
+}
+
+.liste_actions{
+	float: right;
+	width: 130px;
+	height: 35px;
+	margin-top: 5px;
+}
+
+.liste_actions p{
+	float: left;
+	width: 50px;
+  margin-top: 6px;
+  font-style: normal;
+}
+
+.liste_actions a{
+	float: right;
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin-right: 10px;
+}
+
+.result_icon_pass{
+	background-image: url(/Content/img/pass_icon.png);
+	background-size: contain;
+}
+
+.result_icon_fail{
+	background-image: url(/Content/img/fail_icon.png);
+	background-size: contain;
 }
