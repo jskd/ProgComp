@@ -81,7 +81,10 @@ aside
 {
   text-decoration: none;
   color: #999;
+  font-size: 16px;
   font-style: italic;
+  font-weight: bold;
+  font-family:Verdana, Geneva, sans-serif;
 }
 
 .menu_link li
@@ -150,7 +153,7 @@ aside
 .title_bloc img
 {
   display: inline-block;
-  width: 30px;
+  width: 40px;
 }
 
 .title_bloc p
@@ -158,8 +161,7 @@ aside
   display: inline-block;
   vertical-align:top;
   margin-left: 10px;
-  margin-top: 5px;
-  margin-bottom: 0px;
+  margin-top: 10px;
   font-style: italic;
   font-weight: bold;
 	font-size: 16px;

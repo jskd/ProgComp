@@ -16,18 +16,19 @@
   <section id="content">
     <aside>
       <section class="title_bloc">
-        <img src="/content/img/reports_icon2.png"/>
+        <img src="/content/img/menu_icon.png"/>
         <p>Menu</p>
       </section>
 
       <ul class="menu_link">
-        <li><a href="">Last tests</a></li>
-        <li><a href="">Stats</a></li>
+        <li><a href="">Latest tests</a></li>
+        <li><a href="">Statistics</a></li>
+        <li><a href="">Compare</a></li>
       </ul>
 
       <section class="title_bloc">
         <img src="/content/img/podium2.png"/>
-        <p>Best scores</p>
+        <p>Latest scores</p>
       </section>
 
       <ul class="ul_scores_list">
@@ -40,7 +41,7 @@
           <li class="li_scores_list_fail">
             <img src="/content/img/star1_off.png"/>
         {% endif %}
-        
+
           <p>{{ group[2] }} - {{ group[4] }}/{{ group[5] }}</p>
         </li>
 
