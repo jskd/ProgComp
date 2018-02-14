@@ -1,19 +1,8 @@
 #ifndef _PARSER_HPP
 #define _PARSER_HPP
 
+#include "structures.hpp"
 #include <fstream>
-
-using namespace std;
-
-enum cell_type { Value, Formula, None };
-
-typedef struct {
-    enum cell_type type;
-    union {
-        struct { int value; };
-        struct { int x1, y1, x2, y2, v; };
-    };
-} cell;
 
 class Parser {
 private:
