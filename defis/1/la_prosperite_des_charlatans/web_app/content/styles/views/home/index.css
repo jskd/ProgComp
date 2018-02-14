@@ -34,7 +34,7 @@
   margin-left: 10px;
   margin-right: 20px;
   margin-top: 10px;
-  font-style: normal;
+  font-style: italic;
 }
 
 .inline_group_logs ul{
@@ -48,16 +48,17 @@
 
 .inline_group_results{
   float: right;
-	width: 130px;
+	width: 180px;
 	height: 35px;
 	margin-top: 5px;
 }
 
 .inline_group_results p{
 	float: left;
-	width: 50px;
+	width: 20px;
   margin-top: 6px;
   font-style: normal;
+	font-weight: bold;
 }
 
 .inline_group_results a{

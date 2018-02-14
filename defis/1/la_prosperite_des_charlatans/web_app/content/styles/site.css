@@ -13,11 +13,15 @@ header
 	height:120px;
 	margin:auto;
   background-color: #80704f;
+  background-image: url(/content/img/jungle.jpg);
+	background-size: contain;
   font-style: italic;
   font-size: 30px;
   font-family:Verdana, Geneva, sans-serif;
   color: #FFF;
   padding-top: 20px;
+  border-bottom: solid 4px black;
+  text-shadow: 2px 2px 4px #000000;
 }
 
 header p

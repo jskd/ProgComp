@@ -17,14 +17,16 @@
 
       <li><p><a href="">{{group[0]}}</a></p></li>
       <li><p>{{ group[1] }}</p></li>
-      <li><p>{{ group[2] }}</p></li>
+      <li><p><b>{{ group[2] }}</b></p></li>
       <li>
         <div class='inline_group_results'>
-          <p>{{ group[4] }}/{{ group[5] }}</font></p>
+          <p>{{ group[4] }}/{{ group[5] }}</p>
 
           {% if group[4] == group[5] %}
+            <p>[PASS]</p>
             <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
           {% else %}
+            <p>[FAIL]</p>
             <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
           {% endif %}
 
