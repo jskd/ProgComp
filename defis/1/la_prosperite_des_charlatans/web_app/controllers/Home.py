@@ -15,10 +15,13 @@ class HomeController(BaseController):
             conn = sqlite3.connect(DB_PATH)
             cursor = conn.cursor()
 
-            #qry = "SELECT sha, date_test, name_group, result, COUNT() FROM logs GROUP BY sha, name_group \
-            #    ORDER BY date_test DESC LIMIT 10;".format()
-
-            qry = "SELECT substr(sha, -8) as commit_sha, date_test, name_group, result, sum(case when result='PASS' then 1 else 0 end), COUNT(*) FROM logs\
+            qry = "SELECT substr(sha, -8) as commit_sha, \
+                date_test, \
+                name_group, \
+                result, \
+                sum(case when result='PASS' then 1 else 0 end), \
+                COUNT(DISTINCT name_test) \
+                FROM (SELECT * FROM logs GROUP BY name_group, sha, name_test) \
                 GROUP BY name_group, commit_sha ORDER BY date_test DESC;".format()
 
             cursor.execute(qry)
