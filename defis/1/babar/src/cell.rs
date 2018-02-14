@@ -21,6 +21,8 @@ pub trait Cell
     fn get_value(&self) -> i32;
     fn set_value(&mut self, val:i32);
     fn print_cell(&self) -> ();
+    fn is_same_cell(&self,value:i32,r1:i32,r2:i32,c1:i32,c2:i32) ->bool;
+    fn get_fields(&self)->(i32,i32,i32,i32,i32);
 }
 
 ///A Number represents an integer in the data.
@@ -30,6 +32,8 @@ pub struct Number
 }
 
 ///A Formula represents a formula in the data.
+///num is the number of occurences of val in the range [(r1,c1); (r2;c2)].
+///num value is -1 if the Fornula does not evaluate properly.
 pub struct Formula
 {
     pub num: i32, //TODO
@@ -83,6 +87,17 @@ impl Cell for Number
     ///Had to be implemented but is never called.
     fn print_cell(&self)
     {
+    }
+    
+    fn is_same_cell(&self,value:i32,_r1:i32,_r2:i32,_c1:i32,_c2:i32) ->bool{
+        if value == self.value {
+            return true;
+        }
+        false
+    }
+    
+    fn get_fields(&self)->(i32,i32,i32,i32,i32){
+        (self.value,-1,-1,-1,-1)
     }
 }
 
@@ -145,5 +160,17 @@ impl Cell for Formula
     ///Returns four integers corresponding to the edges of the field the current Formula applies to.
     fn get_region(&self) -> (i32,i32,i32,i32){
         (self.r1, self.r2, self.c1, self.c2)
+    }
+    
+    fn is_same_cell(&self,value:i32,r1:i32,r2:i32,c1:i32,c2:i32) ->bool{
+        if value == self.val && self.r1 == r1 && self.r2 == r2
+            && self.c1 == c1 && self.c2 == c2 {
+            return true;
+        }
+        false
+    }
+    
+    fn get_fields(&self)->(i32,i32,i32,i32,i32){
+        (self.val,self.r1,self.r2,self.c1,self.c2)
     }
 }

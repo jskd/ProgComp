@@ -35,10 +35,10 @@ pub fn init_formula(form_dec_vec: Vec<&str>) -> Box<cell::Cell>
     Box::new(cell)
 }
 
-//TODO
 pub fn create_cell(str:String) -> Box<cell::Cell>
 {
     if Some('=') == str.chars().next() {
+        //TODO : what happens if trim_matches does not return a string ?
         let form : String = str.trim_matches(|c| c == '(' || c == ')' || c == '=' || c == '#' ).to_string();
         let form_decompose = form.split(",");
         let form_dec_vec: Vec<&str> = form_decompose.collect();
