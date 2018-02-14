@@ -118,6 +118,12 @@ pub fn write_change(user: &str,change:&str,spreadsheet:&mut Vec<Vec<Box<cell::Ce
         let c :i32 = c.trim().parse().expect("bad format");
         let mut current_evaluation : Vec<(i32,i32)> = Vec::new();
         let mut cell = parser::create_cell(d.to_string());
+        let (val,de) = cell.evaluate(spreadsheet,&mut current_evaluation,r,c);
+        cell.set_value(val);
+        let (v,row1,row2,col1,col2) = cell.get_fields();
+        if spreadsheet[r as usize][ c as usize].is_same_cell(v,row1,row2,col1,col2) {
+            continue;
+        }
         let (r1,r2,c1,c2) = spreadsheet[r as usize][c as usize].get_region();
         if (r1,r2,c1,c2) != (-1,-1,-1,-1) {
             for i in r1..r2 {
@@ -129,8 +135,6 @@ pub fn write_change(user: &str,change:&str,spreadsheet:&mut Vec<Vec<Box<cell::Ce
                 }
             }
         }
-        let (val,de) = cell.evaluate(spreadsheet,&mut current_evaluation,r,c);
-        cell.set_value(val);
         for (&key, val) in de.iter(){
             if !dependencies.contains_key(&key) {
                 dependencies.insert(key,Vec::new());
