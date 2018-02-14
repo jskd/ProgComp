@@ -1,7 +1,9 @@
 *view0.csv est cree protege en ecriture: droits pas tout a fait justes (Docker ou Rust ?)
 
-*Continuer renommage variables & indentation dans treatment et parser.
+*Continuer renommage variables & indentation dans treatment.
 
 *Voir les notes laissees a ces emplacements :
     *Cell.rs
         *Formula : num c'est quoi ?
+    *parser.rs
+        *fn create_cell -> pas claire
