@@ -1,6 +1,7 @@
 #include <iostream> 
 #include "structures.hpp"
 #include "parser.hpp"
+#include "first_pass.hpp"
 #include <sstream>
 
 void test_parse(){
@@ -69,6 +70,14 @@ int main(int argc, char *argv[]) {
 	fill_a(a2, 5, 3, 4, 16);
 	print_area(least_upper_a(a, a2));
 	cerr << "Error!\n" << endl;
+	pair<unsigned, unsigned> p1 = {3, 2}, p2 = {3, 2};
+	cout << (p1 == p2) << endl;
+	Parser p("data.csv");
+	f_hash *hash;
+	r_tree_node *r_tree;
+	graph *gp;
+	first_pass(p, hash, r_tree, gp);
+	printf("%llX\n", point_to_key(0xBEDABEDA, 0xDEADBEEF));
 	return 0;
 	
 }

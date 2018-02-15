@@ -1,5 +1,10 @@
 #include "structures.hpp"
 
+unsigned long long point_to_key(unsigned x, unsigned y){
+	return (static_cast<unsigned long long>(x) << 32) |
+	static_cast<unsigned long long>(y);
+}
+
 void fill_a(area &a, unsigned x1, unsigned y1, unsigned x2, unsigned y2){
 	#define FILL(s) a.s = s
 	FILL(x1);

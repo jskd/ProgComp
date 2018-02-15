@@ -1,19 +1,24 @@
 #include "first_pass.hpp"
+#include "parser.hpp"
 
-
+r_tree_node *get_root(){
+	r_tree_node *ret = new r_tree_node;
+	fill_a(ret->a, 0,0, UINT_MAX, UINT_MAX);
+	return ret;
+}
 
 void clever_divider(r_tree_node **nodes, int len, r_tree_node **pair){
 	//rewrite, make cleverer
 	int pivot = len / 2, i;
 	area a;
-	fill_a(a, 0,0,0,0);
+	fill_a(a, UINT_MAX, UINT_MAX, 0, 0);
 	for(i = 0; i < pivot; i++){
 		pair[0]->subtrees.push_back(nodes[i]);
 		a = least_upper_a(a, nodes[i]->a);
 	}
 	pair[0]->a = a;
 	
-	fill_a(a, 0,0,0,0);
+	fill_a(a, UINT_MAX, UINT_MAX, 0, 0);
 	for(i = pivot; i < len; i++){
 		pair[1]->subtrees.push_back(nodes[i]);
 		a = least_upper_a(a, nodes[i]->a);
@@ -75,4 +80,8 @@ bool insert_r(r_tree_node *r, node &formula){
 			//need to create new node for this formula here
 			return insert_new_r(r, formula);
 	}
+}
+
+bool first_pass(Parser &p, f_hash *hash, r_tree_node *r_tree, graph *g){
+	return true;
 }

@@ -4,6 +4,7 @@
 #define MAX_SUBTREES 3
 
 #include <vector> 
+#include <unordered_map>
 
 using namespace std;
 
@@ -36,6 +37,9 @@ typedef struct rtn{
 	vector<rtn *> subtrees;
 } r_tree_node;
 
+typedef unordered_map<unsigned long long, node *> f_hash;
+
+unsigned long long point_to_key(unsigned x, unsigned y);
 void fill_a(area &a, unsigned x1, unsigned y1, unsigned x2, unsigned y2);
 bool is_in_a(area a, unsigned x, unsigned y); //bounds included
 bool equal_a(area a, area a2);
