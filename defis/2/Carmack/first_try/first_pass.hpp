@@ -2,10 +2,11 @@
 #define FIRST_PASS_HPP
 
 #include <vector>
-#include "parser.hpp"
+#include "structures.hpp"
 
-using namespace std;
+bool insert_r(r_tree_node *r, node &formula); 
+bool insert_new_r(r_tree_node *r, node &formula); 
 
-int pass_file(&Parser file_p, &vector<unsigned> first_lines);
+
 
 #endif

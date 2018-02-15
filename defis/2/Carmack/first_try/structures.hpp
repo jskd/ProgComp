@@ -43,7 +43,4 @@ bool inside_or_equal_a(area outer, area inner);
 area least_upper_a(area a, area a2);
 area area_of_node(node n);
 
-bool insert_r(r_tree_node *r, node &formula); 
-bool insert_new_r(r_tree_node *r, node &formula); 
-
 #endif
