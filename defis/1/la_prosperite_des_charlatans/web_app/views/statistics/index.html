@@ -6,6 +6,15 @@
 
 {% block body %}
   {% for group in liste_group %}
-    <p>{{ group[0] }}</p>
+    <div class="block_group_logs">
+      <div class="title_group_logs">
+        <img src="/content/img/reports_icon.png"/>
+        <p><b>{{ group[0] }}</b></p>
+      </div>
+      <p><b>Best scores : </b> [5/9] </p>
+      <p><b>Last valid build : </b> b7ed1268 </p>
+      <p><b><a href="">History</a></b></p>
+
+    </div>
   {% endfor %}
 {% endblock %}
