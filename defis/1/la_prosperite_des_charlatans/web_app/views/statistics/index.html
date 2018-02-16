@@ -5,16 +5,36 @@
 {% endblock %}
 
 {% block body %}
-  {% for group in liste_group %}
-    <div class="block_group_logs">
-      <div class="title_group_logs">
-        <img src="/content/img/reports_icon.png"/>
-        <p><b>{{ group[0] }}</b></p>
-      </div>
-      <p><b>Best scores : </b> [5/9] </p>
-      <p><b>Last valid build : </b> b7ed1268 </p>
-      <p><b><a href="">History</a></b></p>
+  {% for group in group_stats %}
+    <div class="grid_group">
+      <div class="block_group_logs">
+        <div class="title_group_logs">
+          <img src="/content/img/reports_icon.png"/>
+          <p><b>{{ group[2] }}</b></p>
+        </div>
+        <p>
+          {% if group[4] == group[5] %}
+            <span style="color: rgb(0,200,0);">
+          {% else %}
+            <span style="color: rgb(200,0,0);">
+          {% endif %}
+          Last score : <b> [{{ group[4] }}/{{ group[5] }}] </b> </span>
+        </p>
 
+        <p>
+          {% if group[4] == group[5] %}
+            <span style="color: rgb(0,200,0);">
+          {% else %}
+            <span style="color: rgb(200,0,0);">
+          {% endif %}
+          Last valid build : <b> {{ group[0][-8:] }} </b> </span>
+        </p>
+
+        <p>
+          <a href=""> > History of tests</a>
+        </p>
+
+      </div>
     </div>
   {% endfor %}
 {% endblock %}
