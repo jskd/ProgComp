@@ -21,7 +21,7 @@ typedef struct {
 typedef struct _node{
 	cell f;
 	int pos_x, pos_y;
-	vector<_node> children, parents;
+	vector<_node *> children, parents;
 } node;
 
 typedef vector<node *> graph;
