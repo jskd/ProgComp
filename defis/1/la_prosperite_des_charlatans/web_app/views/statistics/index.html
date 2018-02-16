@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/content/styles/views/statistics/index.css"/>
+{% endblock %}
+
+{% block body %}
+  {% for group in liste_group %}
+    <p>{{ group[0] }}</p>
+  {% endfor %}
+{% endblock %}

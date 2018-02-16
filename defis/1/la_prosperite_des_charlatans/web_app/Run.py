@@ -1,4 +1,5 @@
 from controllers.Home import HomeController
+from controllers.Statistics import StatisticsController
 import cherrypy, os
 from cherrypy import tools
 
@@ -9,6 +10,7 @@ def start_server():
     site_config_path = 'web_app/site.conf'
 
     cherrypy.tree.mount(HomeController(), '/', site_config_path)
+    cherrypy.tree.mount(StatisticsController(), '/statistics/', site_config_path)
     cherrypy.config.update({'error_page.404': error_page_404})
     cherrypy.config.update('web_app/server.conf')
     cherrypy.engine.start()

@@ -1,4 +1,2 @@
-1) Reconstruire tout l'historique
-2) SQLite
-3) Courbes benchmarks + comparaisons entre groupes
-4) 
+- Courbes benchmarks + comparaisons entre groupes
+- 
