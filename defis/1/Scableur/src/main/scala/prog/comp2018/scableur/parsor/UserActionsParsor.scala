@@ -1,12 +1,14 @@
 package prog.comp2018.scableur.parsor
 
+import scala.collection.mutable.ListBuffer
+
 import prog.comp2018.scableur.data.Value
 
 import scala.io.Source
 
-class UserActionsParsor {
-  private def parseFile(filename : String): List[((Int,Int),String)] ={
-    var l:List[((Int,Int),String)]=List()
+object UserActionsParsor {
+  private def parseFile(filename : String): ListBuffer[((Int,Int),String)] ={
+    var l:ListBuffer[((Int,Int),String)]=ListBuffer[((Int, Int), String)]()
     var a:Array[String]=Array()
     var i:Int=0
     var j:Int=0
@@ -22,9 +24,9 @@ class UserActionsParsor {
     l
   }
 
-  def buildList(filename : String) : List[((Int,Int),Value)] = {
-    var l: List[((Int, Int), String)] = List()
-    var lv: List[((Int, Int), Value)] = List()
+  def buildList(filename : String) : ListBuffer[((Int,Int),Value)] = {
+    var l: ListBuffer[((Int, Int), String)] = ListBuffer[((Int, Int), String)]()
+    var lv: ListBuffer[((Int, Int), Value)] = ListBuffer[((Int, Int), Value)]()
 
     l = parseFile(filename)
 

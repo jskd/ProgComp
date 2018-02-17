@@ -3,9 +3,7 @@ package prog.comp2018.scableur.data
 import scala.collection.mutable.ListBuffer
 
 
-class UserData() {
-  type Cell = ((Int,Int), Value)
-  var userActionStack : ListBuffer[Cell] = ListBuffer[Cell]()
+class UserData(var userActionStack : ListBuffer[((Int,Int), Value)]) {
 
   def length(): Int = userActionStack.length
 

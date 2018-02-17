@@ -5,14 +5,16 @@ import java.io.{File, PrintWriter}
 import prog.comp2018.scableur.data.ChangesData
 
 class ChangesPrinter(changes : ChangesData, filename : String) {
-  val writer = new PrintWriter(new File(filename))
+   val f = new File(filename)
+  val writer = new PrintWriter(f)
 
   def print(): Unit = {
     for((coord,item) <- changes.modificationList){
       item match {
-        case i : Some[Int] => writer.println(coord._1 + " " + coord._2 + " " + i )
-        case None => writer.println(coord._1 + " " + coord._2 + " " + "P" )
+        case Some(i: Int) => println(i);writer.append(coord._1 + " " + coord._2 + " " + i+"\n")
+        case None => writer.append(coord._1 + " " + coord._2 + " " + "P\n" )
       }
+      writer.flush()
 
     }
   }

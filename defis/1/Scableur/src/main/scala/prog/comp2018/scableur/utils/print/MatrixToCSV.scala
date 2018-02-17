@@ -6,7 +6,9 @@ import prog.comp2018.scableur.data.EvaluatedMatrix
 
 class MatrixToCSV(private var matrix : EvaluatedMatrix,
                   private var filename : String) {
-  val writer = new PrintWriter(new File(filename))
+
+  val f = new File(filename)
+  val writer = new PrintWriter(f)
 
   def print() : Unit = {
     for{
