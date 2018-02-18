@@ -39,7 +39,7 @@ quiet() {
 main() {
     $(quiet docker run -td --name=$container nw-group/ws)
     export_files $@
-    docker exec $container Go/main.exe $(exported_names $@)
+    docker exec $container ./main.exe $(exported_names $@)
     status=$?
     import_files $3 $4
     $(quiet docker stop $container)
