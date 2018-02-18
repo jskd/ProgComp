@@ -1,11 +1,12 @@
 package spreadsheet
 
 import (
+	"bufio"
 	"fmt"
+	"log"
+	"os"
 	"parse"
 	"strconv"
-	"os"
-	"log"
 )
 
 type Cell struct {
@@ -129,23 +130,23 @@ func evaluate(row int, col int, spreadSheet [][]Cell) int {
 	default:
 		res = -1
 	}
-	fmt.Println("heloooooo %d",res)
-	write(row,col,res)
+	// fmt.Println("heloooooo %d",res)
+	// write(row,col,res)
 	return res
 }
 
-func write(row int, col int, value int){
-		// If the file doesn't exist, create it, or append to the file
-		f, err := os.OpenFile(fmt.Sprintf("views/%d",value), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if _, err := f.Write([]byte(fmt.Sprintf("%d;%d \n",row,col))); err != nil {
-			log.Fatal(err)
-		}
-		if err := f.Close(); err != nil {
-			log.Fatal(err)
-		}
+func write(row int, col int, value int) {
+	// If the file doesn't exist, create it, or append to the file
+	f, err := os.OpenFile(fmt.Sprintf("views/%d", value), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if _, err := f.Write([]byte(fmt.Sprintf("%d;%d \n", row, col))); err != nil {
+		log.Fatal(err)
+	}
+	if err := f.Close(); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func cells(spreadSheet [][]string) [][]Cell {
@@ -171,4 +172,93 @@ func Evaluate(spreadSheet [][]Cell) [][]int {
 func FromFile(filename string) [][]Cell {
 	spreadSheet := parse.ReadCsv(filename, ';')
 	return cells(spreadSheet)
+}
+
+type Command struct {
+	Row     int
+	Column  int
+	Command data
+}
+
+type Change struct {
+	Row    int
+	Column int
+	Value  int
+}
+
+func toCommand(s string) *Command {
+	var row, col int
+	var command string
+
+	count, _ :=
+		fmt.Sscanf(s, "%d %d %s",
+			&row, &col, &command)
+	if count != 3 {
+		return nil
+	}
+	return &Command{row, col, toData(command)}
+}
+
+func CommandsFromFile(filename string) []*Command {
+	var commands []*Command
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		commands = append(commands, toCommand(scanner.Text()))
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
+	return commands
+}
+
+func applyCommand(command *Command, spreadSheetBefore [][]Cell,
+	view [][]int) [][]Cell {
+	spreadSheet := make([][]Cell, len(view))
+
+	for r, row := range view {
+		spreadSheet[r] = make([]Cell, len(row))
+	}
+	for r, row := range view {
+		for c, value := range row {
+			if r == command.Row && c == command.Column {
+				spreadSheet[r][c] = Cell{command.Command, false}
+			} else {
+				switch spreadSheetBefore[r][c].data.(type) {
+				case *formula:
+					spreadSheet[r][c] =
+						spreadSheetBefore[r][c]
+				default:
+					spreadSheet[r][c] =
+						Cell{&immediate{value}, false}
+				}
+			}
+		}
+	}
+	return spreadSheet
+}
+
+func Changes(commands []*Command, spreadSheetBefore [][]Cell,
+	viewBefore [][]int) map[*Command][]Change {
+	res := make(map[*Command][]Change)
+
+	for _, command := range commands {
+		spreadSheet := applyCommand(command, spreadSheetBefore, viewBefore)
+		after := Evaluate(spreadSheet)
+		for r, row := range after {
+			for c, value := range row {
+				if value != viewBefore[r][c] {
+					change := Change{r, c, value}
+					res[command] = append(res[command],
+						change)
+				}
+			}
+		}
+		viewBefore = after
+		spreadSheetBefore = spreadSheet
+	}
+	return res
 }
