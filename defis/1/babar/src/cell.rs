@@ -89,8 +89,8 @@ impl Cell for Number
     {
     }
     
-    fn is_same_cell(&self,value:i32,_r1:i32,_r2:i32,_c1:i32,_c2:i32) ->bool{
-        if value == self.value {
+    fn is_same_cell(&self,value:i32,r1:i32,r2:i32,c1:i32,c2:i32) ->bool{
+        if value == self.value && r1==r2&&r2==c1&&c1==c2&&c2==-1{
             return true;
         }
         false

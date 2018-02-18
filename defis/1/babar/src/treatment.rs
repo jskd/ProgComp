@@ -11,6 +11,7 @@ pub fn is_dependency_ok(cell : &cell::Formula, current_evaluation : &Vec<(i32,i3
         for &(row,col) in current_evaluation {
         if row >= cell.r1  && row <= cell.r2
           && col >= cell.c1 && col <= cell.c2 {
+            println!("r1:{} c1:{} r2:{} c2{} row:{} col:{}",cell.r1,cell.c1,cell.r2,cell.c2,row,col);
             return false;
           }
         }
@@ -151,10 +152,12 @@ pub fn write_change(user: &str,change:&str,spreadsheet:&mut Vec<Vec<Box<cell::Ce
             Some(d) => 
                 for &(x,y) in d {
                     let mut cell = spreadsheet[x as usize][y as usize].copy_cell();
+                    current_evaluation.clear();
                     let (val,_) = cell.evaluate(spreadsheet,&mut current_evaluation,x,y);
                     if val != spreadsheet[x as usize][y as usize].get_value(){
                         cell.set_value(val);
                         spreadsheet[x as usize][y as usize] = cell;
+                        println!("val: {}",val);
                         write!(file_change, "{} {} {}\n", x,y,val).expect("Error Writing into the change");
                     }
                 },
