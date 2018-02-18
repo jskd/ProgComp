@@ -1,8 +1,11 @@
 #ifndef _PARSER_HPP
 #define _PARSER_HPP
 
-#include "structures.hpp"
 #include <fstream>
+
+#include "cell.hpp"
+
+using namespace std;
 
 class Parser {
 private:
