@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestBinaryReadWrite(t *testing.T) {
+func TestBinaryReadWriteDelete(t *testing.T) {
 	bf := NewBinFile("../../dataset/bin/test")
 	bf.WritePair(0, 1)
 	bf.WritePair(2, 3)

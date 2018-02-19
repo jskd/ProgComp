@@ -7,11 +7,13 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sync"
 )
 
 type BinFile struct {
 	data []uint32
 	file string
+	mut  sync.Mutex
 }
 
 //Create file if not exists
@@ -19,7 +21,7 @@ func createFileIfNotexists(path string) {
 	dirPath := filepath.Dir(path)
 	var _, err = os.Stat(dirPath)
 	if os.IsNotExist(err) {
-		err = os.MkdirAll(dirPath, 1755)
+		err = os.MkdirAll(dirPath, 0777)
 		if err != nil {
 			panic(err)
 		}
@@ -38,6 +40,8 @@ func createFileIfNotexists(path string) {
 }
 
 func (b *BinFile) ReadAll() ([]uint32, error) {
+	b.mut.Lock() //Ensure that no one is writing while reading
+	defer b.mut.Unlock()
 	f, err := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDONLY, 0644)
 	if err != nil {
 		panic(err)
@@ -62,10 +66,12 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 
 func NewBinFile(file_path string) *BinFile {
 	createFileIfNotexists(file_path)
-	return &BinFile{[]uint32{}, file_path}
+	return &BinFile{[]uint32{}, file_path, sync.Mutex{}}
 }
 
 func (b *BinFile) WritePair(x uint32, y uint32) {
+	b.mut.Lock() //Ensure that we write x first then y
+	defer b.mut.Unlock()
 	b.Write(x)
 	b.Write(y)
 }
