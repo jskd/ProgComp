@@ -14,9 +14,10 @@ int main(int argc, char *argv[]) {
     vector<formula *> rs, top;
     INode *head = roots(p, rs);
 
-    normalize(rs, top);
-    p.reposition();
-    head->preval(p);
+    //normalize(rs, top);
+    //p.reposition();
+    //head->preval(p);
+	//evaluate(top);
 
     cout << "All formulas:\n";
     head->foreach([](formula &f) { cout << f; });

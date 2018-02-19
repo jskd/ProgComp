@@ -29,6 +29,7 @@ public:
     int result = 0;
     bool has_parent = false;
     vector<formula *> children;
+    vector<formula *> parents;
 
     formula();
     formula(int x1, int y1, int x2, int y2, int v);
@@ -38,5 +39,7 @@ public:
 };
 
 void normalize(vector<formula *> &roots, vector<formula *> &top);
+
+void evaluate(vector<formula *> &top);
 
 #endif

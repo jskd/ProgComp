@@ -235,6 +235,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
 			head->search(formula.p, fs);
             while(!fs.empty()) {
                 formula.children.push_back(fs.top());
+                fs.top()->parents.push_back(&formula);
                 fs.top()->has_parent = true;
                 fs.pop();
             }

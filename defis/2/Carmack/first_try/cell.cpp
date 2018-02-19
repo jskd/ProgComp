@@ -28,7 +28,9 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
             (*j)->level = 1;
             q.push(*j);
         }
-        top.push_back(*i);
+		// Zero-level formulae are already calculated,
+		// so there is no reason to add them to top.
+        //top.push_back(*i);
     }
 
     while(!q.empty()) {
@@ -42,4 +44,18 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
         top.push_back(q.front());
         q.pop();
     }
+}
+
+void evaluate(vector<formula *> &top) {
+	int i;
+	vector<formula *>::iterator j;
+	
+	for(i = 0; i < top.size(); i++)
+        for(j = top[i]->parents.begin(); j != top[i]->parents.end(); ++j) {
+			if((*j)->result == -1 || (*j)->level >= top[i]->level) {
+				top[i]->result = -1;
+				break;
+			}
+			top[i]->result += ((*j)->result == top[i]->value) ? 1 : 0;
+		}
 }
