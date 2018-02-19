@@ -85,5 +85,8 @@ bool Parser::next_cell(cell *c) {
 }
 
 void Parser::reposition() {
-    fs.seekg(0);
+    _eof = false;
+    _eol = false;
+    fs.clear();
+    fs.seekg(0, ios::beg);
 }
