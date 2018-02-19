@@ -7,6 +7,10 @@ Parser::Parser(string data) :
     eof(_eof),
     eol(_eol) { }
 
+Parser::~Parser() {
+    fs.close();
+}
+
 void fill_with_value(cell *c, int v) {
     c->type = Value;
     c->value = v;
@@ -78,4 +82,8 @@ bool Parser::next_cell(cell *c) {
     FILL_FIELD(y2);
     FILL_FIELD(v);
     return eol;
+}
+
+void Parser::reposition() {
+    fs.seekg(0);
 }

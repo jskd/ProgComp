@@ -18,8 +18,10 @@ public:
     const bool &eol;
 
     Parser(string data);
+    ~Parser();
 
     bool next_cell(cell *c);
+    void reposition();
 };
 
 #endif
