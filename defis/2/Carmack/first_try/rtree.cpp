@@ -44,6 +44,7 @@ Node &Node::operator+=(formula &f) {
 
 INode::INode() {
     parent = NULL;
+    bb = area(0, 0, 0, 0);
 }
 
 INode::INode(INode *child) {
@@ -57,6 +58,8 @@ void INode::insert(formula &f) {
     Node *n;
     area a;
     int s, old_s = -1;
+
+    intersect(bb, f.bb, bb);
 
     if(!children.size()) {
         Leaf *l = new Leaf();
@@ -159,6 +162,7 @@ void Leaf::insert(formula &f) {
     formulas.pop_back();
     update_bb();
     l = new Leaf();
+    l->bb = f.bb;
     *l += f;
     *l += *f2;
     parent->addLeaf(l);
