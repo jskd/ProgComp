@@ -184,23 +184,28 @@ INode *roots(Parser &p, vector<formula *> &out) {
             f = new formula(c);
             f->p.x = x;
             f->p.y = y;
-            head->search(f->p, fs);
-            while(!fs.empty()) {
-                f->children.push_back(fs.top());
-                fs.top()->has_parent = true;
-                fs.pop();
-            }
             (*head) += (*f);
             head = INode::getHead();
         }
 
         if(p.eol) {
-            x = 0;
-            y ++;
+            y = 0;
+            x++;
         }
         else
-            x++;
+            y++;
     }
+
+    head->foreach(
+        [&fs, &head](formula &formula) {
+			head->search(formula.p, fs);
+            while(!fs.empty()) {
+                formula.children.push_back(fs.top());
+                fs.top()->has_parent = true;
+                fs.pop();
+            }
+        }
+    );
 
     head->foreach(
         [&out](formula &formula) {
