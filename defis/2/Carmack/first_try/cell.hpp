@@ -25,7 +25,8 @@ public:
     point p;
 
     // Should be private
-    int result = -1;
+    int level = -1;
+    int result = 0;
     bool has_parent = false;
     vector<formula *> children;
 
@@ -35,5 +36,7 @@ public:
 
     friend ostream &operator<<(ostream &out, const formula &f);
 };
+
+void normalize(vector<formula *> &roots, vector<formula *> &top);
 
 #endif

@@ -11,8 +11,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     Parser p(argv[1]);
-    vector<formula *> rs;
+    vector<formula *> rs, top;
     INode *head = roots(p, rs);
+
+    normalize(rs, top);
+    p.reposition();
+    head->preval(p);
 
     cout << "All formulas:\n";
     head->foreach([](formula &f) { cout << f; });

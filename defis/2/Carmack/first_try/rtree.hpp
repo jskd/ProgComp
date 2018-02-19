@@ -22,6 +22,7 @@ public:
     virtual void insert(formula &f) = 0;
     virtual void search(point &p, stack<formula *> &fs) = 0;
     virtual void foreach(function<void(formula &)> fun) = 0;
+    void preval(Parser &p);
     Node &operator+=(formula &f);
 };
 

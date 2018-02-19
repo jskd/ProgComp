@@ -3,6 +3,40 @@
 
 #include "rtree.hpp"
 
+#include <iostream>
+
+void Node::preval(Parser &p) {
+    point pos;
+    cell c;
+    formula *f;
+    stack<formula *> fs;
+    INode *head = INode::getHead();
+
+    pos.x = pos.y = 0;
+
+    while(!p.eof) {
+        p.next_cell(&c);
+        switch(c.type) {
+        case None: case Formula: break;
+        case Value:
+            search(pos, fs);
+            while(!fs.empty()) {
+                f = fs.top();
+                if(f->level != -1)
+                    f->value += ((c.value == f->value) ? 1 : 0);
+                fs.pop();
+            }
+        }
+
+        if(p.eol) {
+            pos.y = 0;
+            pos.x++;
+        }
+        else
+            pos.y++;
+    }
+}
+
 Node &Node::operator+=(formula &f) {
     insert(f);
     return *this;
@@ -209,8 +243,10 @@ INode *roots(Parser &p, vector<formula *> &out) {
 
     head->foreach(
         [&out](formula &formula) {
-            if(!formula.has_parent)
+            if(!formula.has_parent) {
                 out.push_back(&formula);
+                formula.level = 0;
+            }
         }
     );
 
