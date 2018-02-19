@@ -23,7 +23,7 @@ void Node::preval(Parser &p) {
             while(!fs.empty()) {
                 f = fs.top();
                 if(f->level != -1)
-                    f->value += ((c.value == f->value) ? 1 : 0);
+                    f->result += ((c.value == f->value) ? 1 : 0);
                 fs.pop();
             }
         }
