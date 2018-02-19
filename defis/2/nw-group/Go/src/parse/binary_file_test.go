@@ -5,20 +5,21 @@ import (
 	"testing"
 )
 
-func TestReadWrite(t *testing.T) {
+func TestBinaryReadWrite(t *testing.T) {
 	bf := NewBinFile("../../dataset/bin_test")
-	bf.Write(0, 1)
-	bf.Write(2, 3)
-	bf.Close()
+	bf.WritePair(0, 1)
+	bf.WritePair(2, 3)
 
 	bf = NewBinFile("../../dataset/bin_test")
 	arr, err := bf.ReadAll()
-	bf.Close()
 	exp := []uint32{}
 	exp = append(exp, 0)
 	exp = append(exp, 1)
 	exp = append(exp, 2)
 	exp = append(exp, 3)
-	share.AssertEqual(t, err, nil, "Some error happened while reading file")
-	share.AssertEqual(t, arr, exp, "Incorrect uint32 value")
+
+	share.AssertEqual(t, bf.Move("../../dataset/bin"), nil, "Unable to move file.")
+	share.AssertEqual(t, bf.Delete(), nil, "Unable to delete file.")
+	share.AssertEqual(t, err, nil, "Some error happened while reading file.")
+	share.AssertEqual(t, arr, exp, "Incorrect uint32 value.")
 }
