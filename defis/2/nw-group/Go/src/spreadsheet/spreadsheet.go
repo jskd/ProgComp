@@ -3,9 +3,9 @@ package spreadsheet
 import (
 	"bufio"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"os"
-	"parse"
+	"path/filepath"
 	"strconv"
 )
 
@@ -130,23 +130,8 @@ func evaluate(row int, col int, spreadSheet [][]Cell) int {
 	default:
 		res = -1
 	}
-	// fmt.Println("heloooooo %d",res)
-	// write(row,col,res)
-	return res
-}
 
-func write(row int, col int, value int) {
-	// If the file doesn't exist, create it, or append to the file
-	f, err := os.OpenFile(fmt.Sprintf("views/%d", value), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if _, err := f.Write([]byte(fmt.Sprintf("%d;%d \n", row, col))); err != nil {
-		log.Fatal(err)
-	}
-	if err := f.Close(); err != nil {
-		log.Fatal(err)
-	}
+	return res
 }
 
 func cells(spreadSheet [][]string) [][]Cell {
@@ -159,19 +144,34 @@ func cells(spreadSheet [][]string) [][]Cell {
 	return res
 }
 
-func Evaluate(spreadSheet [][]Cell) [][]int {
-	res := make([][]int, len(spreadSheet))
-	for r, row := range spreadSheet {
-		for c := range row {
-			res[r] = append(res[r], evaluate(r, c, spreadSheet))
-		}
-	}
-	return res
+/**
+   TODO: Here the new Evaluate will process the formulas in the bin_repo
+   It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
+   In the normal case, it should return 0 (no looping formula). In case of error, return -1.
+**/
+func Evaluate(bin_repo string) int {
+	return 0
 }
 
-func FromFile(filename string) [][]Cell {
-	spreadSheet := parse.ReadCsv(filename, ';')
-	return cells(spreadSheet)
+//Pre-process Csv file to value-position binary files.
+//Return a directory where value-position binary files are stored
+func FromFile(filename string) string {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	src_name := filepath.Base(filename)
+	bin_dir, err := ioutil.TempDir(src_name+"/bin", "")
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		processOneLineOfCsv(scanner.Text())
+	}
+	return bin_dir
+}
+
+func processOneLineOfCsv(line string) {
+
 }
 
 type Command struct {
@@ -241,24 +241,9 @@ func applyCommand(command *Command, spreadSheetBefore [][]Cell,
 	return spreadSheet
 }
 
+//TODO: To reimplement this method with reference to orignal CSV file instead of double int array
 func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	viewBefore [][]int) map[*Command][]Change {
 	res := make(map[*Command][]Change)
-
-	for _, command := range commands {
-		spreadSheet := applyCommand(command, spreadSheetBefore, viewBefore)
-		after := Evaluate(spreadSheet)
-		for r, row := range after {
-			for c, value := range row {
-				if value != viewBefore[r][c] {
-					change := Change{r, c, value}
-					res[command] = append(res[command],
-						change)
-				}
-			}
-		}
-		viewBefore = after
-		spreadSheetBefore = spreadSheet
-	}
 	return res
 }

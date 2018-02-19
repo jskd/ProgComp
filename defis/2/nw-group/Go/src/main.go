@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"parse"
 	"spreadsheet"
 )
 
@@ -19,12 +18,13 @@ func main() {
 }
 
 func main_program(args []string) {
-	spreadSheet := spreadsheet.FromFile(args[0])
-	view := spreadsheet.Evaluate(spreadSheet)
-	writeView(args[2], view)
-	commands := spreadsheet.CommandsFromFile(args[1])
-	changes := spreadsheet.Changes(commands, spreadSheet, view)
-	writeChanges(args[3], changes)
+	bin_repo := spreadsheet.FromFile(args[0])
+	loop_count := spreadsheet.Evaluate(bin_repo)
+	fmt.Printf("Looping formula: %d\n", loop_count)
+	writeView(args[2], args[0], bin_repo)
+	//commands := spreadsheet.CommandsFromFile(args[1])
+	//changes := spreadsheet.Changes(commands, spreadSheet, [][]int{})
+	//writeChanges(args[3], changes)
 }
 
 func print_usage() {
@@ -35,8 +35,9 @@ func print_usage() {
 func writeChanges(filename string,
 	changes map[*spreadsheet.Command][]spreadsheet.Change) {
 	file, _ := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0644)
+	defer file.Close()
 	for command, changes := range changes {
-		msg := fmt.Sprintf("after \"%d %d %s\":\n", command.Row,
+		msg := fmt.Sprintf("After \"%d %d %s\":\n", command.Row,
 			command.Column, command.Command)
 		file.WriteString(msg)
 		for _, change := range changes {
@@ -45,22 +46,9 @@ func writeChanges(filename string,
 			file.WriteString(s)
 		}
 	}
-	file.Close()
 }
 
-func writeView(filename string, values [][]int) {
-	res := make([][]string, len(values))
-	for r, row := range values {
-		for _, value := range row {
-			var s string
+//TODO: To write view to file_output from original file_input CSV with formula values in bin_repo
+func writeView(file_output string, file_input string, bin_repo string) {
 
-			if value >= 0 {
-				s = fmt.Sprintf("%d", value)
-			} else {
-				s = "P"
-			}
-			res[r] = append(res[r], s)
-		}
-	}
-	parse.WriteCsv(filename, res, ';')
 }
