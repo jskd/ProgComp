@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 type BinFile struct {
@@ -15,15 +16,24 @@ type BinFile struct {
 
 //Create file if not exists
 func createFileIfNotexists(path string) {
-	//TODO: to ensure that new directory is create if not exist
-	var _, err = os.Stat(path)
+	dirPath := filepath.Dir(path)
+	var _, err = os.Stat(dirPath)
+	if os.IsNotExist(err) {
+		err = os.MkdirAll(dirPath, 1755)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("New directory created: ", dirPath)
+	}
+
+	_, err = os.Stat(path)
 	if os.IsNotExist(err) {
 		var file, err = os.Create(path)
 		if err != nil {
 			panic(err)
 		}
 		defer file.Close()
-		//fmt.Println("New file created: ", path)
+		fmt.Println("New file created: ", path)
 	}
 }
 
