@@ -28,7 +28,7 @@ public:
 class INode : public Node {
 private:
     static INode *head;
-    vector<Node *> childs;
+    vector<Node *> children;
     const int CAPACITY = 2;
 
     INode();

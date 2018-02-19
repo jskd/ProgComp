@@ -15,7 +15,7 @@ INode::INode() {
 INode::INode(INode *child) {
     child->parent = this;
     bb = child->bb;
-    childs.push_back(child);
+    children.push_back(child);
 }
 
 void INode::insert(formula &f) {
@@ -24,7 +24,7 @@ void INode::insert(formula &f) {
     area a;
     int s, old_s = -1;
 
-    if(!childs.size()) {
+    if(!children.size()) {
         Leaf *l = new Leaf();
         l->bb = f.bb;
         addLeaf(l);
@@ -32,7 +32,7 @@ void INode::insert(formula &f) {
         return;
     }
 
-    for(i = childs.begin(); i != childs.end(); ++i) {
+    for(i = children.begin(); i != children.end(); ++i) {
         if(contains((*i)->bb, f.bb)) {
             (**i) += f;
             return;
@@ -51,7 +51,7 @@ void INode::insert(formula &f) {
 void INode::search(point &p, stack<formula *> &fs) {
     vector<Node *>::iterator i;
 
-    for(i = childs.begin(); i != childs.end(); ++i) {
+    for(i = children.begin(); i != children.end(); ++i) {
         if(pcontains((*i)->bb, p))
             (*i)->search(p, fs);
     }
@@ -60,7 +60,7 @@ void INode::search(point &p, stack<formula *> &fs) {
 void INode::foreach(function<void(formula &)> fun) {
     vector<Node *>::iterator i;
 
-    for(i = childs.begin(); i != childs.end(); ++i)
+    for(i = children.begin(); i != children.end(); ++i)
         (*i)->foreach(fun);
 }
 
@@ -72,8 +72,8 @@ INode *INode::wrap(Leaf *l) {
 }
 
 void INode::addINode(INode *n) {
-    if(childs.size() < CAPACITY) {
-        childs.push_back(n);
+    if(children.size() < CAPACITY) {
+        children.push_back(n);
         n->parent = this;
         return;
     }
@@ -87,8 +87,8 @@ void INode::addINode(INode *n) {
 }
 
 void INode::addLeaf(Leaf *l) {
-    if(childs.size() < CAPACITY) {
-        childs.push_back(l);
+    if(children.size() < CAPACITY) {
+        children.push_back(l);
         l->parent = this;
         return;
     }
@@ -186,8 +186,8 @@ INode *roots(Parser &p, vector<formula *> &out) {
             f->p.y = y;
             head->search(f->p, fs);
             while(!fs.empty()) {
-                f->childs.push_back(fs.top());
-                fs.top()->has_parant = true;
+                f->children.push_back(fs.top());
+                fs.top()->has_parent = true;
                 fs.pop();
             }
             (*head) += (*f);
@@ -204,7 +204,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
 
     head->foreach(
         [&out](formula &formula) {
-            if(!formula.has_parant)
+            if(!formula.has_parent)
                 out.push_back(&formula);
         }
     );

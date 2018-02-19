@@ -26,8 +26,8 @@ public:
 
     // Should be private
     int result = -1;
-    bool has_parant = false;
-    vector<formula *> childs;
+    bool has_parent = false;
+    vector<formula *> children;
 
     formula();
     formula(int x1, int y1, int x2, int y2, int v);
