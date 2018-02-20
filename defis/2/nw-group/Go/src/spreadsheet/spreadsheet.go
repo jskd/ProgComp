@@ -3,8 +3,8 @@ package spreadsheet
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
 	"os"
+	"parse"
 	"path/filepath"
 	"strconv"
 )
@@ -161,17 +161,18 @@ func FromFile(filename string) string {
 		panic(err)
 	}
 	src_name := filepath.Base(filename)
-	bin_dir, err := ioutil.TempDir(src_name+"/bin", "")
-
+	bin_dir := os.TempDir() + src_name + "/bin"
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		processOneLineOfCsv(scanner.Text())
+		processOneLineOfCsv(bin_dir, scanner.Text())
 	}
 	return bin_dir
 }
 
-func processOneLineOfCsv(line string) {
+func processOneLineOfCsv(bin_dir string, line string) {
 
+	bf := parse.NewBinFile(bin_dir)
+	bf.WritePair(0, 0)
 }
 
 type Command struct {

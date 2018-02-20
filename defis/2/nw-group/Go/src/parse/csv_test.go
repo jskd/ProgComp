@@ -5,6 +5,19 @@ import (
 	"testing"
 )
 
+func TestReadOneLineCsv(t *testing.T) {
+	in := "first_name;last_name;username\n#lines beginning with a # character are ignored\nKen;Thompson;ken\n\"Robert\";\"Griesemer\";\"gri\""
+	out := ReadOneLineCsv(in, ';')
+	exp := [][]string{}
+	exp0 := []string{"first_name", "last_name", "username"}
+	exp1 := []string{"Ken", "Thompson", "ken"}
+	exp2 := []string{"Robert", "Griesemer", "gri"}
+	exp = append(exp, exp0)
+	exp = append(exp, exp1)
+	exp = append(exp, exp2)
+	share.AssertArrayEqual(t, out, exp, "Incorrect output from reading data3.csv")
+}
+
 func TestReadWriteCsvFile(t *testing.T) {
 	s := ReadCsv("../../dataset/data.csv", ';')
 	WriteCsv("../../dataset/view.csv", s, ',')

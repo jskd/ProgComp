@@ -10,6 +10,8 @@ import (
 	"sync"
 )
 
+//Note about how struct will be stored in binary
+//https://stackoverflow.com/questions/2113751/sizeof-struct-in-go
 type BinFile struct {
 	data []uint32
 	file string
