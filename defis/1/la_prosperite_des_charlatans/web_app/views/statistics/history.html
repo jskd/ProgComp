@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/content/styles/views/statistics/history.css"/>
+{% endblock %}
+
+{% block body %}
+  {% for log in group_history %}
+    <div class="inline_group_logs">
+
+      {% if log[3] == log[4] %}
+        <ul class="ul_result_pass">
+      {% else %}
+        <ul class="ul_result_fail">
+      {% endif %}
+
+        <li><p><a href="">{{log[0][-8:]}}</a></p></li>
+        <li><p>{{ log[1] }}</p></li>
+        <li><p><b>{{ log[2] }}</b></p></li>
+        <li>
+          <div class='inline_group_results'>
+            <p>{{ log[3] }}/{{ log[4] }}</p>
+
+            {% if log[3] == log[4] %}
+              <p>[PASS]</p>
+              <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+            {% else %}
+              <p>[FAIL]</p>
+              <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
+            {% endif %}
+
+          </div>
+        </li>
+      </ul>
+    </div>
+  {% endfor %}
+{% endblock %}

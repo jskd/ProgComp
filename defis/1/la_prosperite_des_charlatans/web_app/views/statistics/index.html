@@ -13,25 +13,32 @@
           <p><b>{{ group[2] }}</b></p>
         </div>
         <p>
-          {% if group[4] == group[5] %}
+          {% if group[3] == group[4] %}
             <span style="color: rgb(0,200,0);">
           {% else %}
             <span style="color: rgb(200,0,0);">
           {% endif %}
-          Last score : <b> [{{ group[4] }}/{{ group[5] }}] </b> </span>
+          Last score : <b> [{{ group[3] }}/{{ group[4] }}] </b> </span>
         </p>
 
         <p>
-          {% if group[4] == group[5] %}
+          {% if group[3] == group[4] %}
             <span style="color: rgb(0,200,0);">
           {% else %}
             <span style="color: rgb(200,0,0);">
           {% endif %}
-          Last valid build : <b> {{ group[0][-8:] }} </b> </span>
+
+          Last valid build :
+          <b>
+            {% if group[5] != '' %}
+              <a style="color: rgb(0,200,0);" href="http://moule.informatique.univ-paris-diderot.fr:8080/Yann/pcomp-2018/commit/{{ group[5] }}"> {{ group[5][-8:] }} </a>
+            {% endif %}
+          </b>
+          </span>
         </p>
 
         <p>
-          <a href=""> > History of tests</a>
+          <a href="history?group={{ group[2] }}"> > History of tests</a>
         </p>
 
       </div>

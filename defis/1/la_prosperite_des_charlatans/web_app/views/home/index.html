@@ -7,34 +7,35 @@
 {% block body %}
 
   {% for group in last_group_test %}
-  <div class="inline_group_logs">
+  <a href="">
+    <div class="inline_group_logs">
 
-    {% if group[4] == group[5] %}
-      <ul class="ul_result_pass">
-    {% else %}
-      <ul class="ul_result_fail">
-    {% endif %}
+      {% if group[4] == group[5] %}
+        <ul class="ul_result_pass">
+      {% else %}
+        <ul class="ul_result_fail">
+      {% endif %}
 
-      <li><p><a href="">{{group[0]}}</a></p></li>
-      <li><p>{{ group[1] }}</p></li>
-      <li><p><b>{{ group[2] }}</b></p></li>
-      <li>
-        <div class='inline_group_results'>
-          <p>{{ group[4] }}/{{ group[5] }}</p>
+        <li><p>{{group[0]}}</p></li>
+        <li><p>{{ group[1] }}</p></li>
+        <li><p><b>{{ group[2] }}</b></p></li>
+        <li>
+          <div class='inline_group_results'>
+            <p>{{ group[4] }}/{{ group[5] }}</p>
 
-          {% if group[4] == group[5] %}
-            <p>[PASS]</p>
-            <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
-          {% else %}
-            <p>[FAIL]</p>
-            <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
-          {% endif %}
+            {% if group[4] == group[5] %}
+              <p>[PASS]</p>
+              <span class='result_icon_pass'></span>
+            {% else %}
+              <p>[FAIL]</p>
+              <span class='result_icon_fail'></span>
+            {% endif %}
 
-        </div>
-      </li>
-    </ul>
-  </div>
-
+          </div>
+        </li>
+      </ul>
+    </div>
+    </a>
   {% endfor %}
 
 {% endblock %}
