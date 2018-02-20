@@ -151,6 +151,7 @@ pub fn write_change(user: &str,change:&str,spreadsheet:&mut Vec<Vec<Box<cell::Ce
             Some(d) => 
                 for &(x,y) in d {
                     let mut cell = spreadsheet[x as usize][y as usize].copy_cell();
+                    current_evaluation.clear();
                     let (val,_) = cell.evaluate(spreadsheet,&mut current_evaluation,x,y);
                     if val != spreadsheet[x as usize][y as usize].get_value(){
                         cell.set_value(val);

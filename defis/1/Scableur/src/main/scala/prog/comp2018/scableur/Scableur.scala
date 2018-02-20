@@ -2,16 +2,19 @@ package prog.comp2018.scableur
 
 import java.io.FileNotFoundException
 
-import prog.comp2018.scableur.data.{EvaluatedMatrix, Matrix, PrintTableType}
-import prog.comp2018.scableur.eval.MatrixEvaluator
-import prog.comp2018.scableur.parsor.BuildMatrix
-import prog.comp2018.scableur.utils.print.MatrixToCSV
+import prog.comp2018.scableur.data.{EvaluatedMatrix, Matrix, PrintTableType, UserData, ChangesData}
+
+import prog.comp2018.scableur.eval.{MatrixEvaluator, UserActionEvaluator}
+import prog.comp2018.scableur.parsor.{BuildMatrix, UserActionsParsor}
+import prog.comp2018.scableur.utils.print.{ChangesPrinter, MatrixToCSV}
 import prog.comp2018.scableur.utils.{Conf, Debug}
 
 
 object Scableur {
   var matrix : Matrix = _
   var resultMatrix : EvaluatedMatrix = _
+  var userData : UserData = _
+  var resultChanges : ChangesData = _
 
   def main(args : Array[String]): Unit = {
     check_args(args)
@@ -49,15 +52,24 @@ object Scableur {
   }
 
   def load_users_txt() : Unit = {
-    //TODO
+    userData = new UserData(UserActionsParsor.buildList(Conf.Arguments.userFile))
+    //TODO DEBEG.print
+
   }
 
   def evaluate_user_actions() : Unit = {
-    //TODO
+    val userActionEvaluator = new UserActionEvaluator(matrix, userData, resultMatrix)
+    resultChanges = userActionEvaluator.eval
+    //TODO DeBUG.print
+    if (resultChanges.modificationList.isEmpty)
+      println("La liste modificationlist est vide")
+    else 
+      println("la list modificationlist n'est pas vide")
   }
 
   def print_user_actions() : Unit = {
-    //TODO
+    val printer = new ChangesPrinter(resultChanges, Conf.Arguments.changesFile)
+    printer.print()
   }
 
   def check_args(args : Array[String]) : Unit = {

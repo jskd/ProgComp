@@ -2,11 +2,12 @@ package share
 
 import (
 	"fmt"
+	"reflect"
 	"testing"
 )
 
 func AssertEqual(t *testing.T, a interface{}, b interface{}, message string) {
-	if a == b {
+	if reflect.DeepEqual(a, b) {
 		return
 	} else {
 		message = fmt.Sprintf("%v != %v", a, b)

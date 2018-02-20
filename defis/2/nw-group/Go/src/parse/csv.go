@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func checkError(err error) {
@@ -21,6 +22,15 @@ func convertString2Int(str string) int {
 func convertInt2String(i int) string {
 	s := strconv.Itoa(i)
 	return s
+}
+
+func ReadOneLineCsv(line string, sep rune) [][]string {
+	r := csv.NewReader(strings.NewReader(line))
+	r.Comma = sep
+	r.Comment = '#'
+	records, err := r.ReadAll()
+	checkError(err)
+	return records
 }
 
 /*read File and returns there content in a 2D slice of strings*/
@@ -43,5 +53,4 @@ func WriteCsv(filename string, data [][]string, sep rune) {
 	csvWriter.Comma = sep
 	err = csvWriter.WriteAll(data)
 	checkError(err)
-	//TODO: Close file?
 }

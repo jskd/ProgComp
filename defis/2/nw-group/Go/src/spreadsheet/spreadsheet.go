@@ -1,11 +1,12 @@
 package spreadsheet
 
 import (
+	"bufio"
 	"fmt"
-	"parse"
-	"strconv"
 	"os"
-	"log"
+	"parse"
+	"path/filepath"
+	"strconv"
 )
 
 type Cell struct {
@@ -129,23 +130,8 @@ func evaluate(row int, col int, spreadSheet [][]Cell) int {
 	default:
 		res = -1
 	}
-	fmt.Println("heloooooo %d",res)
-	write(row,col,res)
-	return res
-}
 
-func write(row int, col int, value int){
-		// If the file doesn't exist, create it, or append to the file
-		f, err := os.OpenFile(fmt.Sprintf("views/%d",value), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if _, err := f.Write([]byte(fmt.Sprintf("%d;%d \n",row,col))); err != nil {
-			log.Fatal(err)
-		}
-		if err := f.Close(); err != nil {
-			log.Fatal(err)
-		}
+	return res
 }
 
 func cells(spreadSheet [][]string) [][]Cell {
@@ -158,17 +144,107 @@ func cells(spreadSheet [][]string) [][]Cell {
 	return res
 }
 
-func Evaluate(spreadSheet [][]Cell) [][]int {
-	res := make([][]int, len(spreadSheet))
-	for r, row := range spreadSheet {
-		for c := range row {
-			res[r] = append(res[r], evaluate(r, c, spreadSheet))
-		}
-	}
-	return res
+/**
+   TODO: Here the new Evaluate will process the formulas in the bin_repo
+   It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
+   In the normal case, it should return 0 (no looping formula). In case of error, return -1.
+**/
+func Evaluate(bin_repo string) int {
+	return 0
 }
 
-func FromFile(filename string) [][]Cell {
-	spreadSheet := parse.ReadCsv(filename, ';')
-	return cells(spreadSheet)
+//Pre-process Csv file to value-position binary files.
+//Return a directory where value-position binary files are stored
+func FromFile(filename string) string {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	src_name := filepath.Base(filename)
+	bin_dir := os.TempDir() + src_name + "/bin"
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		processOneLineOfCsv(bin_dir, scanner.Text())
+	}
+	return bin_dir
+}
+
+func processOneLineOfCsv(bin_dir string, line string) {
+
+	bf := parse.NewBinFile(bin_dir)
+	bf.WritePair(0, 0)
+}
+
+type Command struct {
+	Row     int
+	Column  int
+	Command data
+}
+
+type Change struct {
+	Row    int
+	Column int
+	Value  int
+}
+
+func toCommand(s string) *Command {
+	var row, col int
+	var command string
+
+	count, _ :=
+		fmt.Sscanf(s, "%d %d %s",
+			&row, &col, &command)
+	if count != 3 {
+		return nil
+	}
+	return &Command{row, col, toData(command)}
+}
+
+func CommandsFromFile(filename string) []*Command {
+	var commands []*Command
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		commands = append(commands, toCommand(scanner.Text()))
+	}
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
+	return commands
+}
+
+func applyCommand(command *Command, spreadSheetBefore [][]Cell,
+	view [][]int) [][]Cell {
+	spreadSheet := make([][]Cell, len(view))
+
+	for r, row := range view {
+		spreadSheet[r] = make([]Cell, len(row))
+	}
+	for r, row := range view {
+		for c, value := range row {
+			if r == command.Row && c == command.Column {
+				spreadSheet[r][c] = Cell{command.Command, false}
+			} else {
+				switch spreadSheetBefore[r][c].data.(type) {
+				case *formula:
+					spreadSheet[r][c] =
+						spreadSheetBefore[r][c]
+				default:
+					spreadSheet[r][c] =
+						Cell{&immediate{value}, false}
+				}
+			}
+		}
+	}
+	return spreadSheet
+}
+
+//TODO: To reimplement this method with reference to orignal CSV file instead of double int array
+func Changes(commands []*Command, spreadSheetBefore [][]Cell,
+	viewBefore [][]int) map[*Command][]Change {
+	res := make(map[*Command][]Change)
+	return res
 }

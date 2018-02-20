@@ -1,0 +1,9 @@
+# Generic patterns
+*.cm[ix]
+*.o
+
+# OCaml profiling dump file
+ocamlprof.dump
+
+bigmama
+bigmama.csv

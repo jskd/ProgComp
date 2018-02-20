@@ -1,6 +1,7 @@
 package spreadsheet
 
 import (
+	"os"
 	"share"
 	"testing"
 )
@@ -10,6 +11,8 @@ func TestToFormula(t *testing.T) {
 	share.AssertEqual(t, f.xDestination, 50, "xDestination is not 50 in the Formula instance.")
 }
 
-func TestEvaluate(t *testing.T) {
-
+func TestFromFile(t *testing.T) {
+	bin_repo := FromFile("../../dataset/data2.csv")
+	exp := os.TempDir() + "data2.csv/bin"
+	share.AssertEqual(t, bin_repo, exp, "Incorrect repository path")
 }

@@ -5,7 +5,9 @@ import prog.comp2018.scableur.data.functions.NbrIteration
 
 import scala.collection.mutable.ListBuffer
 
-class UserActionEvaluator(val matrix: Matrix, val source : UserData) extends Evaluator[ChangesData] {
+class UserActionEvaluator(val matrix: Matrix, val source : UserData, var resultMatrix: EvaluatedMatrix)
+    extends Evaluator[ChangesData] {
+
   private val changesData : ChangesData = new ChangesData()
   var functionStack : ListBuffer[FunctionType] = ListBuffer[FunctionType]()
   var lstfun : List[Int] = List[Int]()
@@ -29,7 +31,8 @@ class UserActionEvaluator(val matrix: Matrix, val source : UserData) extends Eva
   def evalFunctionStack() : Unit = {
     for(f <- functionStack){
       f match  {
-        case f1 : NbrIteration => changesData.modificationList.+=:(f1.coordinates, NbrIterationEval.eval(f1,matrix))
+        case f1 : NbrIteration => changesData.modificationList.+=:(f1.coordinates, 
+          NbrIterationEval.eval(f1,matrix,List()))
       }
     }
   }

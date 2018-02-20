@@ -51,9 +51,9 @@ class BuildMatrix(private var filename: String) {
   def parseFunction(str: String, i: Int, j: Int): Value = {
     val pattern = """[=#(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
 
-    if (str(0) == '#') {
+    if (str(0) == '=') {
 
-      if (str(1) == '=') {
+      if (str(1) == '#') {
         val parts = pattern.findAllIn(str)
         val i1 = parts.group(1)
         val j1 = parts.group(2)
