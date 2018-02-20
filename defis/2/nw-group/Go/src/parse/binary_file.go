@@ -66,6 +66,10 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 	return b.data, nil
 }
 
+/**
+   Use NewBinFile() to create a new BinFile instance.
+   The directory of the given file_path will be created automatically.
+**/
 func NewBinFile(file_path string) *BinFile {
 	createFileIfNotexists(file_path)
 	return &BinFile{[]uint32{}, file_path, sync.Mutex{}}
