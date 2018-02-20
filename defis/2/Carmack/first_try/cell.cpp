@@ -49,7 +49,7 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
 void evaluate(vector<formula *> &top) {
 	int i;
 	vector<formula *>::iterator j;
-	
+
 	for(i = 0; i < top.size(); i++)
         for(j = top[i]->parents.begin(); j != top[i]->parents.end(); ++j) {
 			if((*j)->result == -1 || (*j)->level >= top[i]->level) {
