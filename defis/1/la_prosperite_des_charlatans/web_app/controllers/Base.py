@@ -72,9 +72,6 @@ class BaseController:
                 group_stats[i] += last_valid_build_sha[0]
             else: group_stats[i] += ('',)
 
-        for row in group_stats:
-            print(row)
-
         group_stats = sorted(group_stats, key=lambda x: x[1], reverse=True)
         return group_stats
 
