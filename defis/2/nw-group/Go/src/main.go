@@ -3,7 +3,10 @@ package main
 import (
 	"fmt"
 	"os"
+	"parse"
 	"spreadsheet"
+	"bufio"
+	"io"
 )
 
 /* TODO: Check that output files are different from input ones.  */
@@ -14,6 +17,12 @@ func main() {
 	} else {
 		print_usage()
 		os.Exit(1)
+	}
+}
+
+func checkError(err error) {
+	if err != nil {
+		panic(err)
 	}
 }
 
@@ -50,5 +59,21 @@ func writeChanges(filename string,
 
 //TODO: To write view to file_output from original file_input CSV with formula values in bin_repo
 func writeView(file_output string, file_input string, bin_repo string) {
+	file_in, err := os.OpenFile(file_input, os.O_RDONLY, 0644)
+	checkError(err)
+	defer file_in.Close()
+	reader := bufio.NewReader(file_in)
+	for  {
+		line, err := reader.ReadString('\n') // 0x0A separator = newline
+		if err == io.EOF {
+			checkError(err)
+			//println("error")
+			//break
+		} else if err != nil {
+			checkError(err) // if you return error
+		}
+		println(parse.ReadOneLineCsv(line, ';'))
+	}
+	//file_out, err := os.OpenFile(file_output, os.O_WRONLY, 0644)
 
 }
