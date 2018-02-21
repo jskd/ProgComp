@@ -1,45 +1,48 @@
-#!/bin/bash
+#!/bin/sh
 
-EXEC=Go/main.exe
-DST=/tmp/nw-group-defi1
-NAME=nw-group
-IMAGE=nw-group-defi1
+exported_name() {
+    printf "%s" /tmp/$(basename $1)
+}
 
-if [ $# -eq 4 ] ; then
-	if [[ "$(docker images -q $IMAGE:latest 2> /dev/null)" == "" ]]; then
-		echo "No images found. Please run 'make' first!"
-	else
-		CONTAINER=$(docker run -it -d $IMAGE /bin/sh)
-		IDATA_PATH=$1
-		IUSER_PATH=$2
-		IVIEW_PATH=$3
-		ICHGS_PATH=$4
-		
-		if [[ "$(pwd)" = *"charlatans"* ]] ; then
-			GIT_PATH=$(git rev-parse --show-toplevel)
-			IDATA_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$1"
-			IUSER_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$2"
-			IVIEW_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$3"
-			ICHGS_PATH="$GIT_PATH/defis/1/la_prosperite_des_charlatans/$4"
-		fi
+exported_names() {
+    local names
 
-		IDATA=$(basename $IDATA_PATH)
-		IUSER=$(basename $IUSER_PATH)
-		
-		DIRVIEW=$(dirname $IVIEW_PATH)
-		DIRICHGS=$(dirname $ICHGS_PATH)
+    for file in $@; do
+        names=$(printf "%s %s" "$names" $(exported_name $file))
+    done
+    printf "%s" "$names"
+}
 
-		docker exec $CONTAINER mkdir -p $DIRVIEW && mkdir -p $DIRICHGS
+import_files() {
+    for file in $@; do
+        local exported_file=$(exported_name $file)
 
-		docker cp $IDATA_PATH $CONTAINER:"$DST/$IDATA"
-		docker cp $IUSER_PATH $CONTAINER:"$DST/$IUSER"
-		docker exec $CONTAINER \
-			./$EXEC $DST/$IDATA $DST/$IUSER $IVIEW_PATH $ICHGS_PATH
-		docker cp $CONTAINER:$IVIEW_PATH $IVIEW_PATH
-		docker cp $CONTAINER:$ICHGS_PATH $ICHGS_PATH
-		docker stop $CONTAINER
-		docker rm $CONTAINER
-	fi
-else
-	echo "usage: ./ws data.csv user.txt view0.csv changes.txt"
-fi
+        docker exec $CONTAINER test -e $exported_file &&        \
+            docker cp $CONTAINER:$exported_file $file
+    done
+}
+
+export_files() {
+    for file in $@; do
+        if [ -e $file ]; then
+            docker cp $file $CONTAINER:$(exported_name $file)
+        fi
+    done
+}
+
+quiet() {
+    $@ > /dev/null
+}
+
+main() {
+    CONTAINER=$(docker run -td nw-group/ws)
+    export_files $@
+    docker exec $CONTAINER Go/main.exe $(exported_names $@)
+    status=$?
+    import_files $3 $4
+    $(quiet docker stop $CONTAINER)
+    $(quiet docker rm $CONTAINER)
+    return $status
+}
+
+main $@
