@@ -61,6 +61,8 @@ func writeChanges(filename string,
 func writeView(file_output string, file_input string, bin_repo string) {
 	file_in, err := os.OpenFile(file_input, os.O_RDONLY, 0644)
 	checkError(err)
+	//file_out, err := os.OpenFile(file_output, os.O_WRONLY, 0644)
+	checkError(err)
 	defer file_in.Close()
 	reader := bufio.NewReader(file_in)
 	for  {
@@ -72,8 +74,6 @@ func writeView(file_output string, file_input string, bin_repo string) {
 			checkError(err) // if you return error
 		}
 		bin := parse.ReadOneLineCsv(line, ';')
-		println(bin)
+		parse.WriteCsv(file_output, bin, ';')
 	}
-	//file_out, err := os.OpenFile(file_output, os.O_WRONLY, 0644)
-
 }

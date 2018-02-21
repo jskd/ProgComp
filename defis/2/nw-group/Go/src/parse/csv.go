@@ -47,7 +47,10 @@ func ReadCsv(fileToRead string, sep rune) [][]string {
 }
 
 func WriteCsv(filename string, data [][]string, sep rune) {
-	file, err := os.Create(filename)
+	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
+	if os.IsNotExist(err) {
+		file, err = os.Create(filename)
+	}
 	checkError(err)
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Comma = sep
