@@ -2,4 +2,4 @@ FROM golang:stretch
 
 WORKDIR /go/src
 COPY . .
-RUN make -f go.mk
+RUN make -C Go
