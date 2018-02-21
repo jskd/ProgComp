@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"parse"
+	parse "parse"
 	"spreadsheet"
 	"bufio"
 	"io"
@@ -66,13 +66,13 @@ func writeView(file_output string, file_input string, bin_repo string) {
 	for  {
 		line, err := reader.ReadString('\n') // 0x0A separator = newline
 		if err == io.EOF {
-			checkError(err)
-			//println("error")
-			//break
+			println("fin de fichier")
+			break
 		} else if err != nil {
 			checkError(err) // if you return error
 		}
-		println(parse.ReadOneLineCsv(line, ';'))
+		bin := parse.ReadOneLineCsv(line, ';')
+		println(bin)
 	}
 	//file_out, err := os.OpenFile(file_output, os.O_WRONLY, 0644)
 
