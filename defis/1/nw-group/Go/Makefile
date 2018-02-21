@@ -1,7 +1,8 @@
-RM=rm -f
+SHELL = /bin/sh
+RM = rm -f
 
 GOPATH:=$(shell pwd)
-EXEC=main.exe
+EXEC = main.exe
 
 .PHONY: all export_gopath build test clean
 

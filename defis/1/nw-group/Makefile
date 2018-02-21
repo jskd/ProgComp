@@ -1,12 +1,15 @@
-IMG = nw-group-defi1
+SHELL = /bin/sh
+
+DOCKER = docker
+
+IMG = nw-group/ws
 
 .PHONY: all build-docker-img mrproper
 
 all: build-docker-img
 
 build-docker-img:
-	@docker build -t $(IMG) .
+	$(DOCKER) build -t $(IMG) .
 
 mrproper:
-	echo "Do nothing"
-	##@docker rmi -f $(IMG) 2> /dev/null
+	$(DOCKER) rmi -f $(IMG) 2> /dev/null
