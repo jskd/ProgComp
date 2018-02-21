@@ -32,9 +32,9 @@
       </section>
 
       <ul class="ul_scores_list">
-        {% for group in last_commit_best_group %}
+        {% for group in group_stats %}
 
-        {% if group[4] == group[5] %}
+        {% if group[1] == group[2] %}
           <li class="li_scores_list_pass">
             <img src="/content/img/star1.png"/>
         {% else %}
@@ -42,7 +42,7 @@
             <img src="/content/img/star1_off.png"/>
         {% endif %}
 
-          <p>{{ group[2] }} - {{ group[4] }}/{{ group[5] }}</p>
+          <p>{{ group[0] }} - {{ group[1] }}/{{ group[2] }}</p>
         </li>
 
         {% endfor %}

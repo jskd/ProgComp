@@ -6,12 +6,12 @@ class HomeController(BaseController):
     @cherrypy.expose
     def index(self):
 
+        group_stats = self.get_group_stats()
         lasts_passed = self.get_lasts_passed()
-        lasts_commit_best_group = self.get_lasts_commit_best_group()
 
         template_args = {
-        "last_group_test":lasts_passed,
-        "last_commit_best_group":lasts_commit_best_group
+        "group_stats":group_stats,
+        "last_group_test":lasts_passed
         }
 
         return self.render_template(template_args)

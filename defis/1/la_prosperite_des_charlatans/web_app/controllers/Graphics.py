@@ -5,9 +5,9 @@ import os
 class GraphicsController(BaseController):
     @cherrypy.expose
     def index(self):
-        lasts_commit_best_group = self.get_lasts_commit_best_group()
+        group_stats = self.get_group_stats()
 
         template_args = {
-        "last_commit_best_group":lasts_commit_best_group
+        "group_stats":group_stats
         }
         return self.render_template(template_args)

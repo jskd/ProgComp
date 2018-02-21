@@ -25,20 +25,58 @@ class BaseController:
         except Exception as ex:
             return None
 
-    def get_lasts_commit_best_group(self):
+    def get_group_list(self):
+        qry = "SELECT DISTINCT name_group FROM logs;"
 
-        qry = "SELECT sha as commit_sha, \
-            date_test, \
-            name_group, \
-            result, \
+        group_list = self.executeQuery(qry)
+        return group_list
+
+    def get_last_build_score(self, group_name):
+        qry = "SELECT \
             sum(case when result='PASS' then 1 else 0 end) as nb_passed, \
             COUNT(DISTINCT name_test) as total_test \
             FROM (SELECT * FROM logs GROUP BY name_group, sha, name_test) \
-            WHERE commit_sha = (SELECT sha FROM logs ORDER BY date_test DESC LIMIT 1)\
-            GROUP BY commit_sha, name_group \
-            ORDER BY nb_passed DESC;".format()
+            WHERE name_group = '{}' \
+            GROUP BY sha, name_group \
+            ORDER BY date_test DESC LIMIT 1".format(group_name)
 
-        return self.executeQuery(qry)
+        last_build_score = self.executeQuery(qry)
+        return last_build_score
+
+    def get_last_valid_build_sha(self, group_name):
+        qry = "SELECT sha FROM \
+                (SELECT sha, \
+                sum(case when result='PASS' then 1 else 0 end) as nb_passed, \
+                COUNT(DISTINCT name_test) as total_test \
+                FROM (SELECT * FROM logs GROUP BY name_group, sha, name_test) \
+                WHERE name_group = '{}' \
+                GROUP BY sha, name_group \
+                ORDER BY date_test DESC) \
+            WHERE nb_passed = total_test \
+            LIMIT 1;".format(group_name)
+
+        last_valid_build_sha = self.executeQuery(qry)
+        return last_valid_build_sha
+
+    def get_group_stats(self):
+        group_stats = self.get_group_list()
+
+        for i, group in enumerate(group_stats):
+            group_name = group[0]
+
+            last_build_score = self.get_last_build_score(group_name)
+            group_stats[i] += last_build_score[0]
+
+            last_valid_build_sha = self.get_last_valid_build_sha(group_name)
+            if last_valid_build_sha != [] :
+                group_stats[i] += last_valid_build_sha[0]
+            else: group_stats[i] += ('',)
+
+        for row in group_stats:
+            print(row)
+
+        group_stats = sorted(group_stats, key=lambda x: x[1], reverse=True)
+        return group_stats
 
     def executeQuery(self, query_string):
         result_qry = None
