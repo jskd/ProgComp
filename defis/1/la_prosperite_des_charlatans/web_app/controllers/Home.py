@@ -18,7 +18,7 @@ class HomeController(BaseController):
 
     def get_lasts_passed(self):
 
-        qry = "SELECT substr(sha, -8) as commit_sha, \
+        qry = "SELECT sha as commit_sha, \
             date_test, \
             name_group, \
             result, \

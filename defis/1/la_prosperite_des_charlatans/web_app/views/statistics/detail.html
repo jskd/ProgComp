@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/content/styles/views/statistics/detail.css"/>
+{% endblock %}
+
+{% block body %}
+
+    <div class='block_test'>
+        <div class='title_test'>
+            <p>
+              {% if detail_test[5] == 'PASS' %}
+                <font color='#2dae5b'>
+              {% else %}
+                <font color='red'>
+              {% endif %}
+
+              {{ detail_test[4] }}
+              </font>
+            </p>
+            <div class='liste_actions'>
+                <p>
+                  {% if detail_test[5] == 'PASS' %}
+                    <font color='#2dae5b'>
+                  {% else %}
+                    <font color='red'>
+                  {% endif %}
+
+                  [{{ detail_test[5] }}]
+                  </font>
+                </p>
+
+                {% if detail_test[5] == 'PASS' %}
+                  <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+                {% else %}
+                  <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
+                {% endif %}
+
+            </div>
+        </div>
+        <h4>OUTPUT :</h4>
+        <p>
+        {{ detail_test[7] }}
+        </p>
+        <hr>
+        Executed in : <strong>{{ detail_test[6] }} sec.</strong> <br/><br/>
+        Last [PASS] : <a href='http://moule.informatique.univ-paris-diderot.fr:8080/Yann/pcomp-2018/commit/{{ detail_test[8] }}'><strong>{{ detail_test[8] }}</strong></a>
+    </div>
+
+{% endblock %}

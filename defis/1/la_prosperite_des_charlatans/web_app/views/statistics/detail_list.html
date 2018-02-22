@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/content/styles/views/statistics/detail_list.css"/>
+{% endblock %}
+
+{% block body %}
+
+  {% for test in detail_list_test %}
+    <a href="/statistics/detail/?id={{ test[0] }}">
+    <div class='title_test'>
+        <p>
+          {% if test[5] == 'PASS' %}
+            <font color='#2dae5b'>
+          {% else %}
+            <font color='red'>
+          {% endif %}
+
+          {{ test[4] }}
+          </font>
+        </p>
+        <div class='liste_actions'>
+            <p>
+              {% if test[5] == 'PASS' %}
+                <font color='#2dae5b'>
+              {% else %}
+                <font color='red'>
+              {% endif %}
+
+              [{{ test[5] }}]
+              </font>
+            </p>
+
+            {% if test[5] == 'PASS' %}
+              <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+            {% else %}
+              <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
+            {% endif %}
+
+        </div>
+    </div>
+    </a>
+
+  {% endfor %}
+
+{% endblock %}

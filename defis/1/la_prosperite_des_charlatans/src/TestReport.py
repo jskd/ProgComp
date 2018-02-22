@@ -100,14 +100,16 @@ class TestReport():
                     name_group, \
                     name_test, \
                     result, \
-                    bench_time \
-                    ) VALUES (\"{}\",{},\"{}\",\"{}\",\"{}\",\"{}\"); \
+                    bench_time, \
+                    output \
+                    ) VALUES (\"{}\",{},\"{}\",\"{}\",\"{}\",\"{}\",\"{}\"); \
                     ".format(log["commit"],
                     "datetime()",
                     self.target["name"],
                     log["test_info"]["name"],
                     log["result"],
-                    log["exec_time"])
+                    log["exec_time"],
+                    log["output"])
 
                 cursor.execute(qry)
                 conn.commit()

@@ -8,5 +8,6 @@ CREATE TABLE logs
   name_group VARCHAR(255),
   name_test VARCHAR(255),
   result VARCHAR(255),
-  bench_time DECIMAL(18,4)
+  bench_time DECIMAL(18,4),
+  output TEXT
 );

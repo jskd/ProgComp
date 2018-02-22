@@ -7,7 +7,7 @@
 {% block body %}
 
   {% for group in last_group_test %}
-  <a href="">
+  <a href="/statistics/detail_list/?sha={{ group[0] }}&group={{ group[2] }}">
     <div class="inline_group_logs">
 
       {% if group[4] == group[5] %}
@@ -16,7 +16,7 @@
         <ul class="ul_result_fail">
       {% endif %}
 
-        <li><p>{{group[0]}}</p></li>
+        <li><p>{{group[0][-8:]}}</p></li>
         <li><p>{{ group[1] }}</p></li>
         <li><p><b>{{ group[2] }}</b></p></li>
         <li>
