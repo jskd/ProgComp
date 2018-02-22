@@ -96,6 +96,10 @@ class StatisticsController(BaseController):
         group_name = test_detail[3]
         test_name = test_detail[4]
 
+        test_detail = list(test_detail)
+        test_detail[7] = test_detail[7].replace("\n", "<br/>")
+        test_detail = tuple(test_detail)
+
         qry = "SELECT sha \
             FROM logs \
             WHERE name_group = \"{}\" and  name_test = \"{}\" and result='PASS' \
