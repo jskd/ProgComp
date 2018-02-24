@@ -240,7 +240,6 @@ INode *roots(Parser &p, vector<formula *> &out) {
             while(!fs.empty()) {
                 formula.children.push_back(fs.top());
                 fs.top()->parents.push_back(&formula);
-                fs.top()->has_parent = true;
                 fs.pop();
             }
         }
@@ -248,7 +247,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
 
     head->foreach(
         [&out](formula &formula) {
-            if(!formula.has_parent) {
+            if(!formula.parents.size()) {
                 out.push_back(&formula);
                 formula.level = 0;
             }

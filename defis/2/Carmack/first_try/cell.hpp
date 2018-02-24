@@ -27,7 +27,6 @@ public:
     // Should be private
     int level = -1;
     int result = 0;
-    bool has_parent = false;
     vector<formula *> children;
     vector<formula *> parents;
 
