@@ -1,3 +1,16 @@
+
+/*
+    Example of code that uses OpenCL 1.1
+
+    It takes two arrays A and B and calculates the sum in a third array C
+    such that:
+
+    For all 0 <= i < |A| (assuming that A, B and C have the same size)
+    ```C[i] = A[i] + B[i]```
+
+    From https://github.com/Dakkers/OpenCL-examples
+*/
+
 #include <iostream>
 #ifdef __APPLE__
     #include <OpenCL/cl.hpp>
@@ -60,7 +73,7 @@ int main() {
         std::cout << "Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(default_device) << std::endl;
         exit(1);
     }
-    
+
     // apparently OpenCL only likes arrays ...
     // N holds the number of elements in the vectors we want to add
     int N[1] = {100};
@@ -102,4 +115,3 @@ int main() {
 
     return 0;
 }
-
