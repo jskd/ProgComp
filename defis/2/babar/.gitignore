@@ -1,0 +1,10 @@
+#####Rust binaries & doc generated files#####
+Cargo.lock
+target/*
+
+#####Execution generated files#####
+ressources/view0.csv
+ressources/changes.txt
+
+#####Others#####
+.gitignore~
