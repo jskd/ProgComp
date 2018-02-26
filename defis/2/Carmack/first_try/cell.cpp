@@ -23,25 +23,23 @@ ostream &operator<<(ostream &out, const formula &f) {
 
 void normalize(vector<formula *> &roots, vector<formula *> &top) {
     queue<formula *> q;
-    vector<formula *>::iterator i, j;
 
-    for(i = roots.begin(); i != roots.end(); ++i) {
-        for(j = (*i)->children.begin(); j != (*i)->children.end(); ++j) {
-            (*j)->level = 1;
-            q.push(*j);
+    for(formula *root : roots) {
+        for(formula *child : root->children) {
+            child->level = 1;
+            q.push(child);
         }
-		// Zero-level formulae are already calculated,
+        // Zero-level formulae are already calculated,
 		// so there is no reason to add them to top.
-        //top.push_back(*i);
+        // top.push_back(child);
     }
 
     while(!q.empty()) {
-        for(j = q.front()->children.begin();
-            j != q.front()->children.end(); ++j) {
-            if((*j)->level != -1)
+        for(formula *child : q.front()->children) {
+            if(child->level != -1)
                 continue;
-            (*j)->level = q.front()->level + 1;
-            q.push(*j);
+            child->level = q.front()->level + 1;
+            q.push(child);
         }
         top.push_back(q.front());
         q.pop();
@@ -50,14 +48,14 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
 
 void evaluate(vector<formula *> &top) {
 	int i;
-	vector<formula *>::iterator j;
 
-	for(i = 0; i < top.size(); i++)
-        for(j = top[i]->parents.begin(); j != top[i]->parents.end(); ++j) {
-			if((*j)->result == -1 || (*j)->level >= top[i]->level) {
-				top[i]->result = -1;
+    for(formula *next_f : top) {
+        for(formula *parent : next_f->parents) {
+            if(parent->result == -1 || parent->level >= next_f->level) {
+			    next_f->result = -1;
 				break;
 			}
-			top[i]->result += ((*j)->result == top[i]->value) ? 1 : 0;
-		}
+		    next_f->result += (parent->result == next_f->value) ? 1 : 0;
+        }
+    }
 }

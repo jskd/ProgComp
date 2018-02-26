@@ -56,7 +56,6 @@ INode::INode(INode *child) {
 }
 
 void INode::insert(formula &f) {
-    vector<Node *>::iterator i;
     Node *n;
     area a;
     int s, old_s = -1;
@@ -71,16 +70,16 @@ void INode::insert(formula &f) {
         return;
     }
 
-    for(i = children.begin(); i != children.end(); ++i) {
-        if(contains((*i)->bb, f.bb)) {
-            (**i) += f;
+    for(Node *c : children) {
+        if(contains(c->bb, f.bb)) {
+            (*c) += f;
             return;
         }
-        intersect((*i)->bb, f.bb, a);
+        intersect(c->bb, f.bb, a);
         s = surface(a);
         if(old_s < 0 || s < old_s) {
             old_s = s;
-            n = *i;
+            n = c;
         }
     }
     intersect(n->bb, f.bb, n->bb);
@@ -88,19 +87,15 @@ void INode::insert(formula &f) {
 }
 
 void INode::search(point &p, stack<formula *> &fs) {
-    vector<Node *>::iterator i;
-
-    for(i = children.begin(); i != children.end(); ++i) {
-        if(pcontains((*i)->bb, p))
-            (*i)->search(p, fs);
+    for(Node *c : children) {
+        if(pcontains(c->bb, p))
+            c->search(p, fs);
     }
 }
 
 void INode::foreach(function<void(formula &)> fun) {
-    vector<Node *>::iterator i;
-
-    for(i = children.begin(); i != children.end(); ++i)
-        (*i)->foreach(fun);
+    for(Node *c : children)
+        c->foreach(fun);
 }
 
 INode *INode::wrap(Leaf *l) {
@@ -171,19 +166,14 @@ void Leaf::insert(formula &f) {
 }
 
 void Leaf::search(point &p, stack<formula *> &fs) {
-    vector<formula *>::iterator i;
-
-    for(i = formulas.begin(); i != formulas.end(); ++i) {
-        if(pcontains((*i)->bb, p))
-            fs.push(*i);
-    }
+    for(formula *f : formulas)
+        if(pcontains(f->bb, p))
+            fs.push(f);
 }
 
 void Leaf::foreach(function<void(formula &)> fun) {
-    vector<formula *>::iterator i;
-
-    for(i = formulas.begin(); i != formulas.end(); ++i)
-        fun(**i);
+    for(formula *f : formulas)
+        fun(*f);
 }
 
 void Leaf::split(formula *f, int *id) {
