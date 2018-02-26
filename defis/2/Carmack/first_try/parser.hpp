@@ -7,7 +7,7 @@
 
 class Parser {
 private:
-    std::fstream &fs;
+    std::fstream fs;
     bool _eof = false, _eol = false;
 
     bool next_value(cell *c);

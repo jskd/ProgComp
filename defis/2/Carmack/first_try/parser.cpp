@@ -3,7 +3,7 @@
 using namespace std;
 
 Parser::Parser(string data) :
-    fs(*(new fstream(data, fstream::in))),
+    fs(fstream(data, fstream::in)),
     eof(_eof),
     eol(_eol) { }
 
