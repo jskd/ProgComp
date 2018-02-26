@@ -7,3 +7,4 @@ results/Scableur/
 tests/*/output/*.txt
 tests/*/output/*.csv
 database.csv
+web_app/site.conf
