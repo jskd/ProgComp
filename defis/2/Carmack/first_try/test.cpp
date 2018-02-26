@@ -5,6 +5,8 @@
 #include "cell.hpp"
 #include "rtree.hpp"
 
+using namespace std;
+
 int main(int argc, char *argv[]) {
     if(argc < 2) {
         cerr << "File, please.\n";

@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 void Node::preval(Parser &p) {
     point pos;
     cell c;

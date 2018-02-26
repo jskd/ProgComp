@@ -5,11 +5,9 @@
 
 #include "cell.hpp"
 
-using namespace std;
-
 class Parser {
 private:
-    fstream &fs;
+    std::fstream &fs;
     bool _eof = false, _eol = false;
 
     bool next_value(cell *c);
@@ -17,7 +15,7 @@ public:
     const bool &eof;
     const bool &eol;
 
-    Parser(string data);
+    Parser(std::string data);
     ~Parser();
 
     bool next_cell(cell *c);

@@ -8,8 +8,6 @@
 #include "cell.hpp"
 #include "parser.hpp"
 
-using namespace std;
-
 class INode;
 
 class Leaf;
@@ -20,8 +18,8 @@ public:
     area bb;
     INode *parent;
     virtual void insert(formula &f) = 0;
-    virtual void search(point &p, stack<formula *> &fs) = 0;
-    virtual void foreach(function<void(formula &)> fun) = 0;
+    virtual void search(point &p, std::stack<formula *> &fs) = 0;
+    virtual void foreach(std::function<void(formula &)> fun) = 0;
     void preval(Parser &p);
     Node &operator+=(formula &f);
 };
@@ -29,7 +27,7 @@ public:
 class INode : public Node {
 private:
     static INode *head;
-    vector<Node *> children;
+    std::vector<Node *> children;
     const int CAPACITY = 2;
 
     INode();
@@ -38,8 +36,8 @@ private:
 public:
     static INode *getHead();
     void insert(formula &f);
-    void search(point &p, stack<formula *> &fs);
-    void foreach(function<void(formula &)> fun);
+    void search(point &p, std::stack<formula *> &fs);
+    void foreach(std::function<void(formula &)> fun);
     void addINode(INode *n);
     void addLeaf(Leaf *l);
 };
@@ -48,17 +46,17 @@ class Leaf : public Node {
     friend class INode;
 private:
     const int CAPACITY = 4;
-    vector<formula *>formulas;
+    std::vector<formula *> formulas;
 
     Leaf();
     void split(formula *f, int *id);
     void update_bb();
 public:
     void insert(formula &f);
-    void search(point &p, stack<formula *> &fs);
-    void foreach(function<void(formula &)> fun);
+    void search(point &p, std::stack<formula *> &fs);
+    void foreach(std::function<void(formula &)> fun);
 };
 
-INode *roots(Parser &p, vector<formula *> &out);
+INode *roots(Parser &p, std::vector<formula *> &out);
 
 #endif
