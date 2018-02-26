@@ -1,12 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"os"
 	parse "parse"
 	"spreadsheet"
-	"bufio"
-	"io"
 )
 
 /* TODO: Check that output files are different from input ones.  */
@@ -27,7 +27,7 @@ func checkError(err error) {
 }
 
 func main_program(args []string) {
-	bin_repo := spreadsheet.FromFile(args[0])
+	bin_repo := spreadsheet.FromFile(args[0], ';')
 	loop_count := spreadsheet.Evaluate(bin_repo)
 	fmt.Printf("Looping formula: %d\n", loop_count)
 	writeView(args[2], args[0], bin_repo)
@@ -65,7 +65,7 @@ func writeView(file_output string, file_input string, bin_repo string) {
 	checkError(err)
 	defer file_in.Close()
 	reader := bufio.NewReader(file_in)
-	for  {
+	for {
 		line, err := reader.ReadString('\n') // 0x0A separator = newline
 		if err == io.EOF {
 			println("fin de fichier")
