@@ -29,6 +29,40 @@ pub fn read_first_time(path: &str, bytes_by_lines: &Vec<usize>, formulas: &Vec<c
 
 pub fn has_formula(line: Vec<u8>, formulas: &Vec<cell::Formula>)
 {
-
+	let lineproper = line.trim()
+	let linesplit = lineproper.split(";")
+	for_each!(n in linesplit
+	{
+		if(n[0] == "#")
+		{
+			println!("Formula !")
+			formulas.append(create_formula(n))
+		}
+		else
+		{
+			println("Not a formula")
+		}
+	})
 }
 
+pub fn create_formula(form_dec_vec: Vec<&str>) -> formula::Formula
+{
+    let formula = cell::Formula{
+            num: 0,
+            r1: form_dec_vec[0].trim().parse()
+            .expect("Erreur format"),
+
+            c1: form_dec_vec[1].trim().parse()
+            .expect("Erreur format"),
+
+            r2: form_dec_vec[2].trim().parse()
+            .expect("Erreur format"),
+
+            c2: form_dec_vec[3].trim().parse()
+            .expect("Erreur format"),
+
+            val: form_dec_vec[4].trim().parse()
+            .expect("Erreur format"),
+    };
+    return formula
+}
