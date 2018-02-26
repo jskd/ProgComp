@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
-	parse "parse"
+	"parse"
 	"spreadsheet"
 	"bufio"
 	"io"
+	"encoding/csv"
 )
 
 /* TODO: Check that output files are different from input ones.  */
@@ -65,15 +66,23 @@ func writeView(file_output string, file_input string, bin_repo string) {
 	checkError(err)
 	defer file_in.Close()
 	reader := bufio.NewReader(file_in)
+	reader2 := csv.NewReader(reader)
+	reader2.Comma = ';'
+	reader2.FieldsPerRecord = -1
 	for  {
-		line, err := reader.ReadString('\n') // 0x0A separator = newline
+		line, err := reader2.Read() // 0x0A separator = newline
 		if err == io.EOF {
 			println("fin de fichier")
 			break
 		} else if err != nil {
 			checkError(err) // if you return error
 		}
-		bin := parse.ReadOneLineCsv(line, ';')
-		parse.WriteCsv(file_output, bin, ';')
+		//bin := parse.ReadOneLineCsv(line, ';')
+		/*for i:=0; i<len(line); i++ {
+			//for j:=0; j<len(line); j++ {
+				print(line)
+			//}
+		}*/
+		parse.WriteCsv(file_output, line, ';')
 	}
 }
