@@ -30,8 +30,8 @@ pub fn read_first_time(path: &str, bytes_by_lines: &mut Vec<usize>, formulas: &m
 }
 pub fn has_formula(line: Vec<u8>, formulas: &Vec<cell::Formula>)
 {
-	let lineproper = line.trim()
-	let linesplit = lineproper.split(";")
+	let lineproper = line.trim();
+	let linesplit = lineproper.split(";");
 	for_each!(n in linesplit
 	{
 		if(n[0] == "=")
