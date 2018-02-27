@@ -34,7 +34,7 @@ pub fn has_formula(line: Vec<u8>, formulas: &Vec<cell::Formula>)
 	let linesplit = lineproper.split(";")
 	for_each!(n in linesplit
 	{
-		if(n[0] == "#")
+		if(n[0] == "=")
 		{
 			println!("Formula !")
 			formulas.append(create_formula(n))
