@@ -18,6 +18,23 @@ type BinFile struct {
 	mut  sync.Mutex
 }
 
+func PurgeAndRecreateDir(path string) {
+	var _, err = os.Stat(path)
+	if os.IsExist(err) {
+		err = os.RemoveAll(path)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println("Purge dir:", path)
+	}
+
+	err = os.MkdirAll(path, 0777)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("New directory created:", path)
+}
+
 //Create file if not exists
 func createFileIfNotexists(path string) {
 	dirPath := filepath.Dir(path)
@@ -27,7 +44,7 @@ func createFileIfNotexists(path string) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("New directory created: ", dirPath)
+		fmt.Println("New directory created:", dirPath)
 	}
 
 	_, err = os.Stat(path)
@@ -37,7 +54,7 @@ func createFileIfNotexists(path string) {
 			panic(err)
 		}
 		defer file.Close()
-		fmt.Println("New file created: ", path)
+		fmt.Println("New file created:", path)
 	}
 }
 
@@ -72,7 +89,9 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 **/
 func NewBinFile(file_path string) *BinFile {
 	createFileIfNotexists(file_path)
-	return &BinFile{[]uint32{}, file_path, sync.Mutex{}}
+	bin := BinFile{[]uint32{}, file_path, sync.Mutex{}}
+	bin.ReadAll()
+	return &bin
 }
 
 func (b *BinFile) WritePair(x uint32, y uint32) {

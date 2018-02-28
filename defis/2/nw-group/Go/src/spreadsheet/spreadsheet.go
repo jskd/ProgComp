@@ -7,6 +7,7 @@ import (
 	"parse"
 	"path/filepath"
 	"strconv"
+	"strings"
 )
 
 type Cell struct {
@@ -82,7 +83,7 @@ func ToFormula(s string) *formula {
 		fmt.Sscanf(s, "=#(%d,%d,%d,%d,%d)",
 			&ySrc, &xSrc, &yDst, &xDst, &val)
 	if count != 5 {
-		return nil
+		panic(FormulaError{"Incorrect formula format:" + s})
 	}
 	if xSrc > xDst || ySrc > yDst {
 		panic(FormulaError{"Source x or y must greater than destination x or y."})
@@ -155,24 +156,46 @@ func Evaluate(bin_repo string) int {
 
 //Pre-process Csv file to value-position binary files.
 //Return a directory where value-position binary files are stored
-func FromFile(filename string) string {
+func FromFile(filename string, sep rune) string {
 	file, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
 	src_name := filepath.Base(filename)
 	bin_dir := os.TempDir() + src_name + "/bin"
+	//TODO: Skip if directory already exist
+	parse.PurgeAndRecreateDir(bin_dir)
 	scanner := bufio.NewScanner(file)
+	pos_x := 0
 	for scanner.Scan() {
-		processOneLineOfCsv(bin_dir, scanner.Text())
+		processOneLineOfCsv(bin_dir, scanner.Text(), sep, pos_x)
+		pos_x += 1
 	}
 	return bin_dir
 }
 
-func processOneLineOfCsv(bin_dir string, line string) {
+func processOneLineOfCsv(bin_dir string, line string, sep rune, pos_x int) {
+	data := parse.ReadOneLineCsv(line, sep)
+	fmt.Println("Line: " + line)
+	if len(data) != 1 {
+		fmt.Println("Given line of Csv contains break-line but only first line of array will be processed.")
+	}
+	for pos_y, element := range data[0] {
+		txt := strings.TrimSpace(element)
+		fmt.Println("Element: " + txt)
+		if strings.HasPrefix(txt, "=") {
+			bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
+			bf.WritePair(uint32(pos_x), uint32(pos_y))
+		} else {
+			bf := parse.NewBinFile(bin_dir + "/" + txt)
+			bf.WritePair(uint32(pos_x), uint32(pos_y))
+		}
+	}
+}
 
-	bf := parse.NewBinFile(bin_dir)
-	bf.WritePair(0, 0)
+func FormulaToFileName(s string) string {
+	f := ToFormula(s)
+	return fmt.Sprintf("%d_%d_%d_%d_%d", f.ySource, f.xSource, f.yDestination, f.xDestination, f.value)
 }
 
 type Command struct {

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	parse "parse"
-	"spreadsheet"
 	"bufio"
+	"encoding/csv"
+	"fmt"
 	"io"
+	"os"
+	"parse"
+	"spreadsheet"
 )
 
 /* TODO: Check that output files are different from input ones.  */
@@ -27,7 +28,7 @@ func checkError(err error) {
 }
 
 func main_program(args []string) {
-	bin_repo := spreadsheet.FromFile(args[0])
+	bin_repo := spreadsheet.FromFile(args[0], ';')
 	loop_count := spreadsheet.Evaluate(bin_repo)
 	fmt.Printf("Looping formula: %d\n", loop_count)
 	writeView(args[2], args[0], bin_repo)
@@ -65,15 +66,24 @@ func writeView(file_output string, file_input string, bin_repo string) {
 	checkError(err)
 	defer file_in.Close()
 	reader := bufio.NewReader(file_in)
-	for  {
-		line, err := reader.ReadString('\n') // 0x0A separator = newline
+	reader2 := csv.NewReader(reader)
+	reader2.Comma = ';'
+	reader2.FieldsPerRecord = -1
+	for {
+		line, err := reader2.Read() // 0x0A separator = newline
+
 		if err == io.EOF {
 			println("fin de fichier")
 			break
 		} else if err != nil {
 			checkError(err) // if you return error
 		}
-		bin := parse.ReadOneLineCsv(line, ';')
-		parse.WriteCsv(file_output, bin, ';')
+		//bin := parse.ReadOneLineCsv(line, ';')
+		/*for i:=0; i<len(line); i++ {
+			//for j:=0; j<len(line); j++ {
+				print(line)
+			//}
+		}*/
+		parse.WriteCsv(file_output, line, ';')
 	}
 }
