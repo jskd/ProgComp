@@ -17,11 +17,14 @@ pub fn read_first_time(path: &str, bytes_by_lines: &mut Vec<usize>, formulas: &m
 	let mut reader = std::io::BufReader::new(file);
 	let mut num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
 	bytes_by_lines.push(num_bytes);
+	let mut tmp:usize;
 	while num_bytes!=0 
 	{
 		has_formula(&buff, &formulas);                   //check if line contains formula, if so, add them to Formulas
-		let br = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
-//  		bytes_by_lines.push(bytes_by_lines.pop().unwrap() + num_bytes);
+		num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
+		tmp = bytes_by_lines.pop().unwrap();
+		bytes_by_lines.push(tmp);  		
+		bytes_by_lines.push(tmp + br);
 
 	}
 
