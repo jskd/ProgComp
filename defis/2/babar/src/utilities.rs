@@ -1,7 +1,7 @@
 use std;
 use std::io::{ BufRead};
 use std::fs::File;
-
+use std::str;
 // mod parser;
 use cell;
 // mod treatment;
@@ -24,32 +24,35 @@ pub fn read_first_time(path: &str, bytes_by_lines: &mut Vec<usize>, formulas: &m
 		num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
 		tmp = bytes_by_lines.pop().unwrap();
 		bytes_by_lines.push(tmp);  		
-		bytes_by_lines.push(tmp + br);
-
+		bytes_by_lines.push(tmp + num_bytes);
 	}
 
 
 
 }
-pub fn has_formula(line: Vec<u8>, formulas: &Vec<cell::Formula>)
+pub fn has_formula(line: &Vec<u8>, formulas: &Vec<cell::Formula>)
 {
-	let lineproper = line.trim();
+	if line.contains(&b'='){
+		let index: usize = line.iter().position(|&eq| eq == b'=').unwrap();
+		println!("{}", index);
+	}
+	/*let lineproper = String::from(str::from_utf8(line).unwrap()).trim();
 	let linesplit = lineproper.split(";");
-	for_each!(n in linesplit
+	for n in linesplit
 	{
-		if(n[0] == "=")
+		if n[0] == '='
 		{
-			println!("Formula !")
-			formulas.append(create_formula(n))
+			println!("Formula !");
+			formulas.append(create_formula(n));
 		}
 		else
 		{
-			println("Not a formula")
+			println!("Not a formula");
 		}
-	})
+	}*/
 }
 
-pub fn create_formula(form_dec_vec: Vec<&str>) -> formula::Formula
+pub fn create_formula(form_dec_vec: Vec<&str>) -> cell::Formula
 {
     let formula = cell::Formula{
             num: 0,
