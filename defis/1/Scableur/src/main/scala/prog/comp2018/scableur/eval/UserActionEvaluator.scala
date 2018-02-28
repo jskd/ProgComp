@@ -9,7 +9,7 @@ class UserActionEvaluator(val matrix: Matrix, val source : UserData, var resultM
     extends Evaluator[ChangesData] {
 
   private val changesData : ChangesData = new ChangesData()
-  var functionStack : ListBuffer[FunctionType] = ListBuffer[FunctionType]()
+  var functionStack : ListBuffer[(Option[FunctionType])] = ListBuffer[(Option[FunctionType])]()
   var lstfun : List[Int] = List[Int]()
 
   def isInRange(pos : (Int,Int), x1 : (Int,Int), x2: (Int, Int)) : Boolean = {
@@ -19,9 +19,14 @@ class UserActionEvaluator(val matrix: Matrix, val source : UserData, var resultM
   def testFunctionChanges(coord: (Int,Int)) : Unit = {
     for(i <- Range(0,matrix.functionStack.length,1)) {
       val fun = matrix.functionStack(i)
-      if(isInRange(coord, fun.from, fun.to) && !lstfun.contains(i) ){
-        functionStack.+=:(fun)
-        lstfun = i :: lstfun
+      fun match{
+        case Some(f) =>{
+          if(isInRange(coord, f.from, f.to) && !lstfun.contains(i) ){
+            functionStack.+=:(fun)
+            lstfun = i :: lstfun
+          }
+        }
+        case None => 
       }
     }
   }
@@ -29,13 +34,21 @@ class UserActionEvaluator(val matrix: Matrix, val source : UserData, var resultM
   def constantEval(v: ConstantType) : Option[Int] = v.value
 
   def evalFunctionStack() : Unit = {
-    for(f <- functionStack){
-      f match  {
-        case f1 : NbrIteration => changesData.modificationList.+=:(f1.coordinates, 
-          NbrIterationEval.eval(f1,matrix,List()))
+    for(x <- functionStack){
+      x match  {
+        case Some(f) => {
+          f match{
+            case f1 : NbrIteration => 
+              changesData.modificationList.+=:(f1.coordinates,
+                                  NbrIterationEval.eval(f1,matrix))
+            case _ =>
+          }
+        }
+        case None =>
       }
     }
   }
+  
 
   override def eval: ChangesData = {
     for((coord,v) <- source.userActionStack){
@@ -45,7 +58,7 @@ class UserActionEvaluator(val matrix: Matrix, val source : UserData, var resultM
           changesData.modificationList.+=:( (coord, constantEval(v)))
         }
         case f : FunctionType => {
-          functionStack.+=:(f)
+          functionStack.+=:(Some(f))
         }
       }
     }

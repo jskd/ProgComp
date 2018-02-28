@@ -20,7 +20,7 @@ trait TableType[T]  {
   */
 class Matrix(private var h : Int, private var w : Int) extends TableType[Value] {
   private val matrix = Array.ofDim[Value](h,w)
-  var functionStack : ListBuffer[FunctionType] = ListBuffer[FunctionType]()
+  var functionStack : ListBuffer[(Option[FunctionType])] = ListBuffer[(Option[FunctionType])]()
   override def height : Int = h
   override def width : Int = w
   override def get(i: Int, j: Int) : Value = matrix(i)(j)

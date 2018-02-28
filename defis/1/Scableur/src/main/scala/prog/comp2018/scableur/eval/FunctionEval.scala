@@ -11,31 +11,11 @@ trait FunctionEval[T] {
   def eval(f: FunctionType, m: Matrix): Option[Int]
 }
 
-object FindCycle {
 
-  /*Return "true" if cycle is detected, otherwise false
-   arguments:
-    f: is the calling function 
-    g: is the called function
-    m: the matrix to evaluate
-    dep: dependency list between function indexes on function_stack
-   for each call to the function find_cycle we add the index of the calling function
-   to the dependency list*/
-
-  def find_cycle(f:FunctionType, g:FunctionType, m:Matrix, dep: List[Int]): Boolean = {
-    if(dep.exists(i => i==(m.functionStack.indexOf(g)))){
-      m.set(ConstantType(None), f.coordinates._1, f.coordinates._2)
-      println("\nWARNING: Cycle detected between positions\n"+
-              "("+f.coordinates._1+","+f.coordinates._2+") and "+
-              "("+g.coordinates._1+","+g.coordinates._2+")\n")
-      return true
-    }else{return false}
-  }
-}
 
 object NbrIterationEval extends FunctionEval[Matrix] {
  
-  def eval(f: NbrIteration, m: Matrix, dependencies: List[Int] = List()): Option[Int] = {
+  def eval(f: NbrIteration, m: Matrix): Option[Int] = {
     var counter = 0
     for{
       i <- Range(f.from._1,(f.to._1 + 1))
@@ -47,14 +27,10 @@ object NbrIterationEval extends FunctionEval[Matrix] {
         case x:ConstantType => if(x == f.value){counter += 1}
 
         case g:NbrIteration =>
-          try{//TEST IF CYCLE EXIST RETURN "None" ELSE EVALUATE g 
-            if(FindCycle.find_cycle(f,g,m,dependencies) ){
-              return None
-            }else{             
-              val reslt = eval(g,m,( dependencies.+: (m.functionStack.indexOf(f))))
+          try{
+              val reslt = eval(g,m)
               if(ConstantType(reslt) == f.value)
                 counter += 1
-            }
           }catch{
             case _ : Exception =>
               return None

@@ -61,10 +61,6 @@ object Scableur {
     val userActionEvaluator = new UserActionEvaluator(matrix, userData, resultMatrix)
     resultChanges = userActionEvaluator.eval
     //TODO DeBUG.print
-    if (resultChanges.modificationList.isEmpty)
-      println("La liste modificationlist est vide")
-    else 
-      println("la list modificationlist n'est pas vide")
   }
 
   def print_user_actions() : Unit = {
