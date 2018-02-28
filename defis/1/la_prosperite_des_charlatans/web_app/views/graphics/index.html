@@ -1,10 +1,16 @@
 {% extends "layout.html" %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="/content/styles/views/graphics/index.css"/>
+<link rel="stylesheet" type="text/css" href="/content/styles/views/home/index.css"/>
 {% endblock %}
 
 {% block body %}
 
+
+  {% for gra in data_set %}
+    {{ gra }}
+
+
+  {% endfor %}
 
 {% endblock %}
