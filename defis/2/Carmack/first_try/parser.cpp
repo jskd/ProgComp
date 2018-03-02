@@ -5,7 +5,10 @@ using namespace std;
 Parser::Parser(string data) :
     fs(fstream(data, fstream::in)),
     eof(_eof),
-    eol(_eol) { }
+    eol(_eol) {
+    if(!fs.good())
+        throw "parser: '" + data + "': No such file or directory";
+    }
 
 Parser::~Parser() {
     fs.close();

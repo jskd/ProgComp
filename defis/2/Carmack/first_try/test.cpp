@@ -7,7 +7,7 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) {
+int unsafe_main(int argc, char *argv[]) {
     if(argc < 2) {
         cerr << "File, please.\n";
         return 1;
@@ -29,4 +29,14 @@ int main(int argc, char *argv[]) {
     for(i = rs.begin(); i != rs.end(); ++i) {
         cout << **i;
     }
+}
+
+int main(int argc, char *argv[]) {
+    try {
+        unsafe_main(argc, argv);
+    }
+    catch(string e) {
+        cout << e << endl;
+    }
+    return 0;
 }
