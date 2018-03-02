@@ -23,6 +23,7 @@ ostream &operator<<(ostream &out, const formula &f) {
 
 void normalize(vector<formula *> &roots, vector<formula *> &top) {
     queue<formula *> q;
+    bool b;
 
     for(formula *root : roots) {
         for(formula *child : root->children) {
@@ -38,8 +39,17 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
         for(formula *child : q.front()->children) {
             if(child->level != -1)
                 continue;
-            child->level = q.front()->level + 1;
-            q.push(child);
+            b = true;
+            for(formula *parent : child->parents) {
+                if(parent->level == -1) {
+                    b = false;
+                    break;
+                }
+            }
+            if(b) {
+                child->level = q.front()->level + 1;
+                q.push(child);
+            }
         }
         top.push_back(q.front());
         q.pop();
