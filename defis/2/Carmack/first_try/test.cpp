@@ -17,7 +17,6 @@ int main(int argc, char *argv[]) {
     INode *head = roots(p, rs);
 
     normalize(rs, top);
-    p.reposition();
     head->preval(p);
     evaluate(top);
 

@@ -15,6 +15,7 @@ void Node::preval(Parser &p) {
     INode *head = INode::getHead();
 
     pos.x = pos.y = 0;
+    p.reposition();
 
     while(!p.eof) {
         p.next_cell(&c);
