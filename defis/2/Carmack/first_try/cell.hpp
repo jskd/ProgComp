@@ -21,8 +21,6 @@ public:
     area bb;
     int value;
     point p;
-
-    // Should be private
     int level = -1;
     int result = 0;
     std::vector<formula *> children;
