@@ -24,10 +24,8 @@ int unsafe_main(int argc, char *argv[]) {
     head->foreach([](formula &f) { cout << f; });
 
     cout << "\nRoots:\n";
-    vector<formula *>::iterator i;
-
-    for(i = rs.begin(); i != rs.end(); ++i) {
-        cout << **i;
+    for(formula *f : rs) {
+        cout << *f;
     }
 }
 
