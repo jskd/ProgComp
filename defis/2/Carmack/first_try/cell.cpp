@@ -36,8 +36,6 @@ void normalize(vector<formula *> &roots, vector<formula *> &top) {
 
     while(!q.empty()) {
         for(formula *child : q.front()->children) {
-            if(child->level != -1)
-                continue;
             child->level = q.front()->level + 1;
             q.push(child);
         }
