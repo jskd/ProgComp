@@ -15,8 +15,8 @@ class Leaf;
 class Node {
 public:
     /* Bounding Box */
-    Area<int> bb;
-    INode *parent;
+    Area bb;
+    INode *parent = NULL;
     virtual void insert(FormulaNode &f) = 0;
     virtual void search(point &p, std::stack<FormulaNode *> &fs) = 0;
     virtual void foreach(std::function<void(FormulaNode &)> fun) = 0;

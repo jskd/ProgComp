@@ -25,8 +25,8 @@ void Node::preval(Parser &p) {
             search(pos, fs);
             while(!fs.empty()) {
                 f = fs.top();
-                if(f->level != -1)
-                    f->result += ((c.value == f->value) ? 1 : 0);
+                if(f->level() != -1)
+                    f->result(f->result() + ((c.value == f->value()) ? 1 : 0));
                 fs.pop();
             }
         }
@@ -46,8 +46,7 @@ Node &Node::operator+=(FormulaNode &f) {
 }
 
 INode::INode() {
-    parent = NULL;
-    bb = Area<int>(0, 0, 0, 0);
+    bb = Area(0, 0, 0, 0);
 }
 
 INode::INode(INode *child) {
@@ -58,32 +57,32 @@ INode::INode(INode *child) {
 
 void INode::insert(FormulaNode &f) {
     Node *n;
-    Area<int> a;
+    Area a, f_bb = f.bb();
     int s, old_s = -1;
 
-    bb.runion(f.bb, bb);
+    bb.runion(f_bb, bb);
 
     if(!children.size()) {
         Leaf *l = new Leaf();
-        l->bb = f.bb;
+        l->bb = f_bb;
         addLeaf(l);
         insert(f);
         return;
     }
 
     for(Node *c : children) {
-        if(c->bb.contains(f.bb)) {
+        if(c->bb.contains(f_bb)) {
             (*c) += f;
             return;
         }
-        c->bb.runion(f.bb, a);
+        c->bb.runion(f_bb, a);
         s = a.surface();
         if(old_s < 0 || s < old_s) {
             old_s = s;
             n = c;
         }
     }
-    n->bb.runion(f.bb, n->bb);
+    n->bb.runion(f_bb, n->bb);
     *n += f;
 }
 
@@ -148,9 +147,10 @@ void Leaf::insert(FormulaNode &f) {
     int id;
     FormulaNode *f2;
     Leaf *l;
+    Area f_bb = f.bb();
 
     if(formulas.size() < CAPACITY) {
-        bb.runion(f.bb, bb);
+        bb.runion(f_bb, bb);
         formulas.push_back(&f);
         return;
     }
@@ -160,7 +160,7 @@ void Leaf::insert(FormulaNode &f) {
     formulas.pop_back();
     update_bb();
     l = new Leaf();
-    l->bb = f.bb;
+    l->bb = f_bb;
     *l += f;
     *l += *f2;
     parent->addLeaf(l);
@@ -168,7 +168,7 @@ void Leaf::insert(FormulaNode &f) {
 
 void Leaf::search(point &p, stack<FormulaNode *> &fs) {
     for(FormulaNode *f : formulas)
-        if(f->bb.pcontains(p))
+        if(f->bb().pcontains(p))
             fs.push(f);
 }
 
@@ -179,10 +179,10 @@ void Leaf::foreach(function<void(FormulaNode &)> fun) {
 
 void Leaf::split(FormulaNode *f, int *id) {
     int i, median = bb.surface() / 2, s, old_s = -1;
-    Area<int> a;
+    Area a, f_bb = f->bb();
 
     for(i = 0; i < formulas.size(); i++) {
-        formulas[i]->bb.runion(f->bb, a);
+        formulas[i]->bb().runion(f_bb, a);
         s = a.surface();
         if(old_s < 0 || abs(median - s) < old_s) {
             old_s = s;
@@ -195,9 +195,9 @@ void Leaf::update_bb() {
     int i;
 
     assert(formulas.size() > 0);
-    bb = formulas[0]->bb;
+    bb = formulas[0]->bb();
     for(i = 1; i < formulas.size(); i++)
-        bb.runion(formulas[i]->bb, bb);
+        formulas[i]->bb().runion(bb, bb);
 }
 
 INode *roots(Parser &p, vector<FormulaNode *> &out) {
@@ -242,7 +242,7 @@ INode *roots(Parser &p, vector<FormulaNode *> &out) {
         [&out](FormulaNode &formula) {
             if(!formula.parents.size()) {
                 out.push_back(&formula);
-                formula.level = 0;
+                formula.level(0);
             }
         }
     );

@@ -22,25 +22,37 @@ struct cell {
 
 class FormulaNode {
 private:
-    formula *f;
+    int formula_id;
 public:
-    Area<int &> bb;
-    int &value;
     point p;
-    int &level;
-    int &result;
     std::vector<FormulaNode *> children;
     std::vector<FormulaNode *> parents;
 
     FormulaNode(int x1, int y1, int x2, int y2, int v);
     FormulaNode(cell &c);
 
-    friend std::ostream &operator<<(std::ostream &out, const FormulaNode &f);
+    Area bb();
+
+    int value();
+
+    void value(int v);
+
+    int result();
+
+    void result(int r);
+
+    int level();
+
+    void level(int l);
+
+    friend std::ostream &operator<<(std::ostream &out, FormulaNode &f);
 };
 
 void normalize(std::vector<FormulaNode *> &roots,
                std::vector<FormulaNode *> &top);
 
 void evaluate(std::vector<FormulaNode *> &top);
+
+void superior_preval();
 
 #endif

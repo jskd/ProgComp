@@ -12,14 +12,16 @@ formula *fs;
 size_t f_size;
 size_t f_capacity;
 
-formula *new_formula(int x1, int y1, int x2, int y2, int v) {
+int new_formula(int x1, int y1, int x2, int y2, int v) {
     formula *f;
 
     if(!fs || f_size == f_capacity) {
         f_capacity += STEP;
         fs = realloc(fs, f_capacity * sizeof *fs);
+        if(!fs)
+            return -1;
     }
-    f = fs + (f_size++);
+    f = fs + f_size;
 
     f->x1 = x1;
     f->x2 = x2;
@@ -29,7 +31,11 @@ formula *new_formula(int x1, int y1, int x2, int y2, int v) {
     f->r = 0;
     f->level = -1;
 
-    return f;
+    return f_size++;
+}
+
+formula *get_formula(int id) {
+    return fs + id;
 }
 
 char *load_cl_source() {
@@ -53,12 +59,23 @@ char *load_cl_source() {
 
     size = fread(buf, 1, size, f);
     buf[size] = 0;
+    fclose(f);
     return buf;
 
  exit_with_error:
     fclose(f);
     return NULL;
 }
+
+
+typedef struct __attribute__((aligned)) {
+    int x, y, v;
+} value;
+
+#define VALUE_MAX_CAPACITY 1048576
+
+value *vs;
+size_t v_size;
 
 cl_platform_id   platform;
 cl_device_id     device;
@@ -104,4 +121,21 @@ void init_opencl() {
 
     queue = clCreateCommandQueue(context, device, 0, &error);
     CHECK_ERROR("Unable to create command-queue.");
+
+    vs = malloc(VALUE_MAX_CAPACITY * sizeof *vs);
+    if(!vs) {
+        perror("Not enough memory space for 'values' allocation.");
+        exit(1);
+    }
+}
+
+int push_value(int x, int y, int v) {
+    if(v_size == VALUE_MAX_CAPACITY)
+        return 0;
+
+    vs[v_size].x = x;
+    vs[v_size].y = y;
+    vs[v_size].v = v;
+
+    return (v_size++) != VALUE_MAX_CAPACITY;
 }
