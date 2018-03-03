@@ -4,6 +4,8 @@ import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.types.{StructField, StructType, IntegerType, StringType}
 import scableur.utils.Conf
+import scableur.data.Data
+import scableur.eval.Evaluator
 
 /**
   * https://medium.com/@mrpowers/creating-a-spark-project-with-sbt-intellij-sbt-spark-package-and-friends-cc9108751c28
@@ -15,18 +17,9 @@ object Scableur {
   
   def main(args: Array[String]): Unit = {
     //parse_input()
-    spark_data_load(args(0))
+    val file = spark_data_load(args(0))
+    file.foreach(line => line.foreach(println _))
     //println(s"there are $c lines in $filename")
-  }
-
-
-  def string_to_iValue(str: String): ((Int,Int), Int) = {
-    val pattern = """[(](\d+),(\d+)[)] (\d+)""".r
-    val parts=pattern.findAllIn(str)
-    val i = parts.group(1).toInt
-    val j = parts.group(2).toInt
-    val v = parts.group(3).toInt
-    return ((i,j), v)
   }
 
   def print_iValue(x : ((Int,Int), Int)) : Unit = {
@@ -34,15 +27,13 @@ object Scableur {
   } 
 
 
-  def spark_data_load(filename: String) : Unit = {
+  def spark_data_load(filename: String) = {
     val csvFile = sc.textFile(filename)
-    val data = csvFile.map(line => line.split(";").map(elem => elem.trim))
-    val data2 = data.map(line => line.map(x => string_to_iValue _ ))
+    csvFile.map(line => line.split(";").map(elem => elem.trim))
     //val res = data2.collect().foreach(line => line.foreach(x => print_iValue _))
     //val data3 = data2.map(line => line.fold( to a string))
+    //val data2 = data.map(line => line.map(x => string_to_iValue _ ))
   }
-
-
 
 
   def check_args(args : Array[String]) : Unit = {

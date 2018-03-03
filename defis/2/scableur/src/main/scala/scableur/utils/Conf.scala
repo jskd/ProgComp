@@ -45,4 +45,12 @@ object Conf {
 	    }
 	}
 
+
+	object Patterns {
+		/* Regex pattern to match count formula in a string*/
+		val countFormulaPattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
+		/* Regex to match point Value pair in a string */ 
+		val pointValuePattern = """\((\d+),(\d+)\) (.+)""".r
+	}
+
 }
