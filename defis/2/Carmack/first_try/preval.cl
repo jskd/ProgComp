@@ -4,7 +4,7 @@ typedef struct __attribute__((aligned)) {
 } formula;
 
 typedef struct __attribute__((aligned)) {
-    int x, x, v;
+    int x, y, v;
 } value;
 
 __kernel void preval(__global formula *fs, __global value *vs) {
