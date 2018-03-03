@@ -8,3 +8,4 @@ tests/*/output/*.txt
 tests/*/output/*.csv
 database.csv
 web_app/site.conf
+tests/big_mama/input/bigmama_100.csv

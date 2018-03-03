@@ -5,7 +5,8 @@ from os.path import isfile, join
 from subprocess import *
 from termcolor import colored
 from TestReport import TestReport
-from ThreadExec import ThreadExec
+#from ThreadExec import ThreadExec
+from TaskTracker import TaskTracker
 
 with open("data/config.json") as data:
     config = json.load(data)
@@ -32,11 +33,11 @@ def getTargets(grp_name = None):
 
 def getTestList():
     TEST_LIST = []
-    with open("tests/_tests_order.txt") as tests_order:
-        for line in tests_order.readlines():
-            line = line.strip("\n")
-            if os.path.isdir("tests/" + line):
-                TEST_LIST += [line]
+
+    for test_dir in os.listdir("tests/"):
+        if os.path.isdir("tests/" + test_dir):
+            TEST_LIST += [os.path.basename(test_dir)]
+
     return TEST_LIST
 
 def createDirLogs(target):
@@ -50,16 +51,19 @@ def executeTestList(test_list, test_report=None, wait=True):
     for test in test_list:
         TEST_PATH = config["settings"]["test_dir"] + test + "/"
 
-        threadExec = ThreadExec(TEST_PATH, target, test_report)
-        running_tests.append(threadExec)
-        threadExec.start()
+        taskTracker = TaskTracker(TEST_PATH, target, test_report)
+        running_tests.append(taskTracker)
+        taskTracker.start()
 
-        if wait : threadExec.join()
+        if wait : taskTracker.join()
 
     for test in running_tests:
         test.join()
 
 if __name__ == "__main__":
+
+    # INITIALIZATION OF CONTEXT
+    #------------------------------------------------------
     grp_name, test_number = parseArgs(sys.argv[1::])
     targets = getTargets(grp_name)
 
@@ -72,7 +76,11 @@ if __name__ == "__main__":
 
     if test_number != None:
         TEST_LIST = [TEST_LIST[int(test_number)]]
+    #------------------------------------------------------
 
+
+    # EXECUTION OF TESTS
+    #------------------------------------------------------
     for target in targets:
         createDirLogs(target)
         test_report = TestReport(target, "results/" + target["name"], "rapport")
