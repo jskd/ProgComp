@@ -3,7 +3,15 @@
 
 #include <fstream>
 
-#include "cell.hpp"
+enum cell_type { Value, Formula, None };
+
+struct cell {
+    enum cell_type type;
+    union {
+        struct { int value; };
+        struct { int x1, y1, x2, y2, v; };
+    };
+};
 
 class Parser {
 private:

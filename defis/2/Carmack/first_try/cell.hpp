@@ -5,20 +5,11 @@
 #include <ostream>
 
 #include "area.hpp"
+#include "parser.hpp"
 
 extern "C" {
     #include "formula.h"
 }
-
-enum cell_type { Value, Formula, None };
-
-struct cell {
-    enum cell_type type;
-    union {
-        struct { int value; };
-        struct { int x1, y1, x2, y2, v; };
-    };
-};
 
 class FormulaNode {
 private:
@@ -53,6 +44,6 @@ void normalize(std::vector<FormulaNode *> &roots,
 
 void evaluate(std::vector<FormulaNode *> &top);
 
-void superior_preval();
+void superior_preval(Parser &p);
 
 #endif

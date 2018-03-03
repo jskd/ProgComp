@@ -99,3 +99,30 @@ void evaluate(vector<FormulaNode *> &top) {
         }
     }
 }
+
+void superior_preval(Parser &p) {
+    point pos;
+    cell c;
+
+    pos.x = pos.y = 0;
+    p.reposition();
+
+    while(!p.eof) {
+        p.next_cell(&c);
+        switch(c.type) {
+        case None: case Formula: break;
+        case Value:
+            if(push_value(pos.x, pos.y, c.value))
+                launch_calculation();
+        }
+
+        if(p.eol) {
+            pos.y = 0;
+            pos.x++;
+        }
+        else
+            pos.y++;
+    }
+
+    launch_calculation();
+}

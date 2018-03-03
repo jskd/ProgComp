@@ -20,6 +20,7 @@ int unsafe_main(int argc, char *argv[]) {
     head = roots(p, rs);
     normalize(rs, top);
     head->preval(p);
+    //superior_preval(p);
     evaluate(top);
 
     cout << "All formulas:\n";
@@ -29,11 +30,12 @@ int unsafe_main(int argc, char *argv[]) {
     for(FormulaNode *f : rs) {
         cout << *f;
     }
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
     try {
-        unsafe_main(argc, argv);
+        return unsafe_main(argc, argv);
     }
     catch(string e) {
         cout << e << endl;

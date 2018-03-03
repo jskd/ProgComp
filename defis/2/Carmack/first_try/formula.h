@@ -13,4 +13,6 @@ void init_opencl();
 
 int push_value(int x, int y, int v);
 
+void launch_calculation();
+
 #endif
