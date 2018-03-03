@@ -27,7 +27,7 @@ public:
     Area<int &> bb;
     int &value;
     point p;
-    int level = -1;
+    int &level;
     int &result;
     std::vector<FormulaNode *> children;
     std::vector<FormulaNode *> parents;

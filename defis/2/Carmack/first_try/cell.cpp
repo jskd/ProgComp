@@ -7,7 +7,7 @@ using namespace std;
 FormulaNode::FormulaNode(int x1, int y1, int x2, int y2, int v) :
     f(new_formula(x1, y1, x2, y2, v)),
     bb(Area<int &>(f->x1, f->y1, f->x2, f->y2)),
-    value(f->v), result(f->r) { }
+    value(f->v), result(f->r), level(f->level) { }
 
 FormulaNode::FormulaNode(cell &c) :
     FormulaNode(c.x1, c.y1, c.x2, c.y2, c.v) { }

@@ -25,8 +25,9 @@ formula *new_formula(int x1, int y1, int x2, int y2, int v) {
     f->x2 = x2;
     f->y1 = y1;
     f->y2 = y2;
-    f->v  = v;
-    f->r  = 0;
+    f->v = v;
+    f->r = 0;
+    f->level = -1;
 
     return f;
 }
