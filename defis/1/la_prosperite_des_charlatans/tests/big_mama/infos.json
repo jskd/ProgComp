@@ -1,0 +1,9 @@
+{
+  "infos":
+    {
+      "name":"Test BigMama: BigMama with ${ARGS}",
+      "args":["10", "100", "1000", "10000"],
+      "exec": ["python3", "test.py"],
+      "expected": ["changes_expected.txt", "view0_expected.csv"]
+    }
+}
