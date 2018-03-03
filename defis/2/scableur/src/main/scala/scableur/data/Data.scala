@@ -10,7 +10,7 @@ package object Data {
 
 	}
 
-	case class PFormula(val p:Point, val defArea: Area, val value: Int ) extends PValue {
+	case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extends PValue {
 
 	}	
 }
