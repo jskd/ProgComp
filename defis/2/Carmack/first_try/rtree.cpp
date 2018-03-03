@@ -10,8 +10,8 @@ using namespace std;
 void Node::preval(Parser &p) {
     point pos;
     cell c;
-    formula *f;
-    stack<formula *> fs;
+    FormulaNode *f;
+    stack<FormulaNode *> fs;
     INode *head = INode::getHead();
 
     pos.x = pos.y = 0;
@@ -40,14 +40,14 @@ void Node::preval(Parser &p) {
     }
 }
 
-Node &Node::operator+=(formula &f) {
+Node &Node::operator+=(FormulaNode &f) {
     insert(f);
     return *this;
 }
 
 INode::INode() {
     parent = NULL;
-    bb = area(0, 0, 0, 0);
+    bb = Area<int>(0, 0, 0, 0);
 }
 
 INode::INode(INode *child) {
@@ -56,12 +56,12 @@ INode::INode(INode *child) {
     children.push_back(child);
 }
 
-void INode::insert(formula &f) {
+void INode::insert(FormulaNode &f) {
     Node *n;
-    area a;
+    Area<int> a;
     int s, old_s = -1;
 
-    intersect(bb, f.bb, bb);
+    bb.runion(f.bb, bb);
 
     if(!children.size()) {
         Leaf *l = new Leaf();
@@ -72,29 +72,29 @@ void INode::insert(formula &f) {
     }
 
     for(Node *c : children) {
-        if(contains(c->bb, f.bb)) {
+        if(c->bb.contains(f.bb)) {
             (*c) += f;
             return;
         }
-        intersect(c->bb, f.bb, a);
-        s = surface(a);
+        c->bb.runion(f.bb, a);
+        s = a.surface();
         if(old_s < 0 || s < old_s) {
             old_s = s;
             n = c;
         }
     }
-    intersect(n->bb, f.bb, n->bb);
+    n->bb.runion(f.bb, n->bb);
     *n += f;
 }
 
-void INode::search(point &p, stack<formula *> &fs) {
+void INode::search(point &p, stack<FormulaNode *> &fs) {
     for(Node *c : children) {
-        if(pcontains(c->bb, p))
+        if(c->bb.pcontains(p))
             c->search(p, fs);
     }
 }
 
-void INode::foreach(function<void(formula &)> fun) {
+void INode::foreach(function<void(FormulaNode &)> fun) {
     for(Node *c : children)
         c->foreach(fun);
 }
@@ -144,13 +144,13 @@ INode *INode::getHead() {
 
 Leaf::Leaf() { }
 
-void Leaf::insert(formula &f) {
+void Leaf::insert(FormulaNode &f) {
     int id;
-    formula *f2;
+    FormulaNode *f2;
     Leaf *l;
 
     if(formulas.size() < CAPACITY) {
-        intersect(bb, f.bb, bb);
+        bb.runion(f.bb, bb);
         formulas.push_back(&f);
         return;
     }
@@ -166,24 +166,24 @@ void Leaf::insert(formula &f) {
     parent->addLeaf(l);
 }
 
-void Leaf::search(point &p, stack<formula *> &fs) {
-    for(formula *f : formulas)
-        if(pcontains(f->bb, p))
+void Leaf::search(point &p, stack<FormulaNode *> &fs) {
+    for(FormulaNode *f : formulas)
+        if(f->bb.pcontains(p))
             fs.push(f);
 }
 
-void Leaf::foreach(function<void(formula &)> fun) {
-    for(formula *f : formulas)
+void Leaf::foreach(function<void(FormulaNode &)> fun) {
+    for(FormulaNode *f : formulas)
         fun(*f);
 }
 
-void Leaf::split(formula *f, int *id) {
-    int i, median = surface(bb) / 2, s, old_s = -1;
-    area a;
+void Leaf::split(FormulaNode *f, int *id) {
+    int i, median = bb.surface() / 2, s, old_s = -1;
+    Area<int> a;
 
     for(i = 0; i < formulas.size(); i++) {
-        intersect(formulas[i]->bb, f->bb, a);
-        s = surface(a);
+        formulas[i]->bb.runion(f->bb, a);
+        s = a.surface();
         if(old_s < 0 || abs(median - s) < old_s) {
             old_s = s;
             *id = i;
@@ -197,14 +197,14 @@ void Leaf::update_bb() {
     assert(formulas.size() > 0);
     bb = formulas[0]->bb;
     for(i = 1; i < formulas.size(); i++)
-        intersect(bb, formulas[i]->bb, bb);
+        bb.runion(formulas[i]->bb, bb);
 }
 
-INode *roots(Parser &p, vector<formula *> &out) {
+INode *roots(Parser &p, vector<FormulaNode *> &out) {
     cell c;
-    formula *f;
+    FormulaNode *f;
     int x = 0, y = 0;
-    stack<formula *> fs;
+    stack<FormulaNode *> fs;
     INode *head = INode::getHead();
 
     while(!p.eof) {
@@ -212,7 +212,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
         switch(c.type) {
         case None: case Value: break;
         case Formula:
-            f = new formula(c);
+            f = new FormulaNode(c);
             f->p.x = x;
             f->p.y = y;
             (*head) += (*f);
@@ -228,7 +228,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
     }
 
     head->foreach(
-        [&fs, &head](formula &formula) {
+        [&fs, &head](FormulaNode &formula) {
 			head->search(formula.p, fs);
             while(!fs.empty()) {
                 formula.children.push_back(fs.top());
@@ -239,7 +239,7 @@ INode *roots(Parser &p, vector<formula *> &out) {
     );
 
     head->foreach(
-        [&out](formula &formula) {
+        [&out](FormulaNode &formula) {
             if(!formula.parents.size()) {
                 out.push_back(&formula);
                 formula.level = 0;

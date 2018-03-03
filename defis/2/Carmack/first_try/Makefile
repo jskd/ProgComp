@@ -1,4 +1,7 @@
-test: test.cpp rtree.cpp area.cpp cell.cpp parser.cpp
-	g++ -o test test.cpp rtree.cpp area.cpp cell.cpp parser.cpp
+test: test.cpp rtree.cpp cell.cpp parser.cpp formula.o
+	g++ -o test test.cpp rtree.cpp cell.cpp parser.cpp formula.o
 
-clean:; rm -rf test
+formula.o: formula.c
+	gcc -c formula.c
+
+clean:; rm -rf test formula.o

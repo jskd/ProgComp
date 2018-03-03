@@ -15,13 +15,13 @@ class Leaf;
 class Node {
 public:
     /* Bounding Box */
-    area bb;
+    Area<int> bb;
     INode *parent;
-    virtual void insert(formula &f) = 0;
-    virtual void search(point &p, std::stack<formula *> &fs) = 0;
-    virtual void foreach(std::function<void(formula &)> fun) = 0;
+    virtual void insert(FormulaNode &f) = 0;
+    virtual void search(point &p, std::stack<FormulaNode *> &fs) = 0;
+    virtual void foreach(std::function<void(FormulaNode &)> fun) = 0;
     void preval(Parser &p);
-    Node &operator+=(formula &f);
+    Node &operator+=(FormulaNode &f);
 };
 
 class INode : public Node {
@@ -35,9 +35,9 @@ private:
     INode *wrap(Leaf *l);
 public:
     static INode *getHead();
-    void insert(formula &f);
-    void search(point &p, std::stack<formula *> &fs);
-    void foreach(std::function<void(formula &)> fun);
+    void insert(FormulaNode &f);
+    void search(point &p, std::stack<FormulaNode *> &fs);
+    void foreach(std::function<void(FormulaNode &)> fun);
     void addINode(INode *n);
     void addLeaf(Leaf *l);
 };
@@ -46,17 +46,17 @@ class Leaf : public Node {
     friend class INode;
 private:
     const int CAPACITY = 4;
-    std::vector<formula *> formulas;
+    std::vector<FormulaNode *> formulas;
 
     Leaf();
-    void split(formula *f, int *id);
+    void split(FormulaNode *f, int *id);
     void update_bb();
 public:
-    void insert(formula &f);
-    void search(point &p, std::stack<formula *> &fs);
-    void foreach(std::function<void(formula &)> fun);
+    void insert(FormulaNode &f);
+    void search(point &p, std::stack<FormulaNode *> &fs);
+    void foreach(std::function<void(FormulaNode &)> fun);
 };
 
-INode *roots(Parser &p, std::vector<formula *> &out);
+INode *roots(Parser &p, std::vector<FormulaNode *> &out);
 
 #endif

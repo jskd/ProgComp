@@ -13,7 +13,7 @@ int unsafe_main(int argc, char *argv[]) {
         return 1;
     }
     Parser p(argv[1]);
-    vector<formula *> rs, top;
+    vector<FormulaNode *> rs, top;
     INode *head = roots(p, rs);
 
     normalize(rs, top);
@@ -21,10 +21,10 @@ int unsafe_main(int argc, char *argv[]) {
     evaluate(top);
 
     cout << "All formulas:\n";
-    head->foreach([](formula &f) { cout << f; });
+    head->foreach([](FormulaNode &f) { cout << f; });
 
     cout << "\nRoots:\n";
-    for(formula *f : rs) {
+    for(FormulaNode *f : rs) {
         cout << *f;
     }
 }

@@ -6,6 +6,10 @@
 
 #include "area.hpp"
 
+extern "C" {
+    #include "formula.h"
+}
+
 enum cell_type { Value, Formula, None };
 
 struct cell {
@@ -16,25 +20,27 @@ struct cell {
     };
 };
 
-class formula {
+class FormulaNode {
+private:
+    formula *f;
 public:
-    area bb;
-    int value;
+    Area<int &> bb;
+    int &value;
     point p;
     int level = -1;
-    int result = 0;
-    std::vector<formula *> children;
-    std::vector<formula *> parents;
+    int &result;
+    std::vector<FormulaNode *> children;
+    std::vector<FormulaNode *> parents;
 
-    formula();
-    formula(int x1, int y1, int x2, int y2, int v);
-    formula(cell &c);
+    FormulaNode(int x1, int y1, int x2, int y2, int v);
+    FormulaNode(cell &c);
 
-    friend std::ostream &operator<<(std::ostream &out, const formula &f);
+    friend std::ostream &operator<<(std::ostream &out, const FormulaNode &f);
 };
 
-void normalize(std::vector<formula *> &roots, std::vector<formula *> &top);
+void normalize(std::vector<FormulaNode *> &roots,
+               std::vector<FormulaNode *> &top);
 
-void evaluate(std::vector<formula *> &top);
+void evaluate(std::vector<FormulaNode *> &top);
 
 #endif
