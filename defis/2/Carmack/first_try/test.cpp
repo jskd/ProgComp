@@ -14,8 +14,10 @@ int unsafe_main(int argc, char *argv[]) {
     }
     Parser p(argv[1]);
     vector<FormulaNode *> rs, top;
-    INode *head = roots(p, rs);
+    INode *head;
 
+    init_opencl();
+    head = roots(p, rs);
     normalize(rs, top);
     head->preval(p);
     evaluate(top);
