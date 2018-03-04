@@ -1,19 +1,19 @@
-CC		= g++
-CFLAGS	= -g -std=c++11 -Wall -pedantic
-OBJECTS	= main.o
-TARGET	= ws
+CC     = g++
+CFLAGS = -DCHICKEN_MODE -Wall -O2
 
-all: $(TARGET)
+WS     = ws
+OBJS   = rtree.o formulanode.o area.o parser.o formula.o
 
-$(TARGET): $(OBJECTS)
-	$(CC) $^ -o $(TARGET) $(CFLAGS)
+$(WS): $(OBJS)
+	$(CC) $(CFLAGS) main.cpp -o $(WS) $(OBJS) -lOpenCL
 
-main.o : main.cpp
-	$(CC) -c $< -o $@ $(CFLAGS)
+%.o: %.c %.h
+	gcc $(CFLAGS) -c $< -o $@
 
-clean:
-	rm -rf *.o
+%.o: %.cpp %.hpp
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:; rm -rf $(OBJS)
 
 mrproper: clean
-	rm -rf $(TARGET)
-
+	rm -rf $(WS)

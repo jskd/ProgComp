@@ -28,7 +28,7 @@ class INode : public Node {
 private:
     static INode *head;
     std::vector<Node *> children;
-    const int CAPACITY = 200;
+    const size_t CAPACITY = 20;
 
     INode();
     INode(INode *child);
@@ -45,7 +45,7 @@ public:
 class Leaf : public Node {
     friend class INode;
 private:
-    const int CAPACITY = 400;
+    const size_t CAPACITY = 40;
     std::vector<FormulaNode *> formulas;
 
     Leaf();

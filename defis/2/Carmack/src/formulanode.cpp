@@ -48,6 +48,7 @@ ostream &operator<<(ostream &out, FormulaNode &f) {
         ", x2 = " << f_bb.x2 << ", y2 = " << f_bb.y2 << ", v = " <<
         f.value() << "\n\tactual result: " << f.result() << "\n\tlevel = " <<
         f.level() << endl;
+    return out;
 }
 
 void normalize(vector<FormulaNode *> &roots, vector<FormulaNode *> &top) {
@@ -85,8 +86,6 @@ void normalize(vector<FormulaNode *> &roots, vector<FormulaNode *> &top) {
 }
 
 void evaluate(vector<FormulaNode *> &top) {
-	int i;
-
     for(FormulaNode *next_f : top) {
         for(FormulaNode *parent : next_f->parents) {
             if(parent->result() == -1 || parent->level() >= next_f->level()) {
@@ -142,6 +141,8 @@ int write_view(Parser &p, string view) {
     while(!p.eof) {
         p.next_cell(&c);
         switch(c.type) {
+        case None:
+            break;
         case Value:
             fs << c.value << ";";
             break;
@@ -154,7 +155,7 @@ int write_view(Parser &p, string view) {
             break;
         }
 
-        if(p.eol) {
+        if(p.eol && !p.eof) {
             fs << endl;
             pos.y = 0;
             pos.x++;

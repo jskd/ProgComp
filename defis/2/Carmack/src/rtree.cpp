@@ -12,7 +12,6 @@ void Node::preval(Parser &p) {
     cell c;
     FormulaNode *f;
     stack<FormulaNode *> fs;
-    INode *head = INode::getHead();
 
     pos.x = pos.y = 0;
     p.reposition();
@@ -56,7 +55,7 @@ INode::INode(INode *child) {
 }
 
 void INode::insert(FormulaNode &f) {
-    Node *n;
+    Node *n = NULL;
     Area a, f_bb = f.bb();
     int s, old_s = -1;
 
@@ -77,7 +76,7 @@ void INode::insert(FormulaNode &f) {
         }
         c->bb.runion(f_bb, a);
         s = a.surface();
-        if(old_s < 0 || s < old_s) {
+        if(!n || s < old_s) {
             old_s = s;
             n = c;
         }
@@ -178,7 +177,8 @@ void Leaf::foreach(function<void(FormulaNode &)> fun) {
 }
 
 void Leaf::split(FormulaNode *f, int *id) {
-    int i, median = bb.surface() / 2, s, old_s = -1;
+    size_t i;
+    int median = bb.surface() / 2, s, old_s = -1;
     Area a, f_bb = f->bb();
 
     for(i = 0; i < formulas.size(); i++) {
@@ -192,7 +192,7 @@ void Leaf::split(FormulaNode *f, int *id) {
 }
 
 void Leaf::update_bb() {
-    int i;
+    size_t i;
 
     assert(formulas.size() > 0);
     bb = formulas[0]->bb();
