@@ -1,9 +1,21 @@
 package parse
 
 import (
+	"fmt"
 	"share"
 	"testing"
 )
+
+func TestCsvParser(t *testing.T) {
+	cp := NewCsvParser("../../dataset/data.csv", ';', '"', r)
+	for {
+		str, x, y, err := cp.ReadOneCell()
+		if err == io.EOF {
+			break
+		}
+		fmt.Println(str)
+	}
+}
 
 func TestReadOneLineCsv(t *testing.T) {
 	in := "first_name;last_name;username\n#lines beginning with a # character are ignored\nKen;Thompson;ken\n\"Robert\";\"Griesemer\";\"gri\""

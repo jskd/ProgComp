@@ -1,11 +1,74 @@
 package parse
 
 import (
+	"bufio"
 	"encoding/csv"
+	"fmt"
+	"io"
 	"os"
 	"strconv"
 	"strings"
+	"testing/iotest"
+	"unicode/utf8"
 )
+
+type CsvParser struct {
+	delimiter rune
+	quote     rune
+	current_x uint32
+	current_y uint32
+	reader    bufio.Reader
+}
+
+func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
+	delim := uint8('\n')
+	str_length := 0
+	x := uint32(0)
+	y := uint32(0)
+	isQuoteMode := false
+	var str []byte
+	for {
+		var ru, size, err = r.reader.ReadRune()
+		fmt.Printf("%s, %d, %s", string(ru), size, err)
+		if err == io.EOF {
+			return "", r.current_x, r.current_y, err
+		}
+
+		if err != nil && err != iotest.ErrTimeout {
+			panic(err)
+		}
+		x = r.current_x
+		y = r.current_y
+		str_length += 1
+		if ru == r.delimiter {
+			r.current_y += 1
+			break
+		} else if ru == '\n' {
+			r.current_x += 1
+			r.current_y = 0
+			break
+		} else {
+			AppendRune(str, ru)
+		}
+
+	}
+	return string(str[:]), x, y, nil
+}
+
+func AppendRune(dest []byte, uc rune) []byte {
+	var buff [utf8.UTFMax]byte
+	n := utf8.EncodeRune(buff[:], uc)
+	return append(dest, buff[:n]...)
+}
+
+func NewCsvParser(filename string, delimiter rune, quote rune) *CsvParser {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	reader := bufio.NewReader(file)
+	return &CsvParser{delimiter, quote, uint32(0), uint32(0), reader}
+}
 
 func checkError(err error) {
 	if err != nil {
