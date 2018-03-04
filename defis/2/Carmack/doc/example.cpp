@@ -105,8 +105,8 @@ int main() {
     simple_add.setArg(0, buffer_A);
     simple_add.setArg(1, buffer_B);
     simple_add.setArg(2, buffer_C);
-	simple_add.setArg(3, buffer_N);
-	queue.enqueueNDRangeKernel(simple_add, cl::NullRange, cl::NDRange(10),cl::NullRange);
+    simple_add.setArg(3, buffer_N);
+    queue.enqueueNDRangeKernel(simple_add, cl::NullRange, cl::NDRange(10),cl::NullRange);
     queue.finish();
 
     /*
