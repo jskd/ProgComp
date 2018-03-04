@@ -53,13 +53,16 @@ class GraphicsController(BaseController):
     def get_time(self, name_test, sha, name_group):
         qry = "SELECT bench_time \
             FROM logs \
-            WHERE name_test = '{}' AND sha = '{}' AND name_group = '{}' \
+            WHERE name_test = '{}' AND sha = '{}' AND name_group = '{}' AND result='PASS'\
             ORDER BY name_group \
-            LIMIT 1;".format(name_test.replace("'","''"), sha, name_group)
+            LIMIT 1;".format(
+              name_test.replace("'","''"),
+              sha,
+              name_group)
         try:
-          return str(self.executeQuery(qry)[0][0])
+          return '{:010.3f}'.format(self.executeQuery(qry)[0][0])
         except:
-          return "NaN"
+          return '{:10}'.format("NaN")
 
     def get_date_of_sha_commit(self, sha):
         qry = "SELECT date_test \
@@ -68,6 +71,8 @@ class GraphicsController(BaseController):
             ORDER BY date_test \
             LIMIT 1;".format(sha)
         try:
-          return str(datetime.datetime.strptime(self.executeQuery(qry)[0][0], "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y"))
+          date_of_sha_commit = self.executeQuery(qry)[0][0]
+          date_of_sha_commit = datetime.datetime.strptime(date_of_sha_commit, "%Y-%m-%d %H:%M:%S")
+          return str(date_of_sha_commit.strftime("%d/%m/%Y"))
         except:
           return "NaN"
