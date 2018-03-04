@@ -64,9 +64,7 @@ func WriteOneLineCsv(filename string, data []string, sep rune) {
 	checkError(err)
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Comma = sep
-	csvWriter.UseCRLF = false
 	err = csvWriter.Write(data)
-	b := []string{"\n"}
-	err = csvWriter.Write(b)
 	checkError(err)
+	csvWriter.Flush()
 }
