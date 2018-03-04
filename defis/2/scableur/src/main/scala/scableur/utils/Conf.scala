@@ -1,11 +1,13 @@
 package scableur.utils
 
+import org.apache.log4j.Logger
+
 object Conf { 
 	val AppName = "scableur"  
 	val MAX_VALUE : Int = 255
   	val MIN_VALUE : Int = 0
   	val TempFileName = "temp.csv"
-  	def DEBUG(s:String): Unit = println(s)
+  	var logger : Logger = _ 	
 
 	object Arguments {
 	    private var _dataCSVPath:String = ""
@@ -48,9 +50,9 @@ object Conf {
 
 	object Patterns {
 		/* Regex pattern to match count formula in a string*/
-		val countFormulaPattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
+		val countFormulaPattern = """^.*[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)].*$""".r
 		/* Regex to match point Value pair in a string */ 
-		val pointValuePattern = """\((\d+),(\d+)\) (.+)""".r
+		val pointValuePattern = """^.*\((\d+),(\d+)\) (.+).*$""".r
 	}
 
 }

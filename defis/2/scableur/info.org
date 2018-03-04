@@ -23,6 +23,30 @@
       - Evalue les nombre en nombre
       - Stocke les fonction dans une autre liste (toujours dans spark) qui serat evalue plus tard
 
-3) Detection des cycles & evaluation des fonction
+3) Detection des cycle
+  ~ De la meme facon que dans la partie 1 sur la liste des fonction
 
-...
+4) evaluation des fonction
+
+  -  Chaque formule depend d'une Area (nombre de points) tant qu'elle n'a pas
+      recu tout ces point elle n'est pas close.
+
+  - Une formule a un compteur de point recu et un resultat partiel.
+
+  - Controller (object statique recois des PConstante et les met dans la file d'attente)
+
+5) User Action
+  => Les resultat ne vont pas dans la matrice mais dans une liste de point modifiable.
+
+  - Parser la liste 
+    - chercher les dependances dans liste formule
+    - recharger formule qui change + nouvelle formule
+    - detection de cycle
+    - eval de la meme facon que avant
+
+--- Notes ---
+[code]
+  val res = data2.collect().foreach(line => line.foreach(x => print_iValue _))
+  val data3 = data2.map(line => line.fold( to a string))
+  val data2 = data.map(line => line.map(x => string_to_iValue _ ))
+[/code]
