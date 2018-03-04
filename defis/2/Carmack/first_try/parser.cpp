@@ -50,7 +50,10 @@ bool Parser::next_value(cell *c) {
 
     _eol = true;
     _eof = fs.eof();
-    fill_with_value(c, v);
+    if(b)
+        c->type =None;
+    else
+        fill_with_value(c, v);
     return false;
 }
 

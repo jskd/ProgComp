@@ -126,3 +126,43 @@ void superior_preval(Parser &p) {
 
     launch_calculation();
 }
+
+int write_view(Parser &p, string view) {
+    cell c;
+    point pos;
+    int f_id = 0;
+    ofstream fs(view);
+
+    if(!fs)
+        return -1;
+
+    pos.x = pos.y = 0;
+    p.reposition();
+
+    while(!p.eof) {
+        p.next_cell(&c);
+        switch(c.type) {
+        case Value:
+            fs << c.value << ";";
+            break;
+        case Formula:
+            if(R(get_formula(f_id)) == -1)
+                fs << "R;";
+            else
+                fs << R(get_formula(f_id)) << ";";
+            f_id++;
+            break;
+        }
+
+        if(p.eol) {
+            fs << endl;
+            pos.y = 0;
+            pos.x++;
+        }
+        else
+            pos.y++;
+    }
+
+    fs.close();
+    return 0;
+}

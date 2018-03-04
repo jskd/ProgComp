@@ -23,6 +23,7 @@ int unsafe_main(int argc, char *argv[]) {
     // Apparently not so superior:
     // superior_preval(p);
     evaluate(top);
+    write_view(p, "view0.csv");
 
     cout << "All formulas:\n";
     head->foreach([](FormulaNode &f) { cout << f; });

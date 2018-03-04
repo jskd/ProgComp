@@ -46,4 +46,6 @@ void evaluate(std::vector<FormulaNode *> &top);
 
 void superior_preval(Parser &p);
 
+int write_view(Parser &p, std::string view);
+
 #endif
