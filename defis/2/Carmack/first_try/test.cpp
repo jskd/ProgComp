@@ -20,7 +20,8 @@ int unsafe_main(int argc, char *argv[]) {
     head = roots(p, rs);
     normalize(rs, top);
     head->preval(p);
-    //superior_preval(p);
+    // Apparently not so superior:
+    // superior_preval(p);
     evaluate(top);
 
     cout << "All formulas:\n";

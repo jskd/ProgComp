@@ -13,31 +13,31 @@ FormulaNode::FormulaNode(cell &c) :
 Area FormulaNode::bb() {
     formula *f = get_formula(formula_id);
 
-    return Area(f->x1, f->y1, f->x2, f->y2);
+    return Area(X1(f), Y1(f), X2(f), Y2(f));
 }
 
 int FormulaNode::value() {
-    return get_formula(formula_id)->v;
+    return V(get_formula(formula_id));
 }
 
 void FormulaNode::value(int v) {
-    get_formula(formula_id)->v = v;
+    V(get_formula(formula_id)) = v;
 }
 
 int FormulaNode::result() {
-    return get_formula(formula_id)->r;
+    return R(get_formula(formula_id));
 }
 
 void FormulaNode::result(int r) {
-    get_formula(formula_id)->r = r;
+    R(get_formula(formula_id)) = r;
 }
 
 int FormulaNode::level() {
-    return get_formula(formula_id)->level;
+    return LEVEL(get_formula(formula_id));
 }
 
 void FormulaNode::level(int l) {
-    get_formula(formula_id)->level = l;
+    LEVEL(get_formula(formula_id)) = l;
 }
 
 ostream &operator<<(ostream &out, FormulaNode &f) {

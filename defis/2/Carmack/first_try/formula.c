@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#define CL_USE_DEPRECATED_OPENCL_1_2_APIS
-#include <CL/cl.h>
 
 #include "formula.h"
 
@@ -23,13 +21,13 @@ int new_formula(int x1, int y1, int x2, int y2, int v) {
     }
     f = fs + f_size;
 
-    f->x1 = x1;
-    f->x2 = x2;
-    f->y1 = y1;
-    f->y2 = y2;
-    f->v = v;
-    f->r = 0;
-    f->level = -1;
+    f->s0 = x1;
+    f->s1 = x2;
+    f->s2 = y1;
+    f->s3 = y2;
+    f->s4 = v;
+    f->s5 = 0;
+    f->s6 = -1;
 
     return f_size++;
 }
@@ -68,9 +66,7 @@ char *load_cl_source() {
     return NULL;
 }
 
-typedef struct __attribute__((aligned)) {
-    int x, y, v;
-} value;
+typedef cl_int4 value;
 
 #define VALUE_MAX_CAPACITY 256
 
@@ -136,19 +132,25 @@ int push_value(int x, int y, int v) {
 
     vs[v_size].x = x;
     vs[v_size].y = y;
-    vs[v_size].v = v;
+    vs[v_size].z = v;
 
     return (v_size++) == VALUE_MAX_CAPACITY;
 }
 
 void launch_calculation() {
     cl_int error;
-    cl_mem f_buffer, v_buffer;
-    size_t global_work_size[] = { f_size * v_size };
-    size_t local_work_size[]  = { v_size };
+    cl_mem f_buffer, v_buffer, r_buffer;
+    size_t global_work_size[] = { f_size, v_size };
+    size_t local_work_size[]  = { 1, v_size };
     cl_event event;
 
-    f_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+    // Even my smart operations with [calloc] and [rs] doesn't help.
+    // My atomic stuff in kernel just doesn't work.
+    int i;
+    int *rs = calloc(f_size, sizeof *rs);
+    int *rs_out = malloc(f_size * sizeof *rs_out);
+
+    f_buffer = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
                               f_size * sizeof *fs, fs, &error);
     CHECK_ERROR("Unable to create formulas buffer object.");
 
@@ -156,18 +158,30 @@ void launch_calculation() {
                               v_size * sizeof *vs, vs, &error);
     CHECK_ERROR("Unable to create values buffer object.");
 
+    r_buffer = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR,
+                              f_size * sizeof *rs, rs, &error);
+    CHECK_ERROR("Unable to create results buffer object.");
+
     error = clSetKernelArg(kernel, 0, sizeof(cl_mem), &f_buffer);
     CHECK_ERROR("Unable to initialize first argument.");
     error = clSetKernelArg(kernel, 1, sizeof(cl_mem), &v_buffer);
     CHECK_ERROR("Unable to initialize second argument.");
+    error = clSetKernelArg(kernel, 2, sizeof(cl_mem), &r_buffer);
+    CHECK_ERROR("Unable to initialize third argument.");
 
-    error = clEnqueueNDRangeKernel(queue, kernel, 1, NULL,
+    error = clEnqueueNDRangeKernel(queue, kernel, 2, NULL,
                                    global_work_size, local_work_size,
                                    0, NULL, &event);
     CHECK_ERROR("Unable to enqueue to command-queue.");
     clWaitForEvents(1, &event);
 
-    error = clEnqueueReadBuffer(queue, f_buffer, CL_TRUE, 0,
-                                f_size * sizeof *fs, fs, 0, NULL, NULL);
+    error = clEnqueueReadBuffer(queue, r_buffer, CL_TRUE, 0,
+                                f_size * sizeof *rs_out, rs_out, 0, NULL, NULL);
     CHECK_ERROR("Unable to enqueue to buffer.");
+
+    for(i = 0; i < f_size; i++)
+        R(fs + i) = rs_out[i];
+
+    free(rs);
+    free(rs_out);
 }

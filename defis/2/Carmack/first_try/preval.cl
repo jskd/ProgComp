@@ -1,19 +1,17 @@
+#pragma OPENCL EXTENSION cl_khr_local_int32_extended_atomics : enable
 
-typedef struct __attribute__((aligned)) {
-    int x1, x2, y1, y2, v, r, level;
-} formula;
-
-typedef struct __attribute__((aligned)) {
-    int x, y, v;
-} value;
-
-__kernel void preval(__global formula *fs, __global value *vs) {
-    int f_id = get_global_id(0);
+__kernel void preval(__global int8 *fs, __global int4 *vs, __global int *rs) {
+    int f_id = get_group_id(0);
     int v_id = get_global_id(1);
 
-    if(fs[f_id].level != -1 &&
-       vs[v_id].x >= fs[f_id].x1 && vs[v_id].x <= fs[f_id].x2 &&
-       vs[v_id].y >= fs[f_id].y1 && vs[v_id].y <= fs[f_id].y2 &&
-       vs[v_id].v == fs[f_id].v)
-        fs[f_id].r++;
+    // If even this doesn't work there is no reason to continue.
+    atomic_inc(rs);
+
+    /*
+    if(fs[f_id].s6 != -1 &&
+       vs[v_id].x >= fs[f_id].s0 && vs[v_id].x <= fs[f_id].s1 &&
+       vs[v_id].y >= fs[f_id].s2 && vs[v_id].y <= fs[f_id].s3 &&
+       vs[v_id].z == fs[f_id].s4)
+        atomic_inc(rs + f_id, 1);
+    */
 }
