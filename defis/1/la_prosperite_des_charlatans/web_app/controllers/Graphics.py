@@ -3,23 +3,24 @@ from controllers.Base import BaseController
 import os
 import datetime
 
+def get_label_dataset( teams ):
+  label = '{:10} {:40}'.format("#date", "sha_of_commit")
+  for team in teams:
+    label = label + ' {:10}'.format(team)
+  return label
+
 class GraphicsController(BaseController):
     @cherrypy.expose
     def index(self):
         all_sha = self.all_sha_commit()
         all_test = self.all_name_test()
-        all_group = self.all_name_group()
-
-        groups = []
-
-
-        for (group,) in all_group:
-          groups.append( group)
+        groups = self.all_name_group()
 
 
         for (name_test,) in all_test:
 
-          print("#date sha " + ' '.join(groups) )
+          print( get_label_dataset(groups) )
+
           for (sha,) in all_sha:
             times = []
             for group in groups:
@@ -48,7 +49,10 @@ class GraphicsController(BaseController):
         qry = "SELECT distinct name_group \
             FROM logs \
             ORDER BY name_group;".format()
-        return self.executeQuery(qry)
+        groups = []
+        for (group,) in self.executeQuery(qry):
+          groups.append(group)
+        return groups
 
     def get_time(self, name_test, sha, name_group):
         qry = "SELECT bench_time \
