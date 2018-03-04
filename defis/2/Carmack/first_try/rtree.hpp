@@ -5,7 +5,7 @@
 #include <stack>
 #include <functional>
 
-#include "cell.hpp"
+#include "formulanode.hpp"
 #include "parser.hpp"
 
 class INode;

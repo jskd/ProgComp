@@ -2,7 +2,7 @@
 #include <functional>
 
 #include "parser.hpp"
-#include "cell.hpp"
+#include "formulanode.hpp"
 #include "rtree.hpp"
 
 using namespace std;

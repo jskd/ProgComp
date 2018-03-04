@@ -1,6 +1,6 @@
 #include <queue>
 
-#include "cell.hpp"
+#include "formulanode.hpp"
 
 using namespace std;
 
