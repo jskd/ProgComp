@@ -49,7 +49,8 @@ def generate_graph_config( file_number, title, teams):
     if idx != len(teams)-1 :
       plotconf += ', \\'+ os.linesep
 
-  result = src.substitute( {'renderfile' : renderfile, 'plotconf' : plotconf} )
+  result = src.substitute( { 'title' :title, 'renderfile' : renderfile,
+    'plotconf' : plotconf })
 
   with open( PATH_GRAPH_CONFIG + str(file_number) + EXT_GRAPH_CONFIG ,'w') as f:
     f.write( result)
@@ -147,4 +148,4 @@ class GraphicsController(BaseController):
     teams = self.all_name_group()
 
     for idx, name_test in enumerate(name_tests):
-      generate_graph_config(idx, "name_test", teams)
+      generate_graph_config(idx, name_test, teams)
