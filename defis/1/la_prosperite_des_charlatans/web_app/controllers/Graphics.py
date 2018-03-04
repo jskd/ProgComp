@@ -9,6 +9,12 @@ def get_label_dataset( teams ):
     label = label + ' {:10}'.format(team)
   return label
 
+def get_line_dataset( date, sha, test_times ):
+  line = '{:10} {:40}'.format(date, sha)
+  for test_time in test_times:
+    line = line + ' {:10}'.format(test_time)
+  return line
+
 class GraphicsController(BaseController):
     @cherrypy.expose
     def index(self):
@@ -24,8 +30,11 @@ class GraphicsController(BaseController):
           for (sha,) in all_sha:
             times = []
             for group in groups:
-              times.append( self.get_time(name_test, sha, group) )
-            print(self.get_date_of_sha_commit(sha)+ ' ' + sha + ' ' + ' '.join(times) )
+              times.append(self.get_time(name_test, sha, group))
+
+
+
+            print(get_line_dataset(self.get_date_of_sha_commit(sha), sha, times))
 
         template_args = {
         "data_set":all_sha
