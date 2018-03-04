@@ -84,6 +84,6 @@ func writeView(file_output string, file_input string, bin_repo string) {
 				print(line)
 			//}
 		}*/
-		parse.WriteCsv(file_output, line, ';')
+		parse.WriteOneLineCsv(file_output, line, ';')
 	}
 }

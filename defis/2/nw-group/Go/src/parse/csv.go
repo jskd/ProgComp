@@ -46,7 +46,17 @@ func ReadCsv(fileToRead string, sep rune) [][]string {
 	return res
 }
 
-func WriteCsv(filename string, data []string, sep rune) {
+func WriteCsv(filename string, data [][]string, sep rune) {
+	file, err := os.Create(filename)
+	checkError(err)
+	csvWriter := csv.NewWriter(file)
+	csvWriter.Comma = sep
+	err = csvWriter.WriteAll(data)
+	checkError(err)
+	//TODO: Close file?
+}
+
+func WriteOneLineCsv(filename string, data []string, sep rune) {
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 	if os.IsNotExist(err) {
 		file, err = os.Create(filename)
