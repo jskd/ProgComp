@@ -6,6 +6,7 @@ import (
 	"os"
 	"parse"
 	"path/filepath"
+	"share"
 	"strconv"
 	"strings"
 )
@@ -162,7 +163,7 @@ func FromFile(filename string, sep rune) string {
 		panic(err)
 	}
 	src_name := filepath.Base(filename)
-	bin_dir := os.TempDir() + src_name + "/bin"
+	bin_dir := share.AddPathSeparator(os.TempDir()) + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir)
 	scanner := bufio.NewScanner(file)
