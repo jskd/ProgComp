@@ -15,9 +15,6 @@ EXT_GRAPH_RENDER = ".png"
 
 GRAPH_CONFIG_TEPLATE = "./web_app/content/graph_config.template"
 
-
-
-
 def get_dataset_path( idx ):
   return PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
 
@@ -34,12 +31,12 @@ def get_line_dataset( date, sha, test_times ):
     line = line + ' {:10}'.format(test_time)
   return line
 
-def generate_graph_config( idx, title, teams):
+def generate_graph_config( file_number, title, teams):
   template = open( GRAPH_CONFIG_TEPLATE )
   src = Template( template.read() )
 
-  renderfile = PATH_GRAPH_RENDER + str(idx) + EXT_GRAPH_RENDER
-  datasetfile = PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
+  renderfile = PATH_GRAPH_RENDER + str(file_number) + EXT_GRAPH_RENDER
+  datasetfile = PATH_GRAPH_DATASET + str(file_number) + EXT_GRAPH_DATASET
 
   plotconf = ""
 
@@ -54,13 +51,8 @@ def generate_graph_config( idx, title, teams):
 
   result = src.substitute( {'renderfile' : renderfile, 'plotconf' : plotconf} )
 
-  with open( PATH_GRAPH_CONFIG + str(idx) + EXT_GRAPH_CONFIG ,'w') as f:
+  with open( PATH_GRAPH_CONFIG + str(file_number) + EXT_GRAPH_CONFIG ,'w') as f:
     f.write( result)
-
-
-
-
-
 
 class GraphicsController(BaseController):
   @cherrypy.expose
@@ -68,8 +60,9 @@ class GraphicsController(BaseController):
 
     list_commit_sha = self.all_sha_commit()
     self.generate_data_set()
+    self.generate_config()
+
     teams = self.all_name_group()
-    generate_graph_config( 0, "test", teams)
 
     template_args = {
     "data_set":list_commit_sha
@@ -147,3 +140,11 @@ class GraphicsController(BaseController):
             times.append(time_result)
           sha_date= self.get_date_of_sha_commit(sha)
           f.write(get_line_dataset(sha_date, sha, times) + os.linesep)
+
+
+  def generate_config(self):
+    name_tests = self.all_name_test()
+    teams = self.all_name_group()
+
+    for idx, name_test in enumerate(name_tests):
+      generate_graph_config(idx, "name_test", teams)
