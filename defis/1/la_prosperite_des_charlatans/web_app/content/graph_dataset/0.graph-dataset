@@ -1,0 +1,10 @@
+#Test: Make mrproper: just do 'make mrproper' 
+#date      sha_of_commit                            Carmack    GroupTest  Scableur   babar      nw-group  
+13/02/2018 6ff9e0e4302a4633c3f87907f13b04f913fdab92 000.187099 000.132116 000.209912 NaN        NaN       
+14/02/2018 746faa6332a5fccb390aef60b7845b3235dbe0ba NaN        000.178035 NaN        NaN        NaN       
+14/02/2018 37ffb4205e6f9817ab8f307900b8b92fb7ed1268 000.022508 000.024307 000.027204 001.139682 NaN       
+20/02/2018 a0e74c9408377cedd94c621fda0439fd251210ab 000.056114 000.058878 000.088373 002.748874 000.350727
+21/02/2018 a445faff7176892a7818e45d300b9a09bdd1f3ed NaN        NaN        NaN        NaN        000.123252
+22/02/2018 c05ba4ede9e2b6157b40ee8f268ab82a6e97f0b5 NaN        000.151443 NaN        NaN        NaN       
+22/02/2018 7fb0efc95b7b8747cfd6844fc7cfffb7e06abd45 000.062904 000.053683 000.079541 002.740975 000.075877
+03/03/2018 fc4a88cf5097ce97ed5e959a94077c4d41e36a08 000.022243 000.021826 NaN        002.655621 NaN       
