@@ -1,0 +1,9 @@
+#!/gnuplot
+
+set term png
+set output "$renderfile"
+
+set xdata time
+set timefmt '%Y-%m-%d %H:%M:%S'
+
+plot $plotconf
