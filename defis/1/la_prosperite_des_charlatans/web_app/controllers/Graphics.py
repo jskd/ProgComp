@@ -10,6 +10,7 @@ EXT_GRAPH_DATASET = ".graph-dataset"
 PATH_GRAPH_CONFIG = "./web_app/content/graph_config/"
 EXT_GRAPH_CONFIG = ".gnuplot"
 
+PATH_GRAPH_RENDER_HTTP = "./content/graph_render/"
 PATH_GRAPH_RENDER = "./web_app/content/graph_render/"
 EXT_GRAPH_RENDER = ".png"
 
@@ -31,12 +32,19 @@ def get_line_dataset( date, sha, test_times ):
     line = line + ' {:10}'.format(test_time)
   return line
 
+def get_render_file(file_number):
+  return PATH_GRAPH_RENDER + str(file_number) + EXT_GRAPH_RENDER
+
+def get_render_file_http(file_number):
+  return PATH_GRAPH_RENDER_HTTP + str(file_number) + EXT_GRAPH_RENDER
+
 def generate_graph_config( file_number, title, teams):
   template = open( GRAPH_CONFIG_TEPLATE )
   src = Template( template.read() )
 
-  renderfile = PATH_GRAPH_RENDER + str(file_number) + EXT_GRAPH_RENDER
+
   datasetfile = PATH_GRAPH_DATASET + str(file_number) + EXT_GRAPH_DATASET
+  renderfile = get_render_file(file_number)
 
   plotconf = ""
 
@@ -59,14 +67,12 @@ class GraphicsController(BaseController):
   @cherrypy.expose
   def index(self):
 
-    list_commit_sha = self.all_sha_commit()
     self.generate_data_set()
     self.generate_config()
-
-    teams = self.all_name_group()
+    list_graph = self.get_all_render_file()
 
     template_args = {
-    "data_set":list_commit_sha
+    "list_graph":list_graph
     }
     return self.render_template(template_args)
 
@@ -149,3 +155,13 @@ class GraphicsController(BaseController):
 
     for idx, name_test in enumerate(name_tests):
       generate_graph_config(idx, name_test, teams)
+
+  def get_all_render_file(self):
+    name_tests = self.all_name_test()
+    render_list = []
+    for idx, name_test in enumerate(name_tests):
+      render_list.append({
+        'render': get_render_file_http(idx),
+        'name': name_test
+      })
+    return render_list
