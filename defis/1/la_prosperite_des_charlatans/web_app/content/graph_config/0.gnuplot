@@ -1,7 +1,7 @@
 #!/gnuplot
 
 set term png
-set output "graph.png"
+set output "../graph_render/0.png"
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'
