@@ -2,6 +2,7 @@
 
 set term png
 set output "$renderfile"
+set title "$title"
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'

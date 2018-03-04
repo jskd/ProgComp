@@ -2,6 +2,7 @@
 
 set term png
 set output "./web_app/content/graph_render/8.png"
+set title "Test BigMama: BigMama with 10"
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'

@@ -2,6 +2,7 @@
 
 set term png
 set output "./web_app/content/graph_render/1.png"
+set title "Make target: just do 'make' "
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'

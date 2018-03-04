@@ -2,6 +2,7 @@
 
 set term png
 set output "./web_app/content/graph_render/3.png"
+set title "Test 2: user.txt change a number"
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'

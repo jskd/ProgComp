@@ -2,6 +2,7 @@
 
 set term png
 set output "./web_app/content/graph_render/5.png"
+set title "Test 4: calculation of two formulas F1->F2->"
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'

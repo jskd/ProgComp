@@ -2,6 +2,7 @@
 
 set term png
 set output "./web_app/content/graph_render/12.png"
+set title "Test files presence: expected 'ws' and 'Makefile' "
 
 set xdata time
 set timefmt '%Y-%m-%d %H:%M:%S'
