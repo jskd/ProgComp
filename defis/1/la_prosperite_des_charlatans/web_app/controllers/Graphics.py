@@ -3,8 +3,15 @@ from controllers.Base import BaseController
 import os
 import datetime
 
+PATH_GRAPH_DATASET = "./web_app/content/graph_dataset/"
+EXT_GRAPH_DATASET = ".graph-dataset"
+
+def get_dataset_path( idx ):
+  return PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
+
+
 def get_label_dataset( name_test, teams ):
-  label = '#Test: {}\n'.format(name_test)
+  label = '#Test: {}'.format(name_test) + os.linesep
   label = label + '{:10} {:40}'.format("#date", "sha_of_commit")
   for team in teams:
     label = label + ' {:10}'.format(team)
@@ -63,7 +70,7 @@ class GraphicsController(BaseController):
       LIMIT 1;".format(
         name_test.replace("'","''"), sha, name_group)
     try:
-      return '{:010.3f}'.format(self.executeQuery(qry)[0][0])
+      return '{:010.6f}'.format(self.executeQuery(qry)[0][0])
     except:
       return '{:10}'.format("NaN")
 
@@ -86,12 +93,15 @@ class GraphicsController(BaseController):
     name_tests = self.all_name_test()
     groups = self.all_name_group()
 
-    for name_test in name_tests:
-      print( get_label_dataset(name_test, groups) )
-      for sha in list_commit_sha:
-        times = []
-        for group in groups:
-          time_result = self.get_time(name_test, sha, group)
-          times.append(time_result)
-        sha_date= self.get_date_of_sha_commit(sha)
-        print(get_line_dataset(sha_date, sha, times))
+    dataset_ext = ".txt"
+
+    for idx, name_test in enumerate(name_tests):
+      with open( get_dataset_path(idx) ,'w') as f:
+        f.write( get_label_dataset(name_test, groups) + os.linesep)
+        for sha in list_commit_sha:
+          times = []
+          for group in groups:
+            time_result = self.get_time(name_test, sha, group)
+            times.append(time_result)
+          sha_date= self.get_date_of_sha_commit(sha)
+          f.write(get_line_dataset(sha_date, sha, times) + os.linesep)
