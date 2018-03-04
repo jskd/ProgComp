@@ -1,4 +1,4 @@
-- Courbes benchmarks + comparaisons entre groupes
+- --Courbes benchmarks + comparaisons entre groupes-- [DONE]
 - Création des inputs BIGMama, benchmarks
 - Ajout de tests
 - Ajout de tests avec paramètres de tailles, benchmarks
