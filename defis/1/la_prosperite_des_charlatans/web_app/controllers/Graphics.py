@@ -10,15 +10,16 @@ def get_dataset_path( idx ):
   return PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
 
 
+
 def get_label_dataset( name_test, teams ):
   label = '#Test: {}'.format(name_test) + os.linesep
-  label = label + '{:10} {:40}'.format("#date", "sha_of_commit")
+  label = label + '{:19} {:40}'.format("#date", "sha_of_commit")
   for team in teams:
     label = label + ' {:10}'.format(team)
   return label
 
 def get_line_dataset( date, sha, test_times ):
-  line = '{:10} {:40}'.format(date, sha)
+  line = '{:19} {:40}'.format(date, sha)
   for test_time in test_times:
     line = line + ' {:10}'.format(test_time)
   return line
@@ -82,8 +83,9 @@ class GraphicsController(BaseController):
       LIMIT 1;".format(sha)
     try:
       date_of_sha_commit = self.executeQuery(qry)[0][0]
-      date_of_sha_commit = datetime.datetime.strptime(date_of_sha_commit, "%Y-%m-%d %H:%M:%S")
-      return str(date_of_sha_commit.strftime("%d/%m/%Y"))
+      return date_of_sha_commit
+      #date_of_sha_commit = datetime.datetime.strptime(date_of_sha_commit, "%Y-%m-%d %H:%M:%S")
+      #return str(date_of_sha_commit.strftime("%d/%m/%Y"))
     except:
       return "NaN"
 
