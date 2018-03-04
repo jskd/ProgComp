@@ -20,18 +20,18 @@ if __name__ == "__main__":
     if len(sys.argv) >= 1:
         test_path = os.path.dirname(sys.argv[0]) + "/"
         group_path = sys.argv[1] + "/"
+        size_bigmama = sys.argv[2]
 
         # INIT DATA
         with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
             test_info = test_data["infos"]
 
-
         # BEGIN OF SCRIPT
         test_result = True
         try:
-            view0_output = test_path + "output/view0.csv"
-            changes_output = test_path + "output/changes.txt"
+            view0_output = test_path + "output/view0_{}.csv".format(size_bigmama)
+            changes_output = test_path + "output/changes_{}.txt".format(size_bigmama)
 
             # CLEAN OUTPUT
             if os.path.isdir(view0_output):
@@ -46,13 +46,10 @@ if __name__ == "__main__":
                 if os.path.isfile(changes_output):
                     os.remove(changes_output)
 
-            intput_file = "input/bigmama_{}.csv".format(sys.argv[2])
+            intput_file = "input/bigmama_{}.csv".format(size_bigmama)
 
             cmd = [group_path + EXEC_PATH, test_path + intput_file, test_path + "input/user.txt", view0_output, changes_output]
             out = check_output(cmd, stderr=STDOUT, timeout=10).decode("utf-8")
-
-            out = str(cmd)
-
 
         except Exception as e:
             out = str(e)
