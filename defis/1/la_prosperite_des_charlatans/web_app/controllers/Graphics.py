@@ -63,6 +63,8 @@ def generate_graph_config( file_number, title, teams):
   with open( PATH_GRAPH_CONFIG + str(file_number) + EXT_GRAPH_CONFIG ,'w') as f:
     f.write( result)
 
+  os.system('gnuplot ' + PATH_GRAPH_CONFIG + str(file_number) + EXT_GRAPH_CONFIG)
+
 class GraphicsController(BaseController):
   @cherrypy.expose
   def index(self):
