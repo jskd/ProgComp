@@ -1,6 +1,6 @@
-- Courbes benchmarks + comparaisons entre groupes
-- Création des inputs BIGMama, benchmarks
+[DONE] Courbes benchmarks + comparaisons entre groupes
+[DONE] Ajout de tests avec paramètres
+
+- Générateur des BIGMama avec taille en argument
 - Ajout de tests
-- Ajout de tests avec paramètres de tailles, benchmarks
 - Possibilité de faire des tests avec différents clients / API
-- Générateur de gros fichier de taille N

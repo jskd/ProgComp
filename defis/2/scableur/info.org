@@ -1,0 +1,52 @@
+* Architecture Scableur v2
+
+1) Parsing/Formatage du fichier 
+  --- On convertit ---
+  1;2;3;4
+  1;2;3;=#(0,1,1,1,3)
+
+  --- En ---
+  (0,1) 1;(0,2) 2;(0,3) 3;(0,4) 4
+  (1,1) 1;(1,2) 2;(1,3) 3;(1,4) =#(0,1,1,1,3)
+
+  ~ Pour pouvoir acceder au case dans spark
+
+
+2) Chargement dans spark :
+
+  - split des lignes pour obtenir une liste de liste.
+    [ map(line => line.split(";").map(elem => elem.trim)) ]
+
+  - Map de la structure sur spark en passant une fonction eval en parametre :
+
+    -- Eval 
+      - Evalue les nombre en nombre
+      - Stocke les fonction dans une autre liste (toujours dans spark) qui serat evalue plus tard
+
+3) Detection des cycle
+  ~ De la meme facon que dans la partie 1 sur la liste des fonction
+
+4) evaluation des fonction
+
+  -  Chaque formule depend d'une Area (nombre de points) tant qu'elle n'a pas
+      recu tout ces point elle n'est pas close.
+
+  - Une formule a un compteur de point recu et un resultat partiel.
+
+  - Controller (object statique recois des PConstante et les met dans la file d'attente)
+
+5) User Action
+  => Les resultat ne vont pas dans la matrice mais dans une liste de point modifiable.
+
+  - Parser la liste 
+    - chercher les dependances dans liste formule
+    - recharger formule qui change + nouvelle formule
+    - detection de cycle
+    - eval de la meme facon que avant
+
+--- Notes ---
+[code]
+  val res = data2.collect().foreach(line => line.foreach(x => print_iValue _))
+  val data3 = data2.map(line => line.fold( to a string))
+  val data2 = data.map(line => line.map(x => string_to_iValue _ ))
+[/code]
