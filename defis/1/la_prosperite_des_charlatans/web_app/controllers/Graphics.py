@@ -2,14 +2,24 @@ import cherrypy, sqlite3
 from controllers.Base import BaseController
 import os
 import datetime
+from string import Template
 
 PATH_GRAPH_DATASET = "./web_app/content/graph_dataset/"
 EXT_GRAPH_DATASET = ".graph-dataset"
 
+PATH_GRAPH_CONFIG = "./web_app/content/graph_config/"
+EXT_GRAPH_CONFIG = ".gnuplot"
+
+PATH_GRAPH_RENDER = "./web_app/content/graph_render/"
+EXT_GRAPH_RENDER = ".png"
+
+GRAPH_CONFIG_TEPLATE = "./web_app/content/graph_config.template"
+
+
+
+
 def get_dataset_path( idx ):
   return PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
-
-
 
 def get_label_dataset( name_test, teams ):
   label = '#Test: {}'.format(name_test) + os.linesep
@@ -24,12 +34,42 @@ def get_line_dataset( date, sha, test_times ):
     line = line + ' {:10}'.format(test_time)
   return line
 
+def generate_graph_config( idx, title, teams):
+  template = open( GRAPH_CONFIG_TEPLATE )
+  src = Template( template.read() )
+
+  renderfile = PATH_GRAPH_RENDER + str(idx) + EXT_GRAPH_RENDER
+  datasetfile = PATH_GRAPH_DATASET + str(idx) + EXT_GRAPH_DATASET
+
+  plotconf = ""
+
+  for idx, team in enumerate(teams):
+    if idx != 0:
+      plotconf += '  '
+    plotconf += "'{}' using 1:{} title '{}' with linespoints".format(
+      datasetfile, str(4+idx),team
+    )
+    if idx != len(teams)-1 :
+      plotconf += ', \\'+ os.linesep
+
+  result = src.substitute( {'renderfile' : renderfile, 'plotconf' : plotconf} )
+
+  with open( PATH_GRAPH_CONFIG + str(idx) + EXT_GRAPH_CONFIG ,'w') as f:
+    f.write( result)
+
+
+
+
+
+
 class GraphicsController(BaseController):
   @cherrypy.expose
   def index(self):
 
     list_commit_sha = self.all_sha_commit()
     self.generate_data_set()
+    teams = self.all_name_group()
+    generate_graph_config( 0, "test", teams)
 
     template_args = {
     "data_set":list_commit_sha
