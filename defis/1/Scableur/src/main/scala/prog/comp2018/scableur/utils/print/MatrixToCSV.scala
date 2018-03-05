@@ -24,6 +24,7 @@ class MatrixToCSV(private var matrix : EvaluatedMatrix,
       if(j < matrix.width-1) writer.append(";")
       writer.flush()
     }
+    writer.append("\n")
     writer.close()
   }
 }
