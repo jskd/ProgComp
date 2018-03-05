@@ -21,3 +21,7 @@ func Test10LinesBigmamaFile(t *testing.T) {
 	exp := share.TempDir() + "bigmama_10.csv/bin"
 	share.AssertEqual(t, bin_repo, exp, "Incorrect repository path")
 }
+
+func TestCounting(t *testing.T) {
+	//bin_repo := FromFile("../../dataset/bigmama_10.csv", ';')
+}

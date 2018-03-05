@@ -13,15 +13,17 @@ object FileReader {
     val outputFile = new File(filename_dest)
     val writer = new BufferedWriter(new FileWriter(outputFile))
     for ( (line,index) <- file.getLines().zipWithIndex){
-      println(line)
+	
       var lin = line.split(";")
-      var i=lin.length
-      for( a <- 0 to lin.length-1){
-        writer.write("("+ (index) + ","+a+")" +" " +lin(a)+";")
+      var i=lin.length-1
+      for( a <- 0 to lin.length-2){
+      writer.write("("+ (index) + ","+a+")" +" " +lin(a)+";")
       }
-      writer.newLine()
+      writer.write("("+ (index) + ","+i+")" +" " +lin(i))
+      writer.newLine()     
 
     }
+
     writer.flush()
     writer.close()
   }

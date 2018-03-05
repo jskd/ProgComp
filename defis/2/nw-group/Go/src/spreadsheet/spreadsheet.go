@@ -289,3 +289,41 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	res := make(map[*Command][]Change)
 	return res
 }
+
+func Intersect(formulaName string)(int){
+	form := strings.Split(formulaName, "_")
+	x1=form[0]
+	x2=form[1]
+	y1=form[2]
+	y2=form[3]
+	valToCount := form[4]
+	binFile := parse.NewBinFile(string(valToCount))
+	tab, err := binFile.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+	count := 0
+	for i := 0; i<len(tab); i++ {
+		x := int(tab[i])
+		i++
+		y := int(tab[i])
+		if(x<x1 && x>x2){
+			if(y<y1 && y<y2){
+				count++
+			}
+		}
+	}
+	formule := parse.NewBinFile(formulaName)
+	tab,err = formule.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+	parse.NewBinFile(string(count))
+	for i := 0; i<len(tab); i++ {
+		x := tab[i]
+		i++
+		y := tab[i]
+		binFile.WritePair(x,y)
+	}
+	return  count
+}
