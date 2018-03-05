@@ -1,0 +1,73 @@
+* Un moteur de tableur avec calculs à la demande
+
+On doit pouvoir lancer les commandes suivantes:
+``
+cd votre-nom-de-groupe
+make
+./ws data.csv user.txt view0.csv changes.txt
+``
+
+Entrées:
+- un fichier data.csv (avec ; pour séparateur) qui contient deux types de données:
+  a. Des entiers compris entre 0 et 255.
+  b. Des formules de la forme:
+
+     =#(r1, c1, r2, c2, v)
+
+     qui s'évalue en le nombre d'occurrence de la valeur "v" parmis
+     les cellules de coordonnées
+
+     { (r, c) | r1 ≤ r ≤ r2 ∧ c1 ≤ c ≤ c2 }
+
+     (Note: les coordonnées débutent à zéro.)
+
+  Le fichier data.csv pourra faire plusieurs mégaoctets!
+
+- un fichier user.txt qui contient sur chaque ligne une commande de la forme:
+
+  r c d
+
+  où "r" et "c" sont des entiers et "d" est soit une valeur du type (a) ou (b)
+  précédent. Seules les coordonnées absolues de la zone d'interaction peuvent
+  apparaître ici.
+
+  *OU* de la forme suivante:
+
+  ! r1 c1 r2 c2
+
+  où sont des entiers qui définissent un rectangle dans la feuille,
+  appelé zone d'interaction. Les commandes de la première forme qui
+  suivent doivent uniquement mettre à jour des cellules dans la zone
+  d'interaction.
+
+  On peut supposer que la taille de zone d'interaction ne dépasse pas
+  256 lignes et 256 colonnes.
+
+Sorties:
+- un fichier view0.csv qui contient uniquement des entiers tels que les cellules
+  qui contenaient des entiers contiennent les mêmes entiers et les cellules qui
+  contenaient des formules contiennent maintenant l'évaluation des formules.
+  Ce fichier contiendra uniquement les cellules du rectangle défini par (r1, c1)
+  et (r2, c2).
+
+- un fichier changes.txt de la forme:
+  after "r c d":
+  r0 c0 v0 t0
+  r1 c1 v1 t1
+  ...
+  rN cN vN tN
+
+  pour chaque ligne "r c d" du fichier "user.txt" initial
+  et tel que "rI cI vI" indique qu'après l'exécution de la commande "r c d"
+  la valeur de la cellule à la rI-ième ligne et la cI-ième colonne vaut
+  l'entier vI et que cette mise à jour a été effectuée au temps tI (exprimé
+  en millisecondes).
+
+  En d'autres termes, "changes.txt" indique comment mettre à jour les données
+  de view0.csv après les commandes décrites dans "user.txt".
+
+  La séquence de "rI cI vI" ne sera plus classée par ordre
+  lexicographique mais dans l'ordre des temps de calculs tI. Votre
+  programme devra donner une priorité plus forte à l'évaluation des
+  cellules de la zone d'interaction courante.
+
