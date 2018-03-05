@@ -15,13 +15,11 @@ fn main()
 
     /* VARIABLE DECLARATIONS */
     let mut formulas: Vec<cell::Formula> = Vec::new();
-    let mut bytes_by_lines: Vec<usize> = Vec::new();
 
     /* START READING FILE */
 
-    parser::read_file(&args[1], &mut bytes_by_lines, &mut formulas);
+    parser::read_file(&args[1], &mut formulas);
 
-    println!("{}", bytes_by_lines.len());
 
     /*
     let data = parser::read_file(&args[1]);
