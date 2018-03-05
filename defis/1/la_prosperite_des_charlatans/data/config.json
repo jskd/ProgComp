@@ -13,19 +13,19 @@
   "target":[
     {
       "name":"babar",
-      "path":"../babar"
+      "path":"../../2/babar"
     },
     {
       "name":"Carmack",
-      "path":"../Carmack"
+      "path":"../../2/Carmack"
     },
     {
       "name":"Scableur",
-      "path":"../Scableur"
+      "path":"../../2/Scableur"
     },
     {
       "name":"nw-group",
-      "path":"../nw-group"
+      "path":"../../2/nw-group"
     },
     {
       "name":"GroupTest",

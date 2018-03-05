@@ -8,7 +8,7 @@ from TestReport import TestReport
 #from ThreadExec import ThreadExec
 from TaskTracker import TaskTracker
 
-with open("data/config.json") as data:
+with open("data/config_backup.json") as data:
     config = json.load(data)
 
 def parseArgs(args):
