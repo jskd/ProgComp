@@ -23,9 +23,9 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 			let mut formula: Vec<u8> = Vec::new();
 			if check_bounds(&buff, index) // has formula do
 			{
-				buff = (buff[index..]).to_vec();
-				index = buff.iter().position(|&eq| eq == b'=').unwrap();
 				
+				index = buff.iter().position(|&eq| eq == b'=').unwrap();
+				buff = (buff[index..]).to_vec();
 				for byte in &buff{
 					if byte == (&b';')
 					{
@@ -36,8 +36,17 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 						formula.push(*byte);
 					}
 				}
+
 				index+=formula.len();
-				println!("{}", String::from_utf8(formula).unwrap())
+				println!("{}", String::from_utf8(formula).unwrap());
+				if check_bounds(&buff, index)
+				{
+					buff = (buff[index..]).to_vec();
+				}
+				else{
+					break;
+				}
+				//println!("{}", String::from_utf8(formula).unwrap())
 				//formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 			}
 			else  //has no more formula do 
@@ -53,7 +62,12 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 pub fn check_bounds(buff: &Vec<u8>, index: usize) -> bool
 {
 	match buff.get(index..){
-		Some(buff_ok) => true,
+		Some(buff_ok) => {
+			match buff.iter().position(|&eq| eq == b'='){
+				Some(iter_ok) => true,
+				None => false,
+			}
+		},
 		None => false,
 	}
 }
