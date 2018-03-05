@@ -2,7 +2,9 @@ package spreadsheet
 
 import (
 	"bufio"
+	"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"parse"
 	"path/filepath"
@@ -163,25 +165,24 @@ func FromFile(filename string, sep rune) string {
 		panic(err)
 	}
 	src_name := filepath.Base(filename)
-	bin_dir := share.AddPathSeparator(os.TempDir()) + src_name + "/bin"
+	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir)
-	scanner := bufio.NewScanner(file)
-	pos_x := 0
-	for scanner.Scan() {
-		processOneLineOfCsv(bin_dir, scanner.Text(), sep, pos_x)
-		pos_x += 1
+	csvReader := csv.NewReader(file)
+	csvReader.Comma = sep
+	csvReader.FieldsPerRecord = -1
+	csvReader.TrimLeadingSpace = true
+	err = nil
+	for pos_x := 0; err != io.EOF; pos_x += 1 {
+		var l []string
+		l, err = csvReader.Read()
+		processOneLineOfCsv(bin_dir, l, sep, pos_x)
 	}
 	return bin_dir
 }
 
-func processOneLineOfCsv(bin_dir string, line string, sep rune, pos_x int) {
-	data := parse.ReadOneLineCsv(line, sep)
-	fmt.Println("Line: " + line)
-	if len(data) != 1 {
-		fmt.Println("Given line of Csv contains break-line but only first line of array will be processed.")
-	}
-	for pos_y, element := range data[0] {
+func processOneLineOfCsv(bin_dir string, line []string, sep rune, pos_x int) {
+	for pos_y, element := range line {
 		txt := strings.TrimSpace(element)
 		fmt.Println("Element: " + txt)
 		if strings.HasPrefix(txt, "=") {

@@ -5,6 +5,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"parse"
 	"spreadsheet"
@@ -28,7 +29,9 @@ func checkError(err error) {
 }
 
 func main_program(args []string) {
+	log.Println("Build directory structure of binary files...")
 	bin_repo := spreadsheet.FromFile(args[0], ';')
+	log.Println("Directory structure of binary files built.")
 	loop_count := spreadsheet.Evaluate(bin_repo)
 	fmt.Printf("Looping formula: %d\n", loop_count)
 	writeView(args[2], args[0], bin_repo)

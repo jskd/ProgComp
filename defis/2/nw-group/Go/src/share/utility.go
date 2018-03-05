@@ -42,3 +42,9 @@ func AssertArrayEqual(t *testing.T, input [][]string, expected [][]string, messa
 func AddPathSeparator(s string) string {
 	return s + fmt.Sprintf("%c", os.PathSeparator)
 }
+
+// Returns the temporary directory used by the program ws.  The
+// directory name returned by this function ends with a path separator.
+func TempDir() string {
+	return AddPathSeparator(AddPathSeparator(os.TempDir()) + "ws")
+}
