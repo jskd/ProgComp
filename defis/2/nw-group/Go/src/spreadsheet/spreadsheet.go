@@ -290,14 +290,14 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func Intersect(formulaName string)(int){
+func Intersect(path string, formulaName string)(int){
 	form := strings.Split(formulaName, "_")
 	x1=form[0]
 	x2=form[1]
 	y1=form[2]
 	y2=form[3]
 	valToCount := form[4]
-	binFile := parse.NewBinFile(string(valToCount))
+	binFile := parse.NewBinFile(string("../../dataset/bin/"+valToCount))
 	tab, err := binFile.ReadAll()
 	if err != nil {
 		panic(err)
@@ -313,12 +313,12 @@ func Intersect(formulaName string)(int){
 			}
 		}
 	}
-	formule := parse.NewBinFile(formulaName)
+	formule := parse.NewBinFile(path+""+formulaName)
 	tab,err = formule.ReadAll()
 	if err != nil {
 		panic(err)
 	}
-	parse.NewBinFile(string(count))
+	parse.NewBinFile(string("../../dataset/bin/"+string(count)))
 	for i := 0; i<len(tab); i++ {
 		x := tab[i]
 		i++

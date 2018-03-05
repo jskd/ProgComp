@@ -23,5 +23,5 @@ func Test10LinesBigmamaFile(t *testing.T) {
 }
 
 func TestCounting(t *testing.T) {
-	//bin_repo := FromFile("../../dataset/bigmama_10.csv", ';')
+	Intersect("../../dataset/bin/FORMULAS", "1110_7572_3186_17282_3")
 }
