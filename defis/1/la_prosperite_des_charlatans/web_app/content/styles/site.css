@@ -365,11 +365,11 @@ aside
 }
 
 .ul_result_fail{
-	color: rgb(200,0,0);
+	color: rgb(230,0,0);
 }
 
 .ul_result_fail a{
-	color: rgb(200,0,0);
+	color: rgb(230,0,0);
 	text-decoration: none;
 }
 

@@ -6,6 +6,8 @@ from termcolor import colored
 from ThreadExec import ThreadExec
 
 class TaskTracker(threading.Thread):
+    """ TaskTracker keep informations of a test and run it. """
+
     def __init__(self, test_path, target, test_report=None):
         threading.Thread.__init__(self)
         self.test_path = test_path
@@ -20,11 +22,12 @@ class TaskTracker(threading.Thread):
         self.createDirOutput(test_path)
 
     def run(self):
-
+        """ Run N thread where N = size of args list in infos.json
+            Wait all thread before return
+        """
         running_tests = []
 
         if "args" in self.TEST_INFO :
-
             for args in self.TEST_INFO["args"]:
 
                 infos = self.TEST_INFO.copy()
@@ -38,6 +41,7 @@ class TaskTracker(threading.Thread):
         else:
             threadExec = ThreadExec(self.TEST_INFO.copy(), self.test_file, self.executable, "", \
                 self.target, self.test_report)
+
             running_tests.append(threadExec)
             threadExec.start()
 
@@ -45,6 +49,8 @@ class TaskTracker(threading.Thread):
             test.join()
 
     def getTestInfos(self, test_path):
+        """ Return informations presents in infos.json """
+
         with open(join(test_path, "infos.json")) as data:
             test_data = json.load(data)
             TEST_INFO = test_data["infos"]

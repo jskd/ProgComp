@@ -6,6 +6,7 @@
 
 {% block body %}
   {% for log in group_history %}
+  <a href="/statistics/detail_list/?sha={{ log[0] }}&group={{ log[2] }}">
     <div class="inline_group_logs">
 
       {% if log[3] == log[4] %}
@@ -14,7 +15,7 @@
         <ul class="ul_result_fail">
       {% endif %}
 
-        <li><p><a href="">{{log[0][-8:]}}</a></p></li>
+        <li><p>{{log[0][-8:]}}</p></li>
         <li><p>{{ log[1] }}</p></li>
         <li><p><b>{{ log[2] }}</b></p></li>
         <li>
@@ -23,15 +24,16 @@
 
             {% if log[3] == log[4] %}
               <p>[PASS]</p>
-              <a class='result_icon_pass' href='' alt='Result' title='Result'></a>
+              <span class='result_icon_pass'></span>
             {% else %}
               <p>[FAIL]</p>
-              <a class='result_icon_fail' href='' alt='Result' title='Result'></a>
+              <span class='result_icon_fail'></span>
             {% endif %}
 
           </div>
         </li>
       </ul>
     </div>
+  </a>
   {% endfor %}
 {% endblock %}
