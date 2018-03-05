@@ -7,35 +7,22 @@ use cell;
 // mod treatment;
 
 
-pub const BUFF_SIZE: usize = 500;
+pub const BUFF_SIZE: usize = 16000;
 
-///count bytes by lines, & get all formula in formula tab
-pub fn read_first_time(path: &str, bytes_by_lines: &mut Vec<usize>, formulas: &mut Vec<cell::Formula>)
+///count bytes by lines, & get all formula in formula tab rmove counting
+pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 {
 	let file = File::open(path).expect("fail to open");
 	let mut buff = Vec::with_capacity(BUFF_SIZE);
 	let mut reader = std::io::BufReader::new(file);
-	let mut num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
-	bytes_by_lines.push(num_bytes);
-	let mut tmp:usize;
-	while num_bytes!=0 //Buffer not empty
+	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
+	while num_bytes!=0 //Buffer not empty0
 	{
+
 		let mut index:usize = 0;
 		while has_formula(&buff){ //If buffer still got a formula
 			let mut formula: Vec<u8> = Vec::new();
-			let flag:bool;
-			 match buff.get(index..){ //handling buffer's bounds
-				Some(_) => //if buffer has formula
-				{	
-					flag = true;
-				},
-			None => flag = false,	//if buffer has no more formula
-			}
-			if flag // has formula do
-			{
-				buff = (buff[index..]).to_vec();
-				index = buff.iter().position(|&eq| eq == b'=').unwrap();
-				
+			formula.push(b'=');
 				for byte in &buff{
 					if byte == (&b';')
 					{
@@ -46,22 +33,25 @@ pub fn read_first_time(path: &str, bytes_by_lines: &mut Vec<usize>, formulas: &m
 						formula.push(*byte);
 					}
 				}
-				index+=formula.len();
-				println!("{}", String::from_utf8(formula).unwrap())
-				//formulas.push(create_formula(String::from_utf8(formula).unwrap()));
-			}
-			else  //has no more formula do 
-			{
-				break;
-			}
+			formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 		}
-		num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
-		tmp = bytes_by_lines.pop().unwrap();
-		bytes_by_lines.push(tmp);  		
-		bytes_by_lines.push(tmp + num_bytes);
+		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
 	}
 }
 
+
+pub fn check_bounds(buff: &Vec<u8>, index: usize) -> bool
+{
+	match buff.get(index..){
+		Some(buff_ok) => {
+			match buff.iter().position(|&eq| eq == b'='){
+				Some(iter_ok) => true,
+				None => false,
+			}
+		},
+		None => false,
+	}
+}
 pub fn has_formula(line: &Vec<u8>) -> bool
 {
  line.contains(&b'=')

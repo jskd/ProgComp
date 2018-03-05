@@ -5,6 +5,8 @@ from os.path import isfile, join
 from termcolor import colored
 
 class ThreadExec(threading.Thread):
+    """ ThreadExec execute one instance of test with arguments. """
+
     def __init__(self, test_info, test_file, executable, args, target, test_report):
         threading.Thread.__init__(self)
         self.test_info = test_info

@@ -160,14 +160,15 @@ func Evaluate(bin_repo string) int {
 //Pre-process Csv file to value-position binary files.
 //Return a directory where value-position binary files are stored
 func FromFile(filename string, sep rune) string {
-	//	file, err := os.Open(filename)
-	//	if err != nil {
-	//		panic(err)
-	//	}
 	src_name := filepath.Base(filename)
 	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir)
+	//1st implementation to process CSV with Go CSV lib.
+	//	file, err := os.Open(filename)
+	//	if err != nil {
+	//		panic(err)
+	//	}
 	//	csvReader := csv.NewReader(file)
 	//	csvReader.Comma = sep
 	//	csvReader.FieldsPerRecord = -1
@@ -179,19 +180,20 @@ func FromFile(filename string, sep rune) string {
 	//		processOneLineOfCsv(bin_dir, l, sep, pos_x)
 	//		fmt.Printf("Processing %d\n", len(l))
 	//	}
+	//2nd implementation to process CSV with customized parser.
 	csvParser := parse.NewCsvParser(filename, sep, '"')
 	for {
 		str, x, y, err := csvParser.ReadOneCell()
+		//fmt.Printf("%d,%d: '%s'\n", x, y, str)
 		if err == io.EOF {
 			break
 		}
-		processOneCellToBin(bin_dir, str, x, y)
-
+		saveOneCellToBin(bin_dir, str, x, y)
 	}
 	return bin_dir
 }
 
-func processOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) {
+func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) {
 	if strings.HasPrefix(txt, "=") {
 		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
 		bf.WritePair(pos_x, pos_y)
@@ -204,7 +206,7 @@ func processOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32)
 func processOneLineOfCsv(bin_dir string, line []string, sep rune, pos_x int) {
 	for pos_y, element := range line {
 		txt := strings.TrimSpace(element)
-		processOneCellToBin(bin_dir, txt, uint32(pos_x), uint32(pos_y))
+		saveOneCellToBin(bin_dir, txt, uint32(pos_x), uint32(pos_y))
 		pos_y += 1
 	}
 }
@@ -286,4 +288,42 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	viewBefore [][]int) map[*Command][]Change {
 	res := make(map[*Command][]Change)
 	return res
+}
+
+func Intersect(path string, formulaName string)(int){
+	form := strings.Split(formulaName, "_")
+	x1,err:=strconv.Atoi(form[0])
+	x2,err:=strconv.Atoi(form[1])
+	y1,err:=strconv.Atoi(form[2])
+	y2,err:=strconv.Atoi(form[3])
+	valToCount := form[4]
+	binFile := parse.NewBinFile(string("../../dataset/bin/"+valToCount))
+	tab, err := binFile.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+	count := 0
+	for i := 0; i<len(tab); i++ {
+		x := int(tab[i])
+		i++
+		y := int(tab[i])
+		if(x<x1 && x>x2){
+			if(y<y1 && y<y2){
+				count++
+			}
+		}
+	}
+	formule := parse.NewBinFile(path+""+formulaName)
+	tab,err = formule.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+	parse.NewBinFile(string("../../dataset/bin/"+string(count)))
+	for i := 0; i<len(tab); i++ {
+		x := tab[i]
+		i++
+		y := tab[i]
+		binFile.WritePair(x,y)
+	}
+	return  count
 }

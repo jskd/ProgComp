@@ -1,6 +1,7 @@
 package parse
 
 import (
+	"bufio"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -93,11 +94,38 @@ func NewBinFile(file_path string) *BinFile {
 	return &bin
 }
 
-func (b *BinFile) WritePair(x uint32, y uint32) {
+func (b *BinFile) WritePair(x uint32, y uint32) error {
 	b.mut.Lock() //Ensure that we write x first then y
 	defer b.mut.Unlock()
-	b.Write(x)
-	b.Write(y)
+	f, err_of := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	if err_of != nil {
+		log.Fatal(err_of)
+		return nil
+	}
+	defer f.Close()
+	bsx := make([]byte, 4)
+	binary.BigEndian.PutUint32(bsx, x)
+	bsy := make([]byte, 4)
+	binary.BigEndian.PutUint32(bsy, y)
+	bw := bufio.NewWriter(f)
+	_, err := bw.Write(bsx)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	_, err = bw.Write(bsy)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	//fmt.Printf("Write %d bytes to file: %x\n", nbWritten, bs)
+	err = bw.Flush()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return nil
 }
 
 //TODO: Synchronize write
@@ -110,14 +138,15 @@ func (b *BinFile) Write(v uint32) error {
 	defer f.Close()
 	bs := make([]byte, 4)
 	binary.BigEndian.PutUint32(bs, v)
-	_, err := f.Write(bs)
+	bw := bufio.NewWriter(f)
+	_, err := bw.Write(bs)
 	if err != nil {
 		log.Fatal(err)
 		return err
 	}
 
 	//fmt.Printf("Write %d bytes to file: %x\n", nbWritten, bs)
-	err = f.Sync()
+	err = bw.Flush()
 	if err != nil {
 		log.Fatal(err)
 		return err
