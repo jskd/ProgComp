@@ -50,7 +50,9 @@ func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
 			str = AppendRune(str, ru)
 		}
 	}
-	return string(str[:]), x, y, nil
+	out := string(str[:])
+	txt := strings.TrimSpace(out)
+	return txt, x, y, nil
 }
 
 func AppendRune(dest []byte, uc rune) []byte {

@@ -20,12 +20,12 @@ func TestCsvParser(t *testing.T) {
 	outPos := []uint32{}
 	exp := []string{}
 	exp = append(exp, "1")
-	exp = append(exp, " 0")
-	exp = append(exp, " 1")
+	exp = append(exp, "0")
+	exp = append(exp, "1")
 	exp = append(exp, "=#(0, 0, 0, 2, 1)")
 	exp = append(exp, "0")
-	exp = append(exp, " 1")
-	exp = append(exp, " 1")
+	exp = append(exp, "1")
+	exp = append(exp, "1")
 	exp = append(exp, "=#(0, 0, 1, 2, 1)")
 	out := []string{}
 	for {
@@ -52,11 +52,11 @@ func TestCsvParserWithQuote(t *testing.T) {
 	outPos := []uint32{}
 	exp := []string{}
 	exp = append(exp, "1")
-	exp = append(exp, " 0")
+	exp = append(exp, "0")
 	exp = append(exp, "=#(0, 0, 1, 1, 1)")
 	exp = append(exp, "=#(1, 0, 1, 0, 0)")
-	exp = append(exp, " 1")
-	exp = append(exp, " 0")
+	exp = append(exp, "1")
+	exp = append(exp, "0")
 	out := []string{}
 	for {
 		str, x, y, err := cp2.ReadOneCell()
