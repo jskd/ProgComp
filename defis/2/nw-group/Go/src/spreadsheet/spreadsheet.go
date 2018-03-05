@@ -292,10 +292,10 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 
 func Intersect(path string, formulaName string)(int){
 	form := strings.Split(formulaName, "_")
-	x1=form[0]
-	x2=form[1]
-	y1=form[2]
-	y2=form[3]
+	x1,err:=strconv.Atoi(form[0])
+	x2,err:=strconv.Atoi(form[1])
+	y1,err:=strconv.Atoi(form[2])
+	y2,err:=strconv.Atoi(form[3])
 	valToCount := form[4]
 	binFile := parse.NewBinFile(string("../../dataset/bin/"+valToCount))
 	tab, err := binFile.ReadAll()
