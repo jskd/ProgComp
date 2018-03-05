@@ -15,17 +15,14 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 	let file = File::open(path).expect("fail to open");
 	let mut buff = Vec::with_capacity(BUFF_SIZE);
 	let mut reader = std::io::BufReader::new(file);
-	let mut num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
-	while num_bytes!=0 //Buffer not empty
+	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
+	while num_bytes!=0 //Buffer not empty0
 	{
+
 		let mut index:usize = 0;
 		while has_formula(&buff){ //If buffer still got a formula
 			let mut formula: Vec<u8> = Vec::new();
-			if check_bounds(&buff, index) // has formula do
-			{
-				
-				index = buff.iter().position(|&eq| eq == b'=').unwrap();
-				buff = (buff[index..]).to_vec();
+			formula.push(b'=');
 				for byte in &buff{
 					if byte == (&b';')
 					{
@@ -36,25 +33,9 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 						formula.push(*byte);
 					}
 				}
-
-				index+=formula.len();
-				println!("{}", String::from_utf8(formula).unwrap());
-				if check_bounds(&buff, index)
-				{
-					buff = (buff[index..]).to_vec();
-				}
-				else{
-					break;
-				}
-				//println!("{}", String::from_utf8(formula).unwrap())
-				//formulas.push(create_formula(String::from_utf8(formula).unwrap()));
-			}
-			else  //has no more formula do 
-			{
-				break;
-			}
+			formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 		}
-		num_bytes = reader.read_until(b'\n',&mut buff).expect("counting bytes in lines");
+		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
 	}
 }
 
