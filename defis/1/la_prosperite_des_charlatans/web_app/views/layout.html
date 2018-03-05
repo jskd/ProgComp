@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="/content/styles/pure-min.css"/>
     <link rel="stylesheet" type="text/css" href="/content/styles/site.css"/>
     <title>PyTesting</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -55,6 +56,10 @@
     </article>
 
   </section>
+
+  <script>
+    $("header").css("background-image", "url(/content/img/jungle-" + Math.floor(Math.random()*3) + ".jpg)");
+  </script>
 
 </body>
 </html>

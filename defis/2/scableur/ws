@@ -1,0 +1,16 @@
+#!/bin/bash
+
+if [ "$1" == "-test" ]; then 
+
+	if [ "$2" == "1" ]; then 
+
+		spark-submit target/scala-2.11/test_spark_2.11-0.1.jar ressources/test.csv
+		exit 0;
+	fi
+
+	echo "No test was selected"
+else
+#TODO
+echo "should run project in docker"
+fi
+

@@ -2,6 +2,7 @@ package share
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -36,4 +37,8 @@ func AssertArrayEqual(t *testing.T, input [][]string, expected [][]string, messa
 		}
 	}
 	t.Fatal(message)
+}
+
+func AddPathSeparator(s string) string {
+	return s + fmt.Sprintf("%c", os.PathSeparator)
 }

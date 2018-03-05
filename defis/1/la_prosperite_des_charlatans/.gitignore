@@ -8,3 +8,9 @@ tests/*/output/*.txt
 tests/*/output/*.csv
 database.csv
 web_app/site.conf
+tests/big_mama/input/bigmama_10.csv
+tests/big_mama/input/bigmama_100.csv
+tests/big_mama/input/bigmama_1000.csv
+tests/big_mama/input/bigmama_10000.csv
+web_app/content/graph_dataset
+web_app/content/graph_render

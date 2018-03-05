@@ -7,3 +7,6 @@ test:
 
 webapp:
 	${PY} web_app/Run.py
+
+info:
+	find ./ -type f -iname \*.py -o -type f -iname \*.css -o -type f -iname \*.html -o -type f -iname \*.json | xargs wc -l

@@ -3,7 +3,6 @@ package parse
 import (
 	"bufio"
 	"encoding/csv"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -17,19 +16,17 @@ type CsvParser struct {
 	quote     rune
 	current_x uint32
 	current_y uint32
-	reader    bufio.Reader
+	reader    *bufio.Reader
 }
 
 func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
-	delim := uint8('\n')
 	str_length := 0
 	x := uint32(0)
 	y := uint32(0)
-	isQuoteMode := false
+	//isQuoteMode := false
 	var str []byte
 	for {
-		var ru, size, err = r.reader.ReadRune()
-		fmt.Printf("%s, %d, %s", string(ru), size, err)
+		var ru, _, err = r.reader.ReadRune()
 		if err == io.EOF {
 			return "", r.current_x, r.current_y, err
 		}
@@ -48,9 +45,8 @@ func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
 			r.current_y = 0
 			break
 		} else {
-			AppendRune(str, ru)
+			str = AppendRune(str, ru)
 		}
-
 	}
 	return string(str[:]), x, y, nil
 }
@@ -109,7 +105,17 @@ func ReadCsv(fileToRead string, sep rune) [][]string {
 	return res
 }
 
-func WriteCsv(filename string, data []string, sep rune) {
+func WriteCsv(filename string, data [][]string, sep rune) {
+	file, err := os.Create(filename)
+	checkError(err)
+	csvWriter := csv.NewWriter(file)
+	csvWriter.Comma = sep
+	err = csvWriter.WriteAll(data)
+	checkError(err)
+	//TODO: Close file?
+}
+
+func WriteOneLineCsv(filename string, data []string, sep rune) {
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 	if os.IsNotExist(err) {
 		file, err = os.Create(filename)
@@ -117,9 +123,7 @@ func WriteCsv(filename string, data []string, sep rune) {
 	checkError(err)
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Comma = sep
-	csvWriter.UseCRLF = false
 	err = csvWriter.Write(data)
-	b := []string{"\n"}
-	err = csvWriter.Write(b)
 	checkError(err)
+	csvWriter.Flush()
 }

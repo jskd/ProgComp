@@ -64,7 +64,7 @@ class StatisticsController(BaseController):
         qry = "SELECT * \
             FROM logs \
             WHERE sha = '{}' AND name_group = '{}' \
-            ORDER BY date_test".format(sha, group)
+            ORDER BY date_test DESC".format(sha, group)
 
         test_list = self.executeQuery(qry)
 

@@ -5,28 +5,25 @@ from os.path import isfile, join
 from termcolor import colored
 
 class ThreadExec(threading.Thread):
-    def __init__(self, test_path, target, test_report=None):
+    def __init__(self, test_info, test_file, executable, args, target, test_report):
         threading.Thread.__init__(self)
-        self.test_path = test_path
+        self.test_info = test_info
+        self.test_file = test_file
+        self.executable = executable
+        self.args = args
         self.target = target
         self.test_report = test_report
         self.out = ["False", ""]
         self.result = "FAIL"
         self.execution_time = 0.0
 
-        self.TEST_INFO = self.getTestInfos(test_path)
-        self.EXEC = self.TEST_INFO["exec"][0]
-        self.TEST_FILE = join(test_path, self.TEST_INFO["exec"][1])
-
-        self.createDirOutput(test_path)
-
     def run(self):
-
         try:
-            self.out = self.executeTest(self.EXEC, self.TEST_FILE, self.target)
+            self.out = self.executeTest(self.executable, self.args, self.test_file, self.target)
             self.out = self.out.split("#")
+
         except Exception as e:
-            pass
+            print(e)
 
         self.result = "PASS" if self.out[0] == "True" else "FAIL"
 
@@ -35,9 +32,13 @@ class ThreadExec(threading.Thread):
             self.printResult()
 
 
-    def executeTest(self, executable, test_file, target):
+    def executeTest(self, executable, args, test_file, target):
         try:
-            cmd = [executable, test_file, target["path"]]
+            if args != '':
+                cmd = [executable, test_file, target["path"], args]
+            else:
+                cmd = [executable, test_file, target["path"]]
+
             begin = time.time()
             out = Popen(cmd, stdout=PIPE).communicate()[0].decode("utf-8")
             self.execution_time = time.time() - begin
@@ -45,19 +46,8 @@ class ThreadExec(threading.Thread):
             out = "False"
         return out.strip("\n")
 
-    def getTestInfos(self, test_path):
-        with open(join(test_path, "infos.json")) as data:
-            test_data = json.load(data)
-            TEST_INFO = test_data["infos"]
-        return TEST_INFO
-
-
-    def createDirOutput(self, test_path):
-        output_path = test_path + "output/"
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)
 
     def printResult(self):
         seconds = self.execution_time
 
-        print(colored(" [{}] {:<8} : {} ".format(self.result, "{:0.3f}s".format(seconds) , self.TEST_INFO["name"]), 'green' if self.out[0] == "True" else 'red'))
+        print(colored(" [{}] {:<8} : {} ".format(self.result, "{:0.3f}s".format(seconds) , self.test_info["name"]), 'green' if self.out[0] == "True" else 'red'))

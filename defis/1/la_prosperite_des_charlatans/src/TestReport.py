@@ -37,7 +37,7 @@ class TestReport():
 
     def addLog(self, threadExec):
         log = {
-            "test_info" : threadExec.TEST_INFO,
+            "test_info" : threadExec.test_info,
             "result" : threadExec.result,
             "output" : threadExec.out[1] if len(threadExec.out) > 1 else "",
             "exec_time" : threadExec.execution_time,

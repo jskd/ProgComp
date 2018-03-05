@@ -2,18 +2,19 @@ package parse
 
 import (
 	"fmt"
+	"io"
 	"share"
 	"testing"
 )
 
 func TestCsvParser(t *testing.T) {
-	cp := NewCsvParser("../../dataset/data.csv", ';', '"', r)
+	cp := NewCsvParser("../../dataset/data.csv", ';', '"')
 	for {
 		str, x, y, err := cp.ReadOneCell()
 		if err == io.EOF {
 			break
 		}
-		fmt.Println(str)
+		fmt.Printf("(%d, %d)=%s\n", x, y, str)
 	}
 }
 
