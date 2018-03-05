@@ -23,7 +23,7 @@ func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
 	str_length := 0
 	x := uint32(0)
 	y := uint32(0)
-	//isQuoteMode := false
+	isQuoteMode := false
 	var str []byte
 	for {
 		var ru, _, err = r.reader.ReadRune()
@@ -37,7 +37,9 @@ func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
 		x = r.current_x
 		y = r.current_y
 		str_length += 1
-		if ru == r.delimiter {
+		if ru == r.quote {
+			isQuoteMode = !isQuoteMode
+		} else if ru == r.delimiter && !isQuoteMode {
 			r.current_y += 1
 			break
 		} else if ru == '\n' {
