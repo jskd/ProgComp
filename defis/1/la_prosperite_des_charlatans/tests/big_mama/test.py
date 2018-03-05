@@ -26,6 +26,7 @@ if __name__ == "__main__":
         with open(test_path + INFOS_PATH, 'r') as data:
             test_data = json.load(data)
             test_info = test_data["infos"]
+            test_timeout = int(test_info["timeout"])
 
         # BEGIN OF SCRIPT
         test_result = True
@@ -48,8 +49,11 @@ if __name__ == "__main__":
 
             intput_file = "input/bigmama_{}.csv".format(size_bigmama)
 
+            if not os.path.isfile(test_path + intput_file):
+                raise Exception("{} doesn't exists.".format(intput_file))
+
             cmd = [group_path + EXEC_PATH, test_path + intput_file, test_path + "input/user.txt", view0_output, changes_output]
-            out = check_output(cmd, stderr=STDOUT, timeout=10).decode("utf-8")
+            out = check_output(cmd, stderr=STDOUT, timeout=test_timeout).decode("utf-8")
 
         except Exception as e:
             out = str(e)
