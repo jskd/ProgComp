@@ -5,10 +5,10 @@ use utilities;
 use cell;
 
 ///Opens the file f and returns its content as a String.
-pub fn read_file(f: &str, bytes_by_lines: &mut Vec<usize>, formulas : &mut Vec<cell::Formula>) 
+pub fn read_file(f: &str, formulas : &mut Vec<cell::Formula>) 
 {   
 
-    utilities::read_first_time(f, bytes_by_lines, formulas);
+    utilities::read_first_time(f, formulas);
 /*    let mut file = File::open(f).expect("Error Opening data.csv");
     let mut data = String::new();
     file.read_to_string(&mut data).expect("Error reading file data.csv");
