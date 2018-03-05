@@ -25,15 +25,15 @@ Entrées:
 
 - un fichier user.txt qui contient sur chaque ligne une commande de la forme:
 
-  r c d
+  t: r c d
 
   où "r" et "c" sont des entiers et "d" est soit une valeur du type (a) ou (b)
   précédent. Seules les coordonnées absolues de la zone d'interaction peuvent
-  apparaître ici.
+  apparaître ici. "t" est un temps en millisecondes.
 
   *OU* de la forme suivante:
 
-  ! r1 c1 r2 c2
+  t: ! r1 c1 r2 c2
 
   où sont des entiers qui définissent un rectangle dans la feuille,
   appelé zone d'interaction. Les commandes de la première forme qui
@@ -50,15 +50,13 @@ Sorties:
   Ce fichier contiendra uniquement les cellules du rectangle défini par (r1, c1)
   et (r2, c2).
 
-- un fichier changes.txt de la forme:
-  after "r c d":
+- un fichier changes.txt formés de lignes de la forme:
   r0 c0 v0 t0
   r1 c1 v1 t1
   ...
   rN cN vN tN
 
-  pour chaque ligne "r c d" du fichier "user.txt" initial
-  et tel que "rI cI vI" indique qu'après l'exécution de la commande "r c d"
+  telles que "rI cI vI" indique qu'après l'exécution de la commande "r c d"
   la valeur de la cellule à la rI-ième ligne et la cI-ième colonne vaut
   l'entier vI et que cette mise à jour a été effectuée au temps tI (exprimé
   en millisecondes).
