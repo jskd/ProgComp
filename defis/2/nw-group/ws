@@ -1,7 +1,5 @@
 #!/bin/sh
 
-container=nw_ws
-
 exported_name() {
     printf "%s" /tmp/$(basename $1)
 }
@@ -19,15 +17,15 @@ import_files() {
     for file in $@; do
         local exported_file=$(exported_name $file)
 
-        docker exec $container test -e $exported_file &&        \
-            docker cp $container:$exported_file $file
+        docker exec $CONTAINER test -e $exported_file &&        \
+            docker cp $CONTAINER:$exported_file $file
     done
 }
 
 export_files() {
     for file in $@; do
         if [ -e $file ]; then
-            docker cp $file $container:$(exported_name $file)
+            docker cp $file $CONTAINER:$(exported_name $file)
         fi
     done
 }
@@ -37,13 +35,13 @@ quiet() {
 }
 
 main() {
-    $(quiet docker run -td --name=$container nw-group/ws)
+    CONTAINER=$(docker run -td nw-group/ws)
     export_files $@
-    docker exec $container Go/main.exe $(exported_names $@)
+    docker exec $CONTAINER Go/main.exe $(exported_names $@)
     status=$?
     import_files $3 $4
-    $(quiet docker stop $container)
-    $(quiet docker rm $container)
+    $(quiet docker stop $CONTAINER)
+    $(quiet docker rm $CONTAINER)
     return $status
 }
 

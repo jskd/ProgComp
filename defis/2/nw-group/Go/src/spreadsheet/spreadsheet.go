@@ -2,10 +2,13 @@ package spreadsheet
 
 import (
 	"bufio"
+	//"encoding/csv"
 	"fmt"
+	"io"
 	"os"
 	"parse"
 	"path/filepath"
+	"share"
 	"strconv"
 	"strings"
 )
@@ -157,39 +160,52 @@ func Evaluate(bin_repo string) int {
 //Pre-process Csv file to value-position binary files.
 //Return a directory where value-position binary files are stored
 func FromFile(filename string, sep rune) string {
-	file, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
+	//	file, err := os.Open(filename)
+	//	if err != nil {
+	//		panic(err)
+	//	}
 	src_name := filepath.Base(filename)
-	bin_dir := os.TempDir() + src_name + "/bin"
+	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir)
-	scanner := bufio.NewScanner(file)
-	pos_x := 0
-	for scanner.Scan() {
-		processOneLineOfCsv(bin_dir, scanner.Text(), sep, pos_x)
-		pos_x += 1
+	//	csvReader := csv.NewReader(file)
+	//	csvReader.Comma = sep
+	//	csvReader.FieldsPerRecord = -1
+	//	csvReader.TrimLeadingSpace = true
+	//	err = nil
+	//	for pos_x := 0; err != io.EOF; pos_x += 1 {
+	//		var l []string
+	//		l, err = csvReader.Read()
+	//		processOneLineOfCsv(bin_dir, l, sep, pos_x)
+	//		fmt.Printf("Processing %d\n", len(l))
+	//	}
+	csvParser := parse.NewCsvParser(filename, sep, '"')
+	for {
+		str, x, y, err := csvParser.ReadOneCell()
+		if err == io.EOF {
+			break
+		}
+		processOneCellToBin(bin_dir, str, x, y)
+
 	}
 	return bin_dir
 }
 
-func processOneLineOfCsv(bin_dir string, line string, sep rune, pos_x int) {
-	data := parse.ReadOneLineCsv(line, sep)
-	fmt.Println("Line: " + line)
-	if len(data) != 1 {
-		fmt.Println("Given line of Csv contains break-line but only first line of array will be processed.")
+func processOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) {
+	if strings.HasPrefix(txt, "=") {
+		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
+		bf.WritePair(pos_x, pos_y)
+	} else {
+		bf := parse.NewBinFile(bin_dir + "/" + txt)
+		bf.WritePair(pos_x, pos_y)
 	}
-	for pos_y, element := range data[0] {
+}
+
+func processOneLineOfCsv(bin_dir string, line []string, sep rune, pos_x int) {
+	for pos_y, element := range line {
 		txt := strings.TrimSpace(element)
-		fmt.Println("Element: " + txt)
-		if strings.HasPrefix(txt, "=") {
-			bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
-			bf.WritePair(uint32(pos_x), uint32(pos_y))
-		} else {
-			bf := parse.NewBinFile(bin_dir + "/" + txt)
-			bf.WritePair(uint32(pos_x), uint32(pos_y))
-		}
+		processOneCellToBin(bin_dir, txt, uint32(pos_x), uint32(pos_y))
+		pos_y += 1
 	}
 }
 

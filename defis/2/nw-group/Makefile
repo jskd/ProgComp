@@ -2,9 +2,14 @@ SHELL = /bin/sh
 
 DOCKER = docker
 
-.PHONY: all build-docker-img
+IMG = nw-group/ws
+
+.PHONY: all build-docker-img mrproper
 
 all: build-docker-img
 
 build-docker-img:
-	$(DOCKER) build -t nw-group/ws .
+	$(DOCKER) build -t $(IMG) .
+
+mrproper:
+	$(DOCKER) rmi -f $(IMG) 2> /dev/null

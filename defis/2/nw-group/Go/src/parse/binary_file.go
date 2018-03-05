@@ -90,7 +90,6 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 func NewBinFile(file_path string) *BinFile {
 	createFileIfNotexists(file_path)
 	bin := BinFile{[]uint32{}, file_path, sync.Mutex{}}
-	bin.ReadAll()
 	return &bin
 }
 

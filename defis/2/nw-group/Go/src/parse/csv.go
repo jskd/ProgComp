@@ -1,11 +1,74 @@
 package parse
 
 import (
+	"bufio"
 	"encoding/csv"
+	"io"
 	"os"
 	"strconv"
 	"strings"
+	"testing/iotest"
+	"unicode/utf8"
 )
+
+type CsvParser struct {
+	delimiter rune
+	quote     rune
+	current_x uint32
+	current_y uint32
+	reader    *bufio.Reader
+}
+
+func (r *CsvParser) ReadOneCell() (string, uint32, uint32, error) {
+	str_length := 0
+	x := uint32(0)
+	y := uint32(0)
+	isQuoteMode := false
+	var str []byte
+	for {
+		var ru, _, err = r.reader.ReadRune()
+		if err == io.EOF {
+			return "", r.current_x, r.current_y, err
+		}
+
+		if err != nil && err != iotest.ErrTimeout {
+			panic(err)
+		}
+		x = r.current_x
+		y = r.current_y
+		str_length += 1
+		if ru == r.quote {
+			isQuoteMode = !isQuoteMode
+		} else if ru == r.delimiter && !isQuoteMode {
+			r.current_y += 1
+			break
+		} else if ru == '\n' {
+			r.current_x += 1
+			r.current_y = 0
+			break
+		} else {
+			str = AppendRune(str, ru)
+		}
+	}
+	out := string(str[:])
+	txt := strings.TrimSpace(out)
+	return txt, x, y, nil
+}
+
+func AppendRune(dest []byte, uc rune) []byte {
+	var buff [utf8.UTFMax]byte
+	n := utf8.EncodeRune(buff[:], uc)
+	return append(dest, buff[:n]...)
+}
+
+func NewCsvParser(filename string, delimiter rune, quote rune) *CsvParser {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+	reader := bufio.NewReader(file)
+	return &CsvParser{delimiter, quote, uint32(0), uint32(0), reader}
+}
 
 func checkError(err error) {
 	if err != nil {
@@ -46,7 +109,17 @@ func ReadCsv(fileToRead string, sep rune) [][]string {
 	return res
 }
 
-func WriteCsv(filename string, data []string, sep rune) {
+func WriteCsv(filename string, data [][]string, sep rune) {
+	file, err := os.Create(filename)
+	checkError(err)
+	csvWriter := csv.NewWriter(file)
+	csvWriter.Comma = sep
+	err = csvWriter.WriteAll(data)
+	checkError(err)
+	//TODO: Close file?
+}
+
+func WriteOneLineCsv(filename string, data []string, sep rune) {
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 	if os.IsNotExist(err) {
 		file, err = os.Create(filename)
@@ -54,9 +127,7 @@ func WriteCsv(filename string, data []string, sep rune) {
 	checkError(err)
 	csvWriter := csv.NewWriter(file)
 	csvWriter.Comma = sep
-	csvWriter.UseCRLF = false
 	err = csvWriter.Write(data)
-	b := []string{"\n"}
-	err = csvWriter.Write(b)
 	checkError(err)
+	csvWriter.Flush()
 }
