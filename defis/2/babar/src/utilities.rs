@@ -17,7 +17,7 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 	let mut reader = std::io::BufReader::new(file);
 	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
 	buff.clear();
-	num_bytes=reader.read_until(b';',&mut buff).expect("read formula");
+	num_bytes=reader.read_until(b')',&mut buff).expect("read formula");
 	while num_bytes!=0 //Buffer not empty0
 	{
 		let mut formula: Vec<u8> = Vec::new();
@@ -35,9 +35,7 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 		formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
 		buff.clear();
-		num_bytes = reader.read_until(b';',&mut buff).expect("read file");
-		
-
+		num_bytes = reader.read_until(b')',&mut buff).expect("read file");
 	}
 }
 
