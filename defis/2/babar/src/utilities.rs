@@ -2,6 +2,7 @@ use std;
 use std::io::{ BufRead};
 use std::fs::File;
 use std::str;
+use std::thread;
 // mod parser;
 use cell;
 // mod treatment;
@@ -32,7 +33,17 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 					formula.push(*byte);
 				}
 			}
-		formulas.push(create_formula(String::from_utf8(formula).unwrap()));
+		/*Ca marche mais c'est pas bon*/
+		let thread = thread::spawn(move ||
+		{create_formula(String::from_utf8(formula).unwrap())});
+		let res=thread.join();
+		match res {
+			Ok(f) => {
+				formulas.push(f);
+			},
+			Err(e) => panic!("thread child return None")
+			// add code here
+		}
 		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
 		buff.clear();
 		num_bytes = reader.read_until(b')',&mut buff).expect("read file");
