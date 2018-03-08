@@ -1,16 +1,16 @@
 * Version 1 - Scableur
 
-* Compilation
-$ make
+* Compilation Native
+$ make native
 
 * Run
-./ws data.csv user.txt view0.csv changes.txt
+$ ./run.sh data.csv user.txt view0.csv changes.txt
 
-* Run Internal Tests
-./ws test
+* Build docker image 
+$ make
 
-* Generate Docker Files
-
+* Run in docker 
+$ ./ws data.csv user.txt view0.csv changes.txt
 
 * Dependencies
 ** scala-csv : https://github.com/tototoshi/scala-csv
