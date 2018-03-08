@@ -1,32 +1,24 @@
 CC=sbt
 LANG=scala
-JAVA=java
+DOCKER=docker
+
+IMG="scableur-img"
+
+.PHONY: compile package mrproper clean build-img
 
 
-all: package
+all: build-img
 
-compile: ENV_VERIFICATION
+native : package 
+
+compile:
 	$(CC) compile
 
-package: ENV_VERIFICATION
+package:
 	$(CC) assembly
 
-docker: ENV_VERIFICATION
-    $(CC) docker:publishLocal
-
-ENV_VERIFICATION:
-
-ifeq (, $(shell which $(JAVA)))
-	$(error "Java not found : apt-get install java")
-endif
-
-ifeq (, $(shell which $(LANG)))
-	$(error "Scala not found : apt-get install scala")
-endif
-
-ifeq (, $(shell which $(CC)))
-	$(error "SBT not found : apt-get install sbt")
-endif
+build-img:
+	$(DOCKER) build -t $(IMG) .
 
 clean:
 	rm -rf target
@@ -36,4 +28,3 @@ clean:
 mrproper: clean
 	rm -rf out/
 
-.PHONY: compile package mrproper clean ENV_VERIFICATION

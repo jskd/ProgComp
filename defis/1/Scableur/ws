@@ -1,7 +1,39 @@
 #!/bin/sh
 
-if [ -f "out/Scableur.jar" ] ; then
-	java -jar out/Scableur.jar $@
-else
-	echo "Sources not found.\nRun make command to compile program."
+if [ $# -eq 4 ] ; then
+	# Entrypoint
+	RUN="/scableur/run.sh"
+
+	# Start container
+	CONTAINER=$(docker run -it -d "scableur-img" /bin/sh)
+
+	# Format filenames
+	DATA=$(basename "$1")
+	USERS=$(basename "$2")
+	VIEW0=$(basename "$3")
+	CHANGES=$(basename "$4")
+	D_DATA="/scableur/resources/input/$DATA"
+	D_USERS="/scableur/resources/input/$USERS"
+	D_VIEW0="/scableur/resources/output/$VIEW0"
+	D_CHANGES="/scableur/resources/output/$CHANGES"
+
+	# Copy input arguments
+	docker cp $1 $CONTAINER:"$D_DATA"
+	docker cp $1 $CONTAINER:"$D_USERS"
+
+	# Run application
+	docker exec $CONTAINER sh -c "$RUN $D_DATA $D_USERS $D_VIEW0 $D_CHANGES"
+
+	# Copy results
+	docker cp $CONTAINER:"$D_VIEW0" $3
+	docker cp $CONTAINER:"$D_CHANGES" $4
+
+	# Stop docker
+	docker stop $CONTAINER
+	docker rm $CONTAINER
+
+	#docker cp $IMG:resources/output/$VIEW0 $3
+	#docker cp $IMG:resources/output/$DATATXT $4
+else 
+	echo "sh: use: ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>"
 fi
