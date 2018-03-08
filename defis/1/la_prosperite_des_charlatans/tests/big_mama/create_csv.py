@@ -11,9 +11,9 @@ if len(sys.argv) != 2 or not sys.argv[1].isdigit():
 	print("The arg1 must be a int")
 	exit(0)
 
-file_name = "big_mama" + sys.argv[1] + "M.csv"
+file_name = "bigmama_{}.csv".format(sys.argv[1])
 total_lines = int(int(sys.argv[1])*1024*1024/3590)
-#return a int between a and b 
+#return a int between a and b
 def between(a,b):
 	return random.randint(a,b)
 
