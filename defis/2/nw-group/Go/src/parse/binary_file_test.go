@@ -6,12 +6,14 @@ import (
 )
 
 func TestBinaryReadWriteDelete(t *testing.T) {
-	bf := NewBinFile("../../dataset/bin/test")
+	bf := newBinaryFile("../../dataset/bin/test")
 	bf.WritePair(0, 1)
 	bf.WritePair(2, 3)
+	share.AssertEqual(t, bf.Close(), nil, "Unable to close file.")
 
 	bf = NewBinFile("../../dataset/bin/test")
 	arr, err := bf.ReadAll()
+	share.AssertEqual(t, bf.Close(), nil, "Unable to close file.")
 	exp := []uint32{}
 	exp = append(exp, 0)
 	exp = append(exp, 1)
@@ -22,4 +24,8 @@ func TestBinaryReadWriteDelete(t *testing.T) {
 	share.AssertEqual(t, bf.Delete(), nil, "Unable to delete file.")
 	share.AssertEqual(t, err, nil, "Some error happened while reading file.")
 	share.AssertEqual(t, arr, exp, "Incorrect uint32 value.")
+}
+
+func TestBinFileMgr(t *testing.T) {
+
 }

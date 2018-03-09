@@ -11,12 +11,68 @@ import (
 	"sync"
 )
 
+//Singleton implementation BinFileManager in go with var
+var (
+	mgr  *BinFileMgr
+	once sync.Once
+)
+
+func BinFileManager() *BinFileMgr {
+	once.Do(func() {
+		mgr = newBinFileMgr()
+	})
+	return mgr
+}
+
 //Note about how struct will be stored in binary
 //https://stackoverflow.com/questions/2113751/sizeof-struct-in-go
 type BinFile struct {
-	data []uint32
-	file string
-	mut  sync.Mutex
+	data     []uint32
+	file     string
+	opened_f *os.File
+	mut      sync.Mutex
+}
+
+type BinFileMgr struct {
+	path2instance map[string]*BinFile
+	max_open_file int
+	count         int //Ensure to access this count with atomic.AddUint64(&var, 1) and atomic.LoadUint64(&var)
+	mut           sync.Mutex
+}
+
+//This function should not be directly accessable. Call singleton BinFileManager() instead
+func newBinFileMgr() *BinFileMgr {
+	dir2instance_map := make(map[string]*BinFile)
+	mgr := BinFileMgr{dir2instance_map, 100, 0, sync.Mutex{}}
+	fmt.Printf("BinFileMgr initialed: count=%d max_open_file=%d \n", mgr.count, mgr.max_open_file)
+	return &mgr
+}
+
+func (b *BinFileMgr) GetBinFile(file_path string) *BinFile {
+	bf := b.path2instance[file_path]
+	if bf == nil {
+		if b.count >= b.max_open_file {
+			b.SaveAndCloseAll()
+		}
+		b.mut.Lock()
+		defer b.mut.Unlock()
+		bf = newBinaryFile(file_path)
+		b.path2instance[file_path] = bf
+		b.count += 1
+	}
+	return bf
+}
+
+func (b *BinFileMgr) SaveAndCloseAll() error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	var err error
+	for key, value := range b.path2instance {
+		err = value.Close()
+		delete(b.path2instance, key)
+		b.count -= 1
+	}
+	return err
 }
 
 func PurgeAndRecreateDir(path string) {
@@ -59,6 +115,17 @@ func createFileIfNotexists(path string) {
 	}
 }
 
+func (b *BinFile) Close() error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	if b.opened_f != nil {
+		err := b.opened_f.Close()
+		b.opened_f = nil
+		return err
+	}
+	return nil
+}
+
 func (b *BinFile) ReadAll() ([]uint32, error) {
 	b.mut.Lock() //Ensure that no one is writing while reading
 	defer b.mut.Unlock()
@@ -67,9 +134,10 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 		panic(err)
 	}
 	defer f.Close()
+	br := bufio.NewReader(f)
 	for {
 		bytes := make([]byte, 4)
-		_, err := f.Read(bytes)
+		_, err := br.Read(bytes)
 		if err == io.EOF {
 			return b.data, nil
 		}
@@ -89,25 +157,28 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
    The directory of the given file_path will be created automatically.
 **/
 func NewBinFile(file_path string) *BinFile {
+	return BinFileManager().GetBinFile(file_path)
+}
+
+func newBinaryFile(file_path string) *BinFile {
 	createFileIfNotexists(file_path)
-	bin := BinFile{[]uint32{}, file_path, sync.Mutex{}}
+	f, err_of := os.OpenFile(file_path, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
+	if err_of != nil {
+		log.Fatal(err_of)
+		return nil
+	}
+	bin := BinFile{[]uint32{}, file_path, f, sync.Mutex{}}
 	return &bin
 }
 
 func (b *BinFile) WritePair(x uint32, y uint32) error {
 	b.mut.Lock() //Ensure that we write x first then y
 	defer b.mut.Unlock()
-	f, err_of := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
-	if err_of != nil {
-		log.Fatal(err_of)
-		return nil
-	}
-	defer f.Close()
 	bsx := make([]byte, 4)
 	binary.BigEndian.PutUint32(bsx, x)
 	bsy := make([]byte, 4)
 	binary.BigEndian.PutUint32(bsy, y)
-	bw := bufio.NewWriter(f)
+	bw := bufio.NewWriter(b.opened_f)
 	_, err := bw.Write(bsx)
 	if err != nil {
 		log.Fatal(err)
@@ -128,17 +199,12 @@ func (b *BinFile) WritePair(x uint32, y uint32) error {
 	return nil
 }
 
-//TODO: Synchronize write
 func (b *BinFile) Write(v uint32) error {
-	f, err_of := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDWR, 0644)
-	if err_of != nil {
-		log.Fatal(err_of)
-		return nil
-	}
-	defer f.Close()
+	b.mut.Lock()
+	defer b.mut.Unlock()
 	bs := make([]byte, 4)
 	binary.BigEndian.PutUint32(bs, v)
-	bw := bufio.NewWriter(f)
+	bw := bufio.NewWriter(b.opened_f)
 	_, err := bw.Write(bs)
 	if err != nil {
 		log.Fatal(err)
@@ -155,20 +221,24 @@ func (b *BinFile) Write(v uint32) error {
 }
 
 func (b *BinFile) Delete() error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
 	err := os.Remove(b.file)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("File %s deleted.\n", b.file)
+	log.Printf("File %s deleted.\n", b.file)
 	return nil
 }
 
 func (b *BinFile) Move(newPath string) error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
 	err := os.Rename(b.file, newPath)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("File %s renamed to %s.\n", b.file, newPath)
+	log.Printf("File %s renamed to %s.\n", b.file, newPath)
 	b.file = newPath
 	return nil
 }

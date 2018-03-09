@@ -190,6 +190,7 @@ func FromFile(filename string, sep rune) string {
 		}
 		saveOneCellToBin(bin_dir, str, x, y)
 	}
+	parse.BinFileManager().SaveAndCloseAll()
 	return bin_dir
 }
 
@@ -290,40 +291,40 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func Intersect(path string, formulaName string)(int){
+func Intersect(path string, formulaName string) int {
 	form := strings.Split(formulaName, "_")
-	x1,err:=strconv.Atoi(form[0])
-	x2,err:=strconv.Atoi(form[1])
-	y1,err:=strconv.Atoi(form[2])
-	y2,err:=strconv.Atoi(form[3])
+	x1, err := strconv.Atoi(form[0])
+	x2, err := strconv.Atoi(form[1])
+	y1, err := strconv.Atoi(form[2])
+	y2, err := strconv.Atoi(form[3])
 	valToCount := form[4]
-	binFile := parse.NewBinFile(string("../../dataset/bin/"+valToCount))
+	binFile := parse.NewBinFile(string("../../dataset/bin/" + valToCount))
 	tab, err := binFile.ReadAll()
 	if err != nil {
 		panic(err)
 	}
 	count := 0
-	for i := 0; i<len(tab); i++ {
+	for i := 0; i < len(tab); i++ {
 		x := int(tab[i])
 		i++
 		y := int(tab[i])
-		if(x<x1 && x>x2){
-			if(y<y1 && y<y2){
+		if x < x1 && x > x2 {
+			if y < y1 && y < y2 {
 				count++
 			}
 		}
 	}
-	formule := parse.NewBinFile(path+""+formulaName)
-	tab,err = formule.ReadAll()
+	formule := parse.NewBinFile(path + "" + formulaName)
+	tab, err = formule.ReadAll()
 	if err != nil {
 		panic(err)
 	}
-	parse.NewBinFile(string("../../dataset/bin/"+string(count)))
-	for i := 0; i<len(tab); i++ {
+	parse.NewBinFile(string("../../dataset/bin/" + string(count)))
+	for i := 0; i < len(tab); i++ {
 		x := tab[i]
 		i++
 		y := tab[i]
-		binFile.WritePair(x,y)
+		binFile.WritePair(x, y)
 	}
-	return  count
+	return count
 }
