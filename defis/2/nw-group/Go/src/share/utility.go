@@ -1,6 +1,7 @@
 package share
 
 import (
+	"container/list"
 	"fmt"
 	"os"
 	"reflect"
@@ -47,4 +48,13 @@ func AddPathSeparator(s string) string {
 // directory name returned by this function ends with a path separator.
 func TempDir() string {
 	return AddPathSeparator(AddPathSeparator(os.TempDir()) + "ws")
+}
+
+func ArrayFromList(l *list.List) []interface{} {
+	res := make([]interface{}, l.Len())
+	for e, i := l.Front(), 0; e != nil; e = e.Next() {
+		res[i] = e.Value
+		i++
+	}
+	return res
 }
