@@ -1,5 +1,5 @@
 CC     = g++
-CFLAGS = -DCHICKEN_MODE -Wall -O2
+CFLAGS = -DCHICKEN_MODE -Wall -O2 -std=c++11
 
 WS     = ws
 OBJS   = rtree.o formulanode.o area.o parser.o formula.o
