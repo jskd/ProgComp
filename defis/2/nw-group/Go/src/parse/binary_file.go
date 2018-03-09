@@ -49,13 +49,16 @@ func newBinFileMgr() *BinFileMgr {
 }
 
 func (b *BinFileMgr) GetBinFile(file_path string) *BinFile {
+	b.mut.Lock()
+	defer b.mut.Unlock()
 	bf := b.path2instance[file_path]
 	if bf == nil {
 		if b.count >= b.max_open_file {
-			b.SaveAndCloseAll()
+			err := b.saveAndClose()
+			if err != nil {
+				panic(err)
+			}
 		}
-		b.mut.Lock()
-		defer b.mut.Unlock()
 		bf = newBinaryFile(file_path)
 		b.path2instance[file_path] = bf
 		b.count += 1
@@ -66,6 +69,11 @@ func (b *BinFileMgr) GetBinFile(file_path string) *BinFile {
 func (b *BinFileMgr) SaveAndCloseAll() error {
 	b.mut.Lock()
 	defer b.mut.Unlock()
+	return b.saveAndClose()
+}
+
+//Note that this function is not thread safe! Internal use only
+func (b *BinFileMgr) saveAndClose() error {
 	var err error
 	for key, value := range b.path2instance {
 		err = value.Close()
