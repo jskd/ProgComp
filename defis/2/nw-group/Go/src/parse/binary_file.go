@@ -3,7 +3,6 @@ package parse
 import (
 	"bufio"
 	"encoding/binary"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -44,7 +43,7 @@ type BinFileMgr struct {
 func newBinFileMgr() *BinFileMgr {
 	dir2instance_map := make(map[string]*BinFile)
 	mgr := BinFileMgr{dir2instance_map, 100, 0, sync.Mutex{}}
-	fmt.Printf("BinFileMgr initialed: count=%d max_open_file=%d \n", mgr.count, mgr.max_open_file)
+	log.Printf("BinFileMgr initialed: count=%d max_open_file=%d \n", mgr.count, mgr.max_open_file)
 	return &mgr
 }
 
@@ -85,19 +84,19 @@ func (b *BinFileMgr) saveAndClose() error {
 
 func PurgeAndRecreateDir(path string) {
 	var _, err = os.Stat(path)
-	if os.IsExist(err) {
+	if err == nil {
 		err = os.RemoveAll(path)
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("Purge dir:", path)
+		log.Println("Purge directory:", path)
 	}
 
 	err = os.MkdirAll(path, 0777)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("New directory created:", path)
+	log.Println("New directory created:", path)
 }
 
 //Create file if not exists
@@ -109,7 +108,7 @@ func createFileIfNotexists(path string) {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("New directory created:", dirPath)
+		log.Println("New directory created:", dirPath)
 	}
 
 	_, err = os.Stat(path)
@@ -119,7 +118,7 @@ func createFileIfNotexists(path string) {
 			panic(err)
 		}
 		defer file.Close()
-		fmt.Println("New file created:", path)
+		//log.Println("New file created:", path)
 	}
 }
 
@@ -228,9 +227,17 @@ func (b *BinFile) Write(v uint32) error {
 	return nil
 }
 
+//TODO: Should notify BinFileManager()
 func (b *BinFile) Delete() error {
 	b.mut.Lock()
 	defer b.mut.Unlock()
+	if b.opened_f != nil {
+		err := b.opened_f.Close()
+		if err != nil {
+			panic(err)
+		}
+		b.opened_f = nil
+	}
 	err := os.Remove(b.file)
 	if err != nil {
 		return err
@@ -239,6 +246,7 @@ func (b *BinFile) Delete() error {
 	return nil
 }
 
+//TODO: Should notify BinFileManager()
 func (b *BinFile) Move(newPath string) error {
 	b.mut.Lock()
 	defer b.mut.Unlock()

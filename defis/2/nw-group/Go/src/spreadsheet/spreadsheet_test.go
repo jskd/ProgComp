@@ -1,6 +1,7 @@
 package spreadsheet
 
 import (
+	"parse"
 	"share"
 	"testing"
 )
@@ -18,8 +19,21 @@ func TestFromFile(t *testing.T) {
 
 func Test10LinesBigmamaFile(t *testing.T) {
 	bin_repo := FromFile("../../dataset/bigmama_10.csv", ';')
-	exp := share.TempDir() + "bigmama_10.csv/bin"
-	share.AssertEqual(t, bin_repo, exp, "Incorrect repository path")
+	exp_repo := share.TempDir() + "bigmama_10.csv/bin"
+	share.AssertEqual(t, bin_repo, exp_repo, "Incorrect repository path")
+
+	bfOut := parse.NewBinFile(bin_repo + "/3")
+	out, errOut := bfOut.ReadAll()
+	bfOut.Close()
+	bfExpect := parse.NewBinFile("../../dataset/bin/3")
+	exp, errExp := bfExpect.ReadAll()
+	bfExpect.Close()
+
+	share.AssertEqual(t, errOut, nil, "Something wrong reading bin "+bin_repo+"/3")
+	share.AssertEqual(t, errExp, nil, "Something wrong reading bin ../../dataset/bin/3")
+	//share.AssertEqual(t, len(out), len(exp), "Incorrect length in bin value '3'")
+	share.AssertEqual(t, out, exp, "Incorrect values in bin value '3'")
+	parse.BinFileManager().SaveAndCloseAll()
 }
 
 func TestCounting(t *testing.T) {

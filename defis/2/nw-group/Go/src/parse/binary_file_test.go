@@ -14,6 +14,7 @@ func TestBinaryReadWriteDelete(t *testing.T) {
 	bf = NewBinFile("../../dataset/bin/test")
 	arr, err := bf.ReadAll()
 	share.AssertEqual(t, bf.Close(), nil, "Unable to close file.")
+	BinFileManager().SaveAndCloseAll()
 	exp := []uint32{}
 	exp = append(exp, 0)
 	exp = append(exp, 1)
@@ -27,5 +28,15 @@ func TestBinaryReadWriteDelete(t *testing.T) {
 }
 
 func TestBinFileMgr(t *testing.T) {
-
+	bf1 := NewBinFile("../../dataset/bin/test1")
+	bf2 := NewBinFile("../../dataset/bin/test2")
+	bf1.WritePair(4, 5)
+	bf1.WritePair(6, 7)
+	bf2.WritePair(4, 5)
+	bf2.WritePair(6, 7)
+	share.AssertEqual(t, BinFileManager().count, 2, "BinFileManager contains incorrect open files.")
+	bf1.Delete()
+	BinFileManager().SaveAndCloseAll()
+	bf2.Delete()
+	share.AssertEqual(t, BinFileManager().count, 0, "BinFileManager contains incorrect open files after close")
 }
