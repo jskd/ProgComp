@@ -35,7 +35,7 @@ type BinFile struct {
 type BinFileMgr struct {
 	path2instance map[string]*BinFile
 	max_open_file int
-	count         int //Ensure to access this count with atomic.AddUint64(&var, 1) and atomic.LoadUint64(&var)
+	count         int
 	mut           sync.Mutex
 }
 
@@ -63,6 +63,16 @@ func (b *BinFileMgr) GetBinFile(file_path string) *BinFile {
 		b.count += 1
 	}
 	return bf
+}
+
+func (b *BinFileMgr) Remove(file_path string) {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	bf := b.path2instance[file_path]
+	if bf != nil {
+		delete(b.path2instance, file_path)
+		b.count -= 1
+	}
 }
 
 func (b *BinFileMgr) SaveAndCloseAll() error {
@@ -120,17 +130,6 @@ func createFileIfNotexists(path string) {
 		defer file.Close()
 		//log.Println("New file created:", path)
 	}
-}
-
-func (b *BinFile) Close() error {
-	b.mut.Lock()
-	defer b.mut.Unlock()
-	if b.opened_f != nil {
-		err := b.opened_f.Close()
-		b.opened_f = nil
-		return err
-	}
-	return nil
 }
 
 func (b *BinFile) ReadAll() ([]uint32, error) {
@@ -231,13 +230,7 @@ func (b *BinFile) Write(v uint32) error {
 func (b *BinFile) Delete() error {
 	b.mut.Lock()
 	defer b.mut.Unlock()
-	if b.opened_f != nil {
-		err := b.opened_f.Close()
-		if err != nil {
-			panic(err)
-		}
-		b.opened_f = nil
-	}
+	b.close()
 	err := os.Remove(b.file)
 	if err != nil {
 		return err
@@ -246,10 +239,27 @@ func (b *BinFile) Delete() error {
 	return nil
 }
 
-//TODO: Should notify BinFileManager()
+func (b *BinFile) Close() error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	b.close()
+	return nil
+}
+
+func (b *BinFile) close() {
+	if b.opened_f != nil {
+		err := b.opened_f.Close()
+		if err != nil {
+			panic(err)
+		}
+		b.opened_f = nil
+	}
+}
+
 func (b *BinFile) Move(newPath string) error {
 	b.mut.Lock()
 	defer b.mut.Unlock()
+	b.close()
 	err := os.Rename(b.file, newPath)
 	if err != nil {
 		return err
