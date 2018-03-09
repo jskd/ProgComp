@@ -2,6 +2,7 @@ use std;
 use std::io::{ BufRead};
 use std::fs::File;
 use std::str;
+use std::thread;
 // mod parser;
 use cell;
 // mod treatment;
@@ -16,46 +17,39 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 	let mut buff = Vec::with_capacity(BUFF_SIZE);
 	let mut reader = std::io::BufReader::new(file);
 	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
+	buff.clear();
+	num_bytes=reader.read_until(b')',&mut buff).expect("read formula");
 	while num_bytes!=0 //Buffer not empty0
 	{
-
-		let mut index:usize = 0;
-		while has_formula(&buff){ //If buffer still got a formula
-			let mut formula: Vec<u8> = Vec::new();
-			formula.push(b'=');
-				for byte in &buff{
-					if byte == (&b';')
-					{
-						break;
-					}
-					else
-					{
-						formula.push(*byte);
-					}
+		let mut formula: Vec<u8> = Vec::new();
+		formula.push(b'=');
+			for byte in &buff{
+				if byte == (&b';')
+				{
+					break;
 				}
-			formulas.push(create_formula(String::from_utf8(formula).unwrap()));
+				else
+				{
+					formula.push(*byte);
+				}
+			}
+		/*Ca marche mais c'est pas bon*/
+		let thread = thread::spawn(move ||
+		{create_formula(String::from_utf8(formula).unwrap())});
+		let res=thread.join();
+		match res {
+			Ok(f) => {
+				formulas.push(f);
+			},
+			Err(e) => panic!("thread child return None")
+			// add code here
 		}
 		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
+		buff.clear();
+		num_bytes = reader.read_until(b')',&mut buff).expect("read file");
 	}
 }
 
-
-pub fn check_bounds(buff: &Vec<u8>, index: usize) -> bool
-{
-	match buff.get(index..){
-		Some(buff_ok) => {
-			match buff.iter().position(|&eq| eq == b'='){
-				Some(iter_ok) => true,
-				None => false,
-			}
-		},
-		None => false,
-	}
-}
-pub fn has_formula(line: &Vec<u8>) -> bool
-{
- line.contains(&b'=')
-}
 
 pub fn create_formula(form_string: String) -> cell::Formula
 {

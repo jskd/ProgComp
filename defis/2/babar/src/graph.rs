@@ -12,7 +12,7 @@ enum Color
 }
 
 struct Node{
-    value: Box<cell::Cell>,
+    value: Box<cell::Formula>,
     c: Color,
     child_list: Vec<Node>,
 }
@@ -21,7 +21,7 @@ struct Node{
 fn evaluate(mut node: Node)
 {	
 	match node.c{
-	Color::White | Color::Grey =>{
+	Color::White =>{
 		node.c = Color::Grey;
 		for mut n in node.child_list{
 			match n.c{
