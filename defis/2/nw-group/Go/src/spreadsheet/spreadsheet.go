@@ -182,19 +182,17 @@ func FromFile(filename string, sep rune) string {
 	//	}
 	//2nd implementation to process CSV with customized parser.
 	csvParser := parse.NewCsvParser(filename, sep, '"')
-	test_count := 0
+
 	for {
 		str, x, y, err := csvParser.ReadOneCell()
 		//fmt.Printf("%d,%d: '%s'\n", x, y, str)
 		if err == io.EOF {
 			break
 		}
-		if str == "3" {
-			test_count += 1
-		}
+
 		saveOneCellToBin(bin_dir, str, x, y)
 	}
-	fmt.Printf("test_count: %d\n", test_count)
+
 	parse.BinFileManager().SaveAndCloseAll()
 	return bin_dir
 }

@@ -31,7 +31,7 @@ func Test10LinesBigmamaFile(t *testing.T) {
 
 	share.AssertEqual(t, errOut, nil, "Something wrong reading bin "+bin_repo+"/3")
 	share.AssertEqual(t, errExp, nil, "Something wrong reading bin ../../dataset/bin/3")
-	//share.AssertEqual(t, len(out), len(exp), "Incorrect length in bin value '3'")
+	share.AssertEqual(t, len(out), 985*2, "Incorrect length in bin value of '3'") //There are 985 value-'3' in bigmama_10.csv
 	share.AssertEqual(t, out, exp, "Incorrect values in bin value '3'")
 	parse.BinFileManager().SaveAndCloseAll()
 }
