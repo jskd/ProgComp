@@ -23,7 +23,8 @@ def get_formula():
 	c1 = between(0,total_lines-7)
 	r2 = between(r1+1,max_rows)
 	c2 = between(c1+1,total_lines)
-	return "\"=#("+str(r1)+","+str(c1)+","+str(r2)+","+str(c2)+","+str(between(0,255))+")\""
+	#return "\"=#("+str(r1)+","+str(c1)+","+str(r2)+","+str(c2)+","+str(between(0,255))+")\""
+	return "=#("+str(r1)+","+str(c1)+","+str(r2)+","+str(c2)+","+str(between(0,255))+")"
 
 #return a table with intergers and a formula
 def get_row():
