@@ -322,7 +322,8 @@ func Intersect(path string, formulaName string) int {
 	if err != nil {
 		panic(err)
 	}
-	parse.NewBinFile(string("../../dataset/bin/" + string(count)))
+	binFile = parse.NewBinFile(string("../../dataset/bin/" +
+		strconv.Itoa(count)))
 	for i := 0; i < len(tab); i++ {
 		x := tab[i]
 		i++
