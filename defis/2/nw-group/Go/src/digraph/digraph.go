@@ -111,7 +111,6 @@ func (g *Digraph) TopologicalSort() ([]interface{}, bool) {
 			// NB: We don't clear the accumulator so that we
 			// can obtain a partial topological sort of the
 			// digraph.
-
 		}
 	}
 	return share.ArrayFromList(res), complete
