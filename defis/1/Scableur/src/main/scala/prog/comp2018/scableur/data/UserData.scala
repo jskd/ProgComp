@@ -18,14 +18,18 @@ class UserData(var userActionStack : ListBuffer[((Int,Int), Value)]) {
 
 class ChangesData(){
   type EvalCell = ((Int,Int), Option[Int])
-  var modificationList : ListBuffer[EvalCell] = ListBuffer[EvalCell]()
+  type ChangesList = ListBuffer[EvalCell]
+  type AfterAction = ( ((Int,Int), Value), ChangesList)
+  var modificationList : ListBuffer[AfterAction] = ListBuffer[AfterAction]()
 
 
   def length(): Int = modificationList.length
 
-  def get(i: Int): Option[Int] = modificationList(i)._2
+  def get(i: Int, j:Int): Option[Int] = (modificationList(i)._2)(j)._2
 
-  def getCoord(i:Int) : (Int, Int) = modificationList(i)._1
+  def getCoord(i:Int, j:Int) : (Int, Int) = (modificationList(i)._2)(j)._1
 
-  def set(coord: (Int, Int), v: Option[Int], i: Int): Unit = modificationList(i) = (coord, v)
+  def set(coord: (Int, Int), v: Option[Int], i: Int, j: Int): Unit = {
+    modificationList(i)._2(j) = (coord, v)
+  }
 }
