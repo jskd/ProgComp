@@ -5,6 +5,10 @@ import (
 	"testing"
 )
 
+func TestBinarySetFinalValue(t *testing.T) {
+	//TODO
+}
+
 func TestBinaryReadWriteDelete(t *testing.T) {
 	bf := newBinaryFile("../../dataset/bin/test")
 	bf.WritePair(0, 1)

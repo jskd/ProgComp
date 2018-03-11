@@ -12,6 +12,7 @@ import (
 	"share"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Cell struct {
@@ -57,7 +58,7 @@ func (*immediate) data() {}
 
 func (f *formula) String() string {
 	return fmt.Sprintf("=#(%d,%d,%d,%d,%d)",
-		f.ySource, f.xSource, f.yDestination, f.xDestination, f.value)
+		f.xSource, f.ySource, f.xDestination, f.yDestination, f.value)
 }
 
 func (i *immediate) String() string {
@@ -94,7 +95,7 @@ func toFormula(s string, p string) *formula {
 	var xSrc, ySrc, xDst, yDst, val uint32
 	count, _ :=
 		fmt.Sscanf(s, p,
-			&ySrc, &xSrc, &yDst, &xDst, &val)
+			&xSrc, &ySrc, &xDst, &yDst, &val)
 	if count != 5 {
 		panic(FormulaError{"Incorrect formula format:" + s + "(" + p + ")"})
 	}
@@ -109,16 +110,30 @@ func toFormula(s string, p string) *formula {
    It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
-func Evaluate(bin_repo string) int {
+func Evaluate(bin_repo string, doWriteFinalValue bool) int {
 	files, err := ioutil.ReadDir(bin_repo + "/FORMULAS/")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for _, f := range files {
-		fmt.Println(f.Name())
+	formula_list := make([]string, len(files))
+	for idx, f := range files {
+		formula_list[idx] = f.Name()
 	}
+
+	formula_list = SortByDependency(formula_list)
+	var wg sync.WaitGroup
+	for _, f := range formula_list {
+		wg.Add(1)
+		go EvaluateFormula(bin_repo, f, doWriteFinalValue, &wg)
+	}
+	wg.Wait()
 	return len(files)
+}
+
+//TODO: To sort fomulas with dependency algorithm
+func SortByDependency(f_list []string) []string {
+	return f_list
 }
 
 //Pre-process Csv file to value-position binary files.
@@ -258,7 +273,10 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func EvaluateFormula(bin_repo string, formulaName string) uint32 {
+func EvaluateFormula(bin_repo string, formulaName string, doWriteFinalValue bool, wg *sync.WaitGroup) uint32 {
+	if wg != nil { //When WaitGroup is not provided, nothing to notify
+		defer wg.Done()
+	}
 	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + formulaName)
 	formulaPos, err := formulaBin.ReadAll()
 	if err != nil {
@@ -274,14 +292,17 @@ func EvaluateFormula(bin_repo string, formulaName string) uint32 {
 	if err != nil {
 		panic(err)
 	}
+
+	//Count from position range
 	count := uint32(0)
 	var x uint32
 	var y uint32
 	for indx, val := range pos {
 		if indx/2 == 1 {
 			y = val
+			//fmt.Printf("(%d, %d) vs (%d, %d, %d, %d)\n", x, y, f.xSource, f.ySource, f.xDestination, f.yDestination)
 			if x <= f.xDestination && x >= f.xSource &&
-				y <= f.yDestination && y <= f.ySource {
+				y <= f.yDestination && y >= f.ySource {
 				count++
 			}
 		} else {
@@ -296,7 +317,11 @@ func EvaluateFormula(bin_repo string, formulaName string) uint32 {
 		panic(err)
 	}
 
-	//TODO: Write value to formula file
-
+	if doWriteFinalValue {
+		err = formulaBin.SetFinalValue(count)
+		if err != nil {
+			panic(err)
+		}
+	}
 	return count
 }
