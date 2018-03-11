@@ -12,7 +12,7 @@ else
 endif
 
 $(WS): $(OBJS)
-	$(CC) $(CFLAGS) main.cpp -o $(WS) $(OBJS) $(LIB)
+	$(CC) $(CFLAGS) main.cpp -o $(WS) $(STATIC) $(OBJS) $(LIB)
 
 %.o: %.c %.h
 	gcc $(CFLAGS) -c $< -o $@
@@ -24,3 +24,7 @@ clean:; rm -rf $(OBJS)
 
 mrproper: clean
 	rm -rf $(WS)
+
+static: STATIC := -static 
+static: $(WS) 
+	
