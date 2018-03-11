@@ -6,18 +6,12 @@ import prog.comp2018.scableur.data.{EvaluatedMatrix, _}
 import scala.collection.mutable.ListBuffer
 import scala.util.control.Breaks._
 
-trait Evaluator[T] {
-  def eval : T
-}
 
- 
-/**
-  * Evaluates a Matrix given as parameter
-  */
-class MatrixEvaluator(private var matrix : Matrix  )
-  extends Evaluator[EvaluatedMatrix] {
-  private val result = new EvaluatedMatrix(matrix.height,matrix.width)
+abstract class Evaluator[T](private var matrix: Matrix) {
+
   private var cycle_functions: List[Int] = List()
+
+  def eval : T
 
 
   /*find_cycle: Calculates the list of the functions of the cycle
@@ -69,7 +63,7 @@ class MatrixEvaluator(private var matrix : Matrix  )
        val h = matrix.functionStack(i);
        h match{
          case Some(f1) => {
-           result.set(None,
+           matrix.set(ConstantType(None),
              f1.coordinates._1, f1.coordinates._2)
          }
          case None =>
@@ -78,6 +72,16 @@ class MatrixEvaluator(private var matrix : Matrix  )
      }
 
    }
+
+}
+
+ 
+/**
+  * Evaluates a Matrix given as parameter
+  */
+class MatrixEvaluator(matrix : Matrix  )
+  extends Evaluator[EvaluatedMatrix](matrix) {
+  private val result = new EvaluatedMatrix(matrix.height,matrix.width)
 
   private def eval_function(i: Int, j: Int): Unit = {
     matrix.get(i,j) match {

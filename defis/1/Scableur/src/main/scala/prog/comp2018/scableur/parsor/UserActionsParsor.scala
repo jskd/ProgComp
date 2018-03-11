@@ -15,11 +15,13 @@ object UserActionsParsor {
     var s:String=""
 
     for (line <- Source.fromFile(filename).getLines) {
-      a=line.split(' ')
-      i=a(0).toInt
-      j=a(1).toInt
-      s=a(2)
-      l=l:+((i,j),s)
+      if(line != ""){
+        a=line.split(' ')
+        i=a(0).toInt
+        j=a(1).toInt
+        s=a(2)
+        l=l:+((i,j),s)
+      }
     }
     l
   }
