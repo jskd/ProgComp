@@ -82,7 +82,6 @@ func toImmediate(s string) *immediate {
 
 func ToFormula(s string) *formula {
 	var xSrc, ySrc, xDst, yDst, val int
-
 	count, _ :=
 		fmt.Sscanf(s, "=#(%d,%d,%d,%d,%d)",
 			&ySrc, &xSrc, &yDst, &xDst, &val)
@@ -93,60 +92,6 @@ func ToFormula(s string) *formula {
 		panic(FormulaError{"Source x or y must greater than destination x or y."})
 	}
 	return &formula{xSrc, ySrc, xDst, yDst, val}
-}
-
-/* Evaluates a formula.  On success, a formula evaluates into an
-   integer.  Returns an error when the dependency graph of the formula
-   has a cycle.  */
-func (formula *formula) evaluate(spreadSheet [][]Cell) int {
-	count := 0
-	if formula == nil {
-		return -1
-	}
-	for r := formula.ySource; r <= formula.yDestination; r++ {
-		for c := formula.xSource; c <= formula.xDestination; c++ {
-			if spreadSheet[r][c].evaluating {
-				return -1
-			}
-			switch evaluate(r, c, spreadSheet) {
-			case -1:
-				return -1
-			case formula.value:
-				count++
-			default:
-				continue
-			}
-		}
-	}
-	return count
-}
-
-func evaluate(row int, col int, spreadSheet [][]Cell) int {
-	var res int
-
-	cell := &spreadSheet[row][col]
-	switch data := cell.data.(type) {
-	case *formula:
-		cell.evaluating = true
-		res = data.evaluate(spreadSheet)
-		cell.evaluating = false
-	case *immediate:
-		res = data.value
-	default:
-		res = -1
-	}
-
-	return res
-}
-
-func cells(spreadSheet [][]string) [][]Cell {
-	res := make([][]Cell, len(spreadSheet))
-	for r, row := range spreadSheet {
-		for _, s := range row {
-			res[r] = append(res[r], Cell{toData(s), false})
-		}
-	}
-	return res
 }
 
 /**
