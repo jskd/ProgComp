@@ -1,5 +1,7 @@
 package scableur.data
 
+import java.util.concurrent.CountDownLatch
+
 trait PValue{
 	def toString() : String
 }
@@ -17,28 +19,34 @@ case class PConstant(val p:Point, val value:Option[Int]) extends PValue {
 case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extends PValue {
 		private var NbrPoints = 0
 		private var MAX_POINTS = getNumberOfCells(defArea)
-		private var result = 0
+		@volatile private var result = 0
+		@volatile private var countDownLatch = new CountDownLatch(MAX_POINTS);
+		@volatile private var invalid = false
 
 
 		def receice(cell: PConstant) : Unit = {
-			if(isPointInArea(cell.p, defArea)){
+			if(!(invalid) && isPointInArea(cell.p, defArea)){
 				NbrPoints += 1 //Increment number of received cells
 				cell.value match { 
 					case Some(v) => if(v == value) result += 1
 					case None => //do nothing
 				}
-				if(NbrPoints >= MAX_POINTS){
-					//TODO: remove_function_from_list
-					//TODO: return result to controler
-					println("FCount : " + p + " done.")
-				}
+				countDownLatch.countDown();
 			}
 		}
+
+		def setInvalid() : Unit = { invalid = true }
 
 
 		override def toString() : String = {
 			val f = "=#(%d,%d,%d,%d,%d)".format(defArea._1._1, defArea._1._2, defArea._2._1, defArea._2._2, this.value)
 			"(%d,%d) %s".format(p._1,p._2,f)
+		}
+
+		def getResult() : Option[Int] = {
+			if(invalid) return None
+			countDownLatch.await();
+			return Some(result)
 		}
 
 	}

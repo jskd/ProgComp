@@ -32,7 +32,7 @@ func main_program(args []string) {
 	log.Println("Build directory structure of binary files...")
 	bin_repo := spreadsheet.FromFile(args[0], ';')
 	log.Println("Directory structure of binary files built.")
-	loop_count := spreadsheet.Evaluate(bin_repo)
+	loop_count := spreadsheet.Evaluate(bin_repo, false)
 	fmt.Printf("Looping formula: %d\n", loop_count)
 	writeView(args[2], args[0], bin_repo)
 	//commands := spreadsheet.CommandsFromFile(args[1])

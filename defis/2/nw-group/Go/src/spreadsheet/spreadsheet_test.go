@@ -1,7 +1,6 @@
 package spreadsheet
 
 import (
-	"fmt"
 	"parse"
 	"share"
 	"testing"
@@ -9,12 +8,19 @@ import (
 
 func TestToFormula(t *testing.T) {
 	f := ToFormula("=#(0,0,50,50,1)")
-	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 in the Formula instance.")
+	share.AssertEqual(t, f.xSource, uint32(0), "xSource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.ySource, uint32(0), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.value, uint32(1), "value is not uint32 1 from parsing formula string.")
 }
 
 func TestBinFileToFormula(t *testing.T) {
 	f := BinFileToFormula("0_0_50_50_1")
-	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 in the Formula instance.")
+	share.AssertEqual(t, f.xSource, uint32(0), "xSource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.ySource, uint32(0), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
 }
 
 func TestFromFile(t *testing.T) {
@@ -43,11 +49,13 @@ func Test10LinesBigmamaFile(t *testing.T) {
 }
 
 func TestEvaluate(t *testing.T) {
-	out := Evaluate("../../dataset/bin/")
-	share.AssertEqual(t, out, 1, "")
+	out := Evaluate("../../dataset/bin/", false)
+	share.AssertEqual(t, out, 2, "")
 }
 
-func TestCounting(t *testing.T) {
-	out := EvaluateFormula("../../dataset/bin/", "1110_7572_3186_17282_3")
-	fmt.Printf("%d\n", out)
+func TestEvaluateFormula(t *testing.T) {
+	out := EvaluateFormula("../../dataset/bin/", "1110_7572_3186_17282_3", false, nil)
+	share.AssertEqual(t, out, uint32(0), "Count formula 1110_7572_3186_17282_3 should be 0")
+	out = EvaluateFormula("../../dataset/bin/", "236_0_236_611_3", false, nil)
+	share.AssertEqual(t, out, uint32(2), "Count formula 236_0_236_611_3 should be 2")
 }
