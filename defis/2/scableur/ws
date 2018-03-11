@@ -1,16 +1,36 @@
-#!/bin/bash
+#!/bin/sh
 
-if [ "$1" == "-test" ]; then 
+if [ $# -eq 4 ] ; then
+	# Entrypoint
+	RUN="/scableur/run.sh"
 
-	if [ "$2" == "1" ]; then 
+	# Start container
+	CONTAINER=$(docker run -it -d "scableur-spark-img" /bin/sh)
 
-		spark-submit target/scala-2.11/test_spark_2.11-0.1.jar ressources/test.csv
-		exit 0;
-	fi
+	# Format filenames
+	DATA=$(basename "$1")
+	USERS=$(basename "$2")
+	VIEW0=$(basename "$3")
+	CHANGES=$(basename "$4")
+	D_DATA="/scableur/resources/input/$DATA"
+	D_USERS="/scableur/resources/input/$USERS"
+	D_VIEW0="/scableur/resources/output/$VIEW0"
+	D_CHANGES="/scableur/resources/output/$CHANGES"
 
-	echo "No test was selected"
-else
-#TODO
-echo "should run project in docker"
+	# Copy input arguments
+	docker cp $1 $CONTAINER:"$D_DATA"
+	docker cp $1 $CONTAINER:"$D_USERS"
+
+	# Run application
+	docker exec $CONTAINER sh -c "$RUN $D_DATA $D_USERS $D_VIEW0 $D_CHANGES"
+
+	# Copy results
+	docker cp $CONTAINER:"$D_VIEW0" $3
+	docker cp $CONTAINER:"$D_CHANGES" $4
+
+	# Stop docker
+	docker stop $CONTAINER
+	docker rm $CONTAINER
+else 
+	echo "sh: use: ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>"
 fi
-

@@ -1,4 +1,6 @@
-all: package
+IMG="scableur-spark-img"
+
+all: image
 
 
 compile:
@@ -9,6 +11,9 @@ package:
 
 clean:
 	sbt clean
+
+image:
+	docker build -t $(IMG) .
 
 mrproper:
 	rm -rf target

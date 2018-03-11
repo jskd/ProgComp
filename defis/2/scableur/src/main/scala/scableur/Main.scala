@@ -9,22 +9,24 @@ import org.apache.spark.sql.types.{StructField, StructType, IntegerType, StringT
 import scableur.utils.Conf
 import scableur.data._
 import scableur.eval._
+import java.io._
 
 object Scableur {
-  // Spark Init
-  val conf = new SparkConf().setAppName(Conf.AppName)
-  val sc = new SparkContext(conf)
-  //
-  val evaluator = new Evaluator(sc) 
+  var conf : SparkConf = null
+  var sc : SparkContext = null
+  var evaluator : Evaluator = null
 
   
   def main(args: Array[String]): Unit = {
     Conf.logger = Logger.getLogger("DEBUG");
     Conf.logger.info("Launching Scableur")
-    //check_args(args)
-    //parse_input() 
-    val file = spark_data_load(args(0))
+    check_args(args)
+    config_environment()
+    parse_input() 
+    val file = spark_data_load(Conf.Arguments.dataFile)
     map_data(file)
+    print_view_csv(file)
+    print_changes()
 
     //cycle_detection()
     //evaluation_flow()
@@ -37,6 +39,14 @@ object Scableur {
     Conf.logger.info("Scableur : done.")
   }
 
+
+  def parse_input() : Unit = {
+    // Parse input to add position
+    addPositionsToCSV(Conf.Arguments.dataFile, Conf.positionDataCSV)
+    Conf.Arguments.dataFile(Conf.positionDataCSV)
+  }
+
+
   def spark_data_load(filename: String) = {
     // Load data in spark file system
     val csvFile = sc.textFile(filename)
@@ -44,15 +54,38 @@ object Scableur {
   }
 
 
-  
   def map_data(file : RDD[Array[String]]) : Unit = {
-    file.foreach(line => line.foreach(println _))
+    //file.foreach(line => line.foreach(println _))
     val mapped_data = file.map(line => line.map(elem => evaluator.evalPValue(elem) ))
-    mapped_data.foreach(line => line.foreach(println _)) 
+    println("mapped data : " + mapped_data)
+    //mapped_data.foreach(line => line.foreach(println _)) 
     val functionList = evaluator.getFormulasList()
     println("functionList : " + functionList)
+
   }
 
+  def print_view_csv(file : RDD[Array[String]]): Unit = {
+    val writable_file = file.map(line => line.reduce((accum,c) => accum + ";" + c ))
+    writable_file.coalesce(1).saveAsTextFile(Conf.Arguments.viewFile)
+  }
+
+  def print_changes() : Unit = {
+    val pw = new PrintWriter(new File(Conf.Arguments.changesFile))
+    pw.write("Hello, world")
+    pw.close
+  }
+
+  def config_environment(){
+    conf = new SparkConf().setAppName(Conf.AppName)
+    sc = new SparkContext(conf)
+    //
+    evaluator = new Evaluator(sc) 
+
+    val dir1 = new File(Conf.outputFolder)
+    var dir2 = new File(Conf.inputFolder)
+    dir1.mkdir()
+    dir2.mkdir()
+  }
 
   def check_args(args : Array[String]) : Unit = {
     //Init Logger : 
@@ -66,6 +99,6 @@ object Scableur {
     Conf.Arguments.userFile(args(1))
     Conf.Arguments.viewFile(args(2))
     Conf.Arguments.changesFile(args(3))
-    //Conf.Arguments.print(Conf.DEBUG)
+    Conf.Arguments.print(println)
   }
 }

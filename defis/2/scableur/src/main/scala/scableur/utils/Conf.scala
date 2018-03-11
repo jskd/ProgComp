@@ -6,8 +6,10 @@ object Conf {
 	val AppName = "scableur"  
 	val MAX_VALUE : Int = 255
   	val MIN_VALUE : Int = 0
-  	val TempFileName = "temp.csv"
-  	var logger : Logger = _ 	
+  	var logger : Logger = _
+  	val outputFolder : String = "ressources/output"
+  	val inputFolder : String = "ressources/input"
+  	val positionDataCSV : String = inputFolder + "/positionData.csv"
 
 	object Arguments {
 	    private var _dataCSVPath:String = ""
