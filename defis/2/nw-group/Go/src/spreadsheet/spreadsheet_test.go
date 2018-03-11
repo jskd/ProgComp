@@ -1,6 +1,7 @@
 package spreadsheet
 
 import (
+	"fmt"
 	"parse"
 	"share"
 	"testing"
@@ -36,6 +37,12 @@ func Test10LinesBigmamaFile(t *testing.T) {
 	parse.BinFileManager().SaveAndCloseAll()
 }
 
+func TestEvaluate(t *testing.T) {
+	out := Evaluate("../../dataset/bin/")
+	share.AssertEqual(t, out, 1, "")
+}
+
 func TestCounting(t *testing.T) {
-	Intersect("../../dataset/bin/FORMULAS/", "1110_7572_3186_17282_3")
+	out := EvaluateFormula("../../dataset/bin/FORMULAS/", "1110_7572_3186_17282_3")
+	fmt.Printf("%d\n", out)
 }

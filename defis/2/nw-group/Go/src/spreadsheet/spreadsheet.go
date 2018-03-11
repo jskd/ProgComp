@@ -2,9 +2,10 @@ package spreadsheet
 
 import (
 	"bufio"
-	//"encoding/csv"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"log"
 	"os"
 	"parse"
 	"path/filepath"
@@ -154,7 +155,15 @@ func cells(spreadSheet [][]string) [][]Cell {
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
 func Evaluate(bin_repo string) int {
-	return 0
+	files, err := ioutil.ReadDir(bin_repo + "/FORMULAS/")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, f := range files {
+		fmt.Println(f.Name())
+	}
+	return len(files)
 }
 
 //Pre-process Csv file to value-position binary files.
@@ -294,7 +303,7 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func Intersect(path string, formulaName string) int {
+func EvaluateFormula(path string, formulaName string) int {
 	form := strings.Split(formulaName, "_")
 	x1, err := strconv.Atoi(form[0])
 	x2, err := strconv.Atoi(form[1])
