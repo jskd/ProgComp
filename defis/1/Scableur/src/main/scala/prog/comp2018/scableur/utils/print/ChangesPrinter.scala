@@ -9,13 +9,24 @@ class ChangesPrinter(changes : ChangesData, filename : String) {
   val writer = new PrintWriter(f)
 
   def print(): Unit = {
-    for((coord,item) <- changes.modificationList){
-      item match {
-        case Some(i: Int) => println(i);writer.append(coord._1 + " " + coord._2 + " " + i+"\n")
-        case None => writer.append(coord._1 + " " + coord._2 + " " + "P\n" )
-      }
-      writer.flush()
+    for((userAction,listChages) <- changes.modificationList){
+     val (coord, value) = userAction
+      writer.append("after "+"\""+coord._1+" "+coord._2+" "+value.to_String+"\":\n")
+      writer.flush
 
+      
+      for ((coordChg, valueChg) <- listChages){
+
+        valueChg match {
+          case Some(i: Int) => 
+            println(i);
+            writer.append(coordChg._1 + " " + coordChg._2 + " " + i+"\n")
+          case None => 
+            writer.append(coordChg._1 + " " + coordChg._2 + " " + "P\n" )
+        }
+        writer.flush
+      }
     }
   }
+
 }
