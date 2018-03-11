@@ -4,7 +4,7 @@ import scableur.data._
 import scableur.utils._
 
 object FlowController {
-	//List of formulas 
+	@volatile var formulaList = scala.collection.mutable.Map[Point,PCountFormula]()
 
 
 	def receiveValueCell(position: Point, value:Option[Int]): Unit = {
@@ -16,12 +16,16 @@ object FlowController {
 	}
 
 
-	def addNewCountFormula(position: Point, area:Area, v:Int) : Unit = {
-		/*TODO*/
+	def addNewCountFormula(position: Point, f: PCountFormula) : Unit = {
+		formulaList.synchronized {
+			formulaList.put(position, f)
+		}
 	}
 	
 	def getResultOf(p:Point) : Option[Int] = {
-		/*TODO*/
-		None 
+		formulaList.get(p) match {
+			case Some(f) => f.getResult()
+			case None => None
+		}
 	}
 }
