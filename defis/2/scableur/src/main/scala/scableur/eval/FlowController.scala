@@ -7,11 +7,21 @@ object FlowController {
 	//List of formulas 
 
 
-	def receiveValueCell(cell: PConstant): Unit = {
+	def receiveValueCell(position: Point, value:Option[Int]): Unit = {
 		//TODO: map list of formulas to send them the value 
 	}
 
-	def receiveFormulaResult(cell: PConstant): Unit = {
+	def receiveResult(position: Point, value:Option[Int]): Unit = {
 		//TODO map list of formulas to send them the value
+	}
+
+
+	def addNewCountFormula(position: Point, area:Area, v:Int) : Unit = {
+		/*TODO*/
+	}
+	
+	def getResultOf(p:Point) : Option[Int] = {
+		/*TODO*/
+		None 
 	}
 }

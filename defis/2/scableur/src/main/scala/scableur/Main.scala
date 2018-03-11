@@ -8,13 +8,16 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.sql.types.{StructField, StructType, IntegerType, StringType}
 import scableur.utils.Conf
 import scableur.data._
+import scableur.data.PValue
 import scableur.eval._
 import java.io._
+import scableur.map._
 
 object Scableur {
-  var conf : SparkConf = null
+  type Data = RDD[Array[String]]
+  type MapedData = RDD[Array[(Point,PValue)]]
+  type ResultData = RDD[Array[String]]
   var sc : SparkContext = null
-  var evaluator : Evaluator = null
 
   
   def main(args: Array[String]): Unit = {
@@ -24,18 +27,16 @@ object Scableur {
     config_environment()
     parse_input() 
     val file = spark_data_load(Conf.Arguments.dataFile)
-    map_data(file)
+    val mapped_data = map_data(file)
+
+    //TODO: cycle_detection()
+    val result_data = eval_mapped_data(mapped_data)
+
     print_view_csv(file)
     print_changes()
 
-    //cycle_detection()
-    //evaluation_flow()
-    //print_to_file()
-
     //TODO: users
     
-    //Debug
-    //file.foreach(line => line.foreach(println _))
     Conf.logger.info("Scableur : done.")
   }
 
@@ -47,40 +48,50 @@ object Scableur {
   }
 
 
-  def spark_data_load(filename: String) = {
+  def spark_data_load(filename: String) : Data = {
     // Load data in spark file system
     val csvFile = sc.textFile(filename)
     csvFile.map(line => line.split(";").map(elem => elem.trim))
   }
 
 
-  def map_data(file : RDD[Array[String]]) : Unit = {
-    //file.foreach(line => line.foreach(println _))
-    val mapped_data = file.map(line => line.map(elem => evaluator.evalPValue(elem) ))
+  def map_data(file : Data) : MapedData = {
+    //Map all the data to create formula list
+    val mapped_data = file.map(line => line.map(elem => mapPValue(elem)))
+    /*
     println("mapped data : " + mapped_data)
-    //mapped_data.foreach(line => line.foreach(println _)) 
     val functionList = evaluator.getFormulasList()
     println("functionList : " + functionList)
-
+    */
+    return mapped_data
   }
 
-  def print_view_csv(file : RDD[Array[String]]): Unit = {
-    val writable_file = file.map(line => line.reduce((accum,c) => accum + ";" + c ))
+  def print_view_csv(file : ResultData): Unit = {
+    //Print the data in result csv file
+    val writable_file = file.map(line => line.reduce((accum,c) => accum + ";" + c))
+    /*TODO: format output file*/
     writable_file.coalesce(1).saveAsTextFile(Conf.Arguments.viewFile)
   }
 
   def print_changes() : Unit = {
+    //Print the user changes in changes file
     val pw = new PrintWriter(new File(Conf.Arguments.changesFile))
     pw.write("Hello, world")
     pw.close
   }
 
-  def config_environment(){
-    conf = new SparkConf().setAppName(Conf.AppName)
-    sc = new SparkContext(conf)
-    //
-    evaluator = new Evaluator(sc) 
 
+  def eval_mapped_data(data: MapedData) : ResultData = {
+    //Evaluate all the cells and the formulas
+    null
+  }
+
+  def config_environment(){
+    //Set up spark and other enviroment values 
+    val conf = new SparkConf().setAppName(Conf.AppName)
+    conf.set("spark.scheduler.mode", "FAIR")
+    sc = new SparkContext(conf)
+    
     val dir1 = new File(Conf.outputFolder)
     var dir2 = new File(Conf.inputFolder)
     dir1.mkdir()
@@ -90,11 +101,12 @@ object Scableur {
   def check_args(args : Array[String]) : Unit = {
     //Init Logger : 
     PropertyConfigurator.configure("log4j.properties");
+    //Verify the number of arguments
     if(args.length < 4 || args.length > 4){
       println("use : ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>")
       System.exit(0)
     }
-
+    //Set up argument variables in Conf
     Conf.Arguments.dataFile(args(0))
     Conf.Arguments.userFile(args(1))
     Conf.Arguments.viewFile(args(2))
