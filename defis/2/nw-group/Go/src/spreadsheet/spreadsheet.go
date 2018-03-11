@@ -29,11 +29,11 @@ type data interface {
 
 /* Strucure of a formula */
 type formula struct {
-	xSource      int
-	ySource      int
-	xDestination int
-	yDestination int
-	value        int
+	xSource      uint32
+	ySource      uint32
+	xDestination uint32
+	yDestination uint32
+	value        uint32
 }
 
 type immediate struct {
@@ -80,13 +80,23 @@ func toImmediate(s string) *immediate {
 	return &immediate{i}
 }
 
+func BinFileToFormula(s string) *formula {
+	return toFormula(s, "%d_%d_%d_%d_%d")
+}
+
 func ToFormula(s string) *formula {
-	var xSrc, ySrc, xDst, yDst, val int
+	return toFormula(s, "=#(%d,%d,%d,%d,%d)")
+}
+
+//s: input string
+//p: pattern string
+func toFormula(s string, p string) *formula {
+	var xSrc, ySrc, xDst, yDst, val uint32
 	count, _ :=
-		fmt.Sscanf(s, "=#(%d,%d,%d,%d,%d)",
+		fmt.Sscanf(s, p,
 			&ySrc, &xSrc, &yDst, &xDst, &val)
 	if count != 5 {
-		panic(FormulaError{"Incorrect formula format:" + s})
+		panic(FormulaError{"Incorrect formula format:" + s + "(" + p + ")"})
 	}
 	if xSrc > xDst || ySrc > yDst {
 		panic(FormulaError{"Source x or y must greater than destination x or y."})
@@ -248,41 +258,45 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func EvaluateFormula(path string, formulaName string) int {
-	form := strings.Split(formulaName, "_")
-	x1, err := strconv.Atoi(form[0])
-	x2, err := strconv.Atoi(form[1])
-	y1, err := strconv.Atoi(form[2])
-	y2, err := strconv.Atoi(form[3])
-	valToCount := form[4]
-	binFile := parse.NewBinFile(string("../../dataset/bin/" + valToCount))
-	tab, err := binFile.ReadAll()
+func EvaluateFormula(bin_repo string, formulaName string) uint32 {
+	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + formulaName)
+	formulaPos, err := formulaBin.ReadAll()
 	if err != nil {
 		panic(err)
 	}
-	count := 0
-	for i := 0; i < len(tab); i++ {
-		x := int(tab[i])
-		i++
-		y := int(tab[i])
-		if x < x1 && x > x2 {
-			if y < y1 && y < y2 {
+	if len(formulaPos) == 1 {
+		//If this formula has been evaluated, return its value directly
+		return formulaPos[0]
+	}
+	f := BinFileToFormula(formulaName)
+	binFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(f.value))
+	pos, err := binFile.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+	count := uint32(0)
+	var x uint32
+	var y uint32
+	for indx, val := range pos {
+		if indx/2 == 1 {
+			y = val
+			if x <= f.xDestination && x >= f.xSource &&
+				y <= f.yDestination && y <= f.ySource {
 				count++
 			}
+		} else {
+			x = val
 		}
 	}
-	formule := parse.NewBinFile(path + "" + formulaName)
-	tab, err = formule.ReadAll()
+
+	//Write position to value bin file
+	valueBinFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(count))
+	err = valueBinFile.WriteAll(formulaPos)
 	if err != nil {
 		panic(err)
 	}
-	binFile = parse.NewBinFile(string("../../dataset/bin/" +
-		strconv.Itoa(count)))
-	for i := 0; i < len(tab); i++ {
-		x := tab[i]
-		i++
-		y := tab[i]
-		binFile.WritePair(x, y)
-	}
+
+	//TODO: Write value to formula file
+
 	return count
 }

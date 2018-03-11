@@ -9,7 +9,12 @@ import (
 
 func TestToFormula(t *testing.T) {
 	f := ToFormula("=#(0,0,50,50,1)")
-	share.AssertEqual(t, f.xDestination, 50, "xDestination is not 50 in the Formula instance.")
+	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 in the Formula instance.")
+}
+
+func TestBinFileToFormula(t *testing.T) {
+	f := BinFileToFormula("0_0_50_50_1")
+	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 in the Formula instance.")
 }
 
 func TestFromFile(t *testing.T) {
@@ -43,6 +48,6 @@ func TestEvaluate(t *testing.T) {
 }
 
 func TestCounting(t *testing.T) {
-	out := EvaluateFormula("../../dataset/bin/FORMULAS/", "1110_7572_3186_17282_3")
+	out := EvaluateFormula("../../dataset/bin/", "1110_7572_3186_17282_3")
 	fmt.Printf("%d\n", out)
 }

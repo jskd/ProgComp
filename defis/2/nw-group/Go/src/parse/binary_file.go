@@ -177,13 +177,62 @@ func newBinaryFile(file_path string) *BinFile {
 	return &bin
 }
 
+func (b *BinFile) SetFinalValue(final uint32) error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	b.close()
+	f, err_of := os.OpenFile(b.file, os.O_CREATE|os.O_RDWR, 0644)
+	if err_of != nil {
+		log.Fatal(err_of)
+		return err_of
+	}
+	b.opened_f = f
+	bs := uint32ToBytes(final)
+	bw := bufio.NewWriter(b.opened_f)
+	_, err := bw.Write(bs)
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	err = bw.Flush()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return nil
+}
+
+func uint32ToBytes(val uint32) []byte {
+	bs := make([]byte, 4)
+	binary.BigEndian.PutUint32(bs, val)
+	return bs
+}
+
+func (b *BinFile) WriteAll(list []uint32) error {
+	b.mut.Lock()
+	defer b.mut.Unlock()
+	bw := bufio.NewWriter(b.opened_f)
+	for _, val := range list {
+		bs := uint32ToBytes(val)
+		_, err := bw.Write(bs)
+		if err != nil {
+			log.Fatal(err)
+			return err
+		}
+	}
+	err := bw.Flush()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
+	return nil
+}
+
 func (b *BinFile) WritePair(x uint32, y uint32) error {
 	b.mut.Lock() //Ensure that we write x first then y
 	defer b.mut.Unlock()
-	bsx := make([]byte, 4)
-	binary.BigEndian.PutUint32(bsx, x)
-	bsy := make([]byte, 4)
-	binary.BigEndian.PutUint32(bsy, y)
+	bsx := uint32ToBytes(x)
+	bsy := uint32ToBytes(y)
 	bw := bufio.NewWriter(b.opened_f)
 	_, err := bw.Write(bsx)
 	if err != nil {
@@ -208,8 +257,7 @@ func (b *BinFile) WritePair(x uint32, y uint32) error {
 func (b *BinFile) Write(v uint32) error {
 	b.mut.Lock()
 	defer b.mut.Unlock()
-	bs := make([]byte, 4)
-	binary.BigEndian.PutUint32(bs, v)
+	bs := uint32ToBytes(v)
 	bw := bufio.NewWriter(b.opened_f)
 	_, err := bw.Write(bs)
 	if err != nil {
