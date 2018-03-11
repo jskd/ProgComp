@@ -15,13 +15,13 @@
 // but he's a tough guy.
 typedef cl_int8 formula;
 
-#define X1(f)    (f)->s0
-#define X2(f)    (f)->s1
-#define Y1(f)    (f)->s2
-#define Y2(f)    (f)->s3
-#define V(f)     (f)->s4
-#define R(f)     (f)->s5
-#define LEVEL(f) (f)->s6
+#define X1(f)    (f)->s[0]
+#define X2(f)    (f)->s[1]
+#define Y1(f)    (f)->s[2]
+#define Y2(f)    (f)->s[3]
+#define V(f)     (f)->s[4]
+#define R(f)     (f)->s[5]
+#define LEVEL(f) (f)->s[6]
 
 int new_formula(int x1, int y1, int x2, int y2, int v);
 

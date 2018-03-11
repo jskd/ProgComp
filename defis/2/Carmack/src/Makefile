@@ -1,11 +1,18 @@
 CC     = g++
 CFLAGS = -DCHICKEN_MODE -Wall -O2 -std=c++11
 
-WS     = ws
 OBJS   = rtree.o formulanode.o area.o parser.o formula.o
 
+ifeq ($(OS),Windows_NT)
+	LIB = C:\Windows\System32\OpenCL.dll
+	WS     = ws.exe
+else
+	LIB = -lOpenCL
+	WS     = ws
+endif
+
 $(WS): $(OBJS)
-	$(CC) $(CFLAGS) main.cpp -o $(WS) $(OBJS) -lOpenCL
+	$(CC) $(CFLAGS) main.cpp -o $(WS) $(OBJS) $(LIB)
 
 %.o: %.c %.h
 	gcc $(CFLAGS) -c $< -o $@
