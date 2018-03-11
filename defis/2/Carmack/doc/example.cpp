@@ -89,7 +89,7 @@ int main() {
     int A[n], B[n];
     for (int i=0; i<n; i++) {
         A[i] = i;
-        B[i] = n - i - 1;
+        B[i] = i;
     }
     // create a queue (a queue of commands that the GPU will execute)
     cl::CommandQueue queue(context, default_device);
