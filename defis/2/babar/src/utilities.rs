@@ -1,6 +1,8 @@
 use std;
-use std::io::{ BufRead};
+use std::io::{BufRead,BufReader,Read};
 use std::fs::File;
+use std::fs;
+use std::io::prelude::*;
 use std::str;
 use std::thread;
 // mod parser;
@@ -13,10 +15,13 @@ pub const BUFF_SIZE: usize = 16000;
 ///count bytes by lines, & get all formula in formula tab rmove counting
 pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 {
-	let file = File::open(path).expect("fail to open");
+
+        let mut form = Vec::new();
+ 	let file = File::open(path).expect("fail to open");
 	let mut buff = Vec::with_capacity(BUFF_SIZE);
 	let mut reader = std::io::BufReader::new(file);
 	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
+	buff.clear();
 	buff.clear();
 	num_bytes=reader.read_until(b')',&mut buff).expect("read formula");
 	while num_bytes!=0 //Buffer not empty0
@@ -33,6 +38,7 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 					formula.push(*byte);
 				}
 			}
+                form.push(String::from_utf8(formula).unwrap());
 		/*Ca marche mais c'est pas bon*/
 		let thread = thread::spawn(move ||
 		{create_formula(String::from_utf8(formula).unwrap())});
@@ -47,10 +53,44 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 		num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula or end file");
 		buff.clear();
 		num_bytes = reader.read_until(b')',&mut buff).expect("read file");
+		
 	}
+// 	form.reverse();
+// 	write_view(path,&mut form);
 }
 
+pub fn write_view(path:&str,formulas: &mut Vec<String>){
+    let mut count : i32 = 0;
+    let mut view = File::create("view0.csv").expect("Error creating file");
+    let file = File::open(path).expect("fail to open");
+    let mut buff = BufReader::with_capacity(BUFF_SIZE,file);
+    let mut f = match  formulas.pop(){
+        Some(x) =>x,
+        None => return,
+    };
+    loop {
+    let length  = {
+        let mut buffer = buff.fill_buf().expect("err read_first_time");
+        let mut line = String::new();
+        let num_byte = buffer.read_line(&mut line).expect("err");
+        while line.contains(&f){
+            line = line.replace(&f,"-1");
+            f = match formulas.pop(){
+                Some(x) => x,
+                None => break,
+            };
+        }
+        write!(view,"{}",line).expect("Error Writing into the view0");
 
+            
+        num_byte
+    };
+        count = count + 1;
+    if length == 0 { break; }
+    buff.consume(length);
+}
+
+}
 pub fn create_formula(form_string: String) -> cell::Formula
 {
 	let form : String = form_string.trim_matches(|c| c == '(' || c == ')' || c == '=' || c == '#' ).to_string();
