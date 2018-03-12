@@ -10,7 +10,7 @@ use cell;
 // mod treatment;
 
 
-pub const BUFF_SIZE: usize = 16000;
+pub const BUFF_SIZE: usize = 16384;
 
 ///count bytes by lines, & get all formula in formula tab rmove counting
 pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
