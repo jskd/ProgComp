@@ -30,8 +30,10 @@ if __name__ == "__main__":
         # BEGIN OF SCRIPT
         test_result = True
         try:
-            view0_output = test_path + "output/view0.csv"
-            changes_output = test_path + "output/changes.txt"
+            input_data = os.path.realpath(test_path + "input/data.csv")
+            input_user = os.path.realpath(test_path + "input/user.txt")
+            view0_output = os.path.realpath(test_path + "output/view0.csv")
+            changes_output = os.path.realpath(test_path + "output/changes.txt")
 
             # CLEAN OUTPUT
             if os.path.isdir(view0_output):
@@ -46,9 +48,7 @@ if __name__ == "__main__":
                 if os.path.isfile(changes_output):
                     os.remove(changes_output)
 
-
-
-            cmd = [group_path + EXEC_PATH, test_path + "input/data.csv", test_path + "input/user.txt", view0_output, changes_output]
+            cmd = [group_path + EXEC_PATH, input_data, input_user, view0_output, changes_output]
             out = check_output(cmd, stderr=STDOUT, timeout=30).decode("utf-8")
 
             changes_expected = test_path + EXPECTED_PATH + "changes_expected.txt"

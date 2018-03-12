@@ -13,7 +13,7 @@ func main() {
 	// Counter
 	go func() {
 		for x := 0; ; x++ {
-			naturals <- x // Send a value to channel.
+			naturals <- x // Send a value to a channel.
 		}
 	}()
 
