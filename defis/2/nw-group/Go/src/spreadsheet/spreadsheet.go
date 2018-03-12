@@ -81,12 +81,12 @@ func toImmediate(s string) *immediate {
 	return &immediate{i}
 }
 
-func BinFileToFormula(s string) *formula {
-	return toFormula(s, "%d_%d_%d_%d_%d")
-}
-
 func ToFormula(s string) *formula {
-	return toFormula(s, "=#(%d,%d,%d,%d,%d)")
+	if strings.HasPrefix(s, "=") {
+		return toFormula(s, "=#(%d,%d,%d,%d,%d)")
+	} else {
+		return toFormula(s, "%d_%d_%d_%d_%d")
+	}
 }
 
 //s: input string
@@ -111,7 +111,7 @@ func toFormula(s string, p string) *formula {
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
 func Evaluate(bin_repo string, do_write_final_value bool) int {
-	formula_list, err := getBinFormulaList(bin_repo)
+	formula_list, _, err := getBinFormulaList(bin_repo)
 	if err == nil {
 		formula_list = SortByDependency(formula_list)
 		var wg sync.WaitGroup
@@ -124,18 +124,38 @@ func Evaluate(bin_repo string, do_write_final_value bool) int {
 	return len(formula_list)
 }
 
-func getBinFormulaList(bin_repo string) ([]string, error) {
-	files, err := ioutil.ReadDir(bin_repo + "/FORMULAS/")
+//Return list of formula files and list of formula's target value, and error if occured
+func getBinFormulaList(bin_repo string) ([]string, []string, error) {
+	files, err := listAllFilesInDir(bin_repo + "/FORMULAS/")
+	if err != nil {
+		log.Fatal(err)
+		return []string{}, []string{}, err
+	}
+
+	var formula_list []string
+	f_value_list := make([]string, len(files))
+	for idx, d := range files {
+		f_value_list[idx] = d
+		f_names, _ := listAllFilesInDir(bin_repo + "/FORMULAS/" + d)
+		for _, f := range f_names {
+			formula_list = append(formula_list, f)
+		}
+	}
+	return formula_list, f_value_list, nil
+}
+
+func listAllFilesInDir(dir string) ([]string, error) {
+	files, err := ioutil.ReadDir(dir)
 	if err != nil {
 		log.Fatal(err)
 		return []string{}, err
 	}
 
-	formula_list := make([]string, len(files))
+	file_names := make([]string, len(files))
 	for idx, f := range files {
-		formula_list[idx] = f.Name()
+		file_names[idx] = f.Name()
 	}
-	return formula_list, nil
+	return file_names, nil
 }
 
 //TODO: To sort fomulas with dependency algorithm
@@ -150,32 +170,14 @@ func FromFile(filename string, sep rune) string {
 	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir)
-	//1st implementation to process CSV with Go CSV lib.
-	//	file, err := os.Open(filename)
-	//	if err != nil {
-	//		panic(err)
-	//	}
-	//	csvReader := csv.NewReader(file)
-	//	csvReader.Comma = sep
-	//	csvReader.FieldsPerRecord = -1
-	//	csvReader.TrimLeadingSpace = true
-	//	err = nil
-	//	for pos_x := 0; err != io.EOF; pos_x += 1 {
-	//		var l []string
-	//		l, err = csvReader.Read()
-	//		processOneLineOfCsv(bin_dir, l, sep, pos_x)
-	//		fmt.Printf("Processing %d\n", len(l))
-	//	}
-	//2nd implementation to process CSV with customized parser.
 	formula_count := PreprocessFileToBin(filename, bin_dir, sep, nil)
 	if formula_count > uint32(0) {
 		log.Printf("Found %d formulas in %s", formula_count, filename)
 		m := make(map[string]int)
-		formula_list, err := getBinFormulaList(bin_dir)
+		_, ta_list, err := getBinFormulaList(bin_dir)
 		if err == nil {
-			for _, f := range formula_list {
-				form := BinFileToFormula(f)
-				m[fmt.Sprint(form.value)]++
+			for _, v := range ta_list {
+				m[v]++
 			}
 		}
 		PreprocessFileToBin(filename, bin_dir, sep, m)
@@ -211,7 +213,7 @@ func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[s
 
 func saveOneFormulaToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bool {
 	if strings.HasPrefix(txt, "=") {
-		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
+		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToBinFileName(txt))
 		bf.WritePair(pos_x, pos_y)
 		return true
 	}
@@ -227,17 +229,9 @@ func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bo
 	return false
 }
 
-func processOneLineOfCsv(bin_dir string, line []string, sep rune, pos_x int) {
-	for pos_y, element := range line {
-		txt := strings.TrimSpace(element)
-		saveOneCellToBin(bin_dir, txt, uint32(pos_x), uint32(pos_y))
-		pos_y += 1
-	}
-}
-
-func FormulaToFileName(s string) string {
+func FormulaToBinFileName(s string) string {
 	f := ToFormula(s)
-	return fmt.Sprintf("%d_%d_%d_%d_%d", f.ySource, f.xSource, f.yDestination, f.xDestination, f.value)
+	return fmt.Sprintf("%d/%d_%d_%d_%d_%d", f.value, f.ySource, f.xSource, f.yDestination, f.xDestination, f.value)
 }
 
 type Command struct {
@@ -318,7 +312,7 @@ func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value 
 	if wg != nil { //When WaitGroup is not provided, nothing to notify
 		defer wg.Done()
 	}
-	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + formula_name)
+	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + FormulaToBinFileName(formula_name))
 	formulaPos, err := formulaBin.ReadAll()
 	if err != nil {
 		panic(err)
@@ -327,7 +321,7 @@ func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value 
 		//If this formula has been evaluated, return its value directly
 		return formulaPos[0]
 	}
-	f := BinFileToFormula(formula_name)
+	f := ToFormula(formula_name)
 	binFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(f.value))
 	pos, err := binFile.ReadAll()
 	if err != nil {

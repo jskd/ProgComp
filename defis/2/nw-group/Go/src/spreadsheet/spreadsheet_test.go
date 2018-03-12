@@ -16,7 +16,7 @@ func TestToFormula(t *testing.T) {
 }
 
 func TestBinFileToFormula(t *testing.T) {
-	f := BinFileToFormula("0_0_50_50_1")
+	f := ToFormula("0_0_50_50_1")
 	share.AssertEqual(t, f.xSource, uint32(0), "xSource is not uint32 0 from parsing formula string.")
 	share.AssertEqual(t, f.ySource, uint32(0), "ySource is not uint32 0 from parsing formula string.")
 	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 from parsing formula string.")
