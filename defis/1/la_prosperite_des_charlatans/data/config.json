@@ -13,23 +13,23 @@
   "target":[
     {
       "name":"babar",
-      "path":"../../2/babar"
+      "path":"../../${DEFIS_NUMBER}/babar"
     },
     {
       "name":"Carmack",
-      "path":"../../2/Carmack"
+      "path":"../../${DEFIS_NUMBER}/Carmack"
     },
     {
       "name":"Scableur",
-      "path":"../../2/Scableur"
+      "path":"../../${DEFIS_NUMBER}/Scableur"
     },
     {
       "name":"nw-group",
-      "path":"../../2/nw-group"
+      "path":"../../${DEFIS_NUMBER}/nw-group"
     },
     {
       "name":"GroupTest",
-      "path":"../GroupTest"
+      "path":"../../${DEFIS_NUMBER}/GroupTest"
     }
   ]
 }

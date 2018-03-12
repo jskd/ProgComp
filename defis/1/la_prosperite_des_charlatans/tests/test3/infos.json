@@ -3,6 +3,7 @@
     {
       "name":"Test 3: user.txt change a formula",
       "exec": ["python3", "test.py"],
-      "expected": ["changes_expected.txt", "view0_expected.csv"]
+      "expected": ["changes_expected.txt", "view0_expected.csv"],
+      "timeout": "60"
     }
 }

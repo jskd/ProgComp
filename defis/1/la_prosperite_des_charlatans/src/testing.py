@@ -8,24 +8,32 @@ from TestReport import TestReport
 #from ThreadExec import ThreadExec
 from TaskTracker import TaskTracker
 
-with open("data/config_backup.json") as data:
+with open("data/config.json") as data:
     config = json.load(data)
 
 def parseArgs(args):
+    defis_number = None
     grp_name = None
     test_number = None
+
     for arg in args:
         splited = arg.split("=")
-        if splited[0] == "grp":
+        if splited[0] == "defis":
+            defis_number = splited[1]
+            if defis_number == "" : defis_number = 1
+        elif splited[0] == "grp":
             grp_name = splited[1]
         elif splited[0] == "number":
             try: test_number = int(splited[1])
             except: pass
-    return grp_name, test_number
 
-def getTargets(grp_name = None):
+    return defis_number, grp_name, test_number
+
+def getTargets(defis_number, grp_name = None):
     targets = config["target"]
     for target in targets:
+        target["path"] = target["path"].replace("${DEFIS_NUMBER}", str(defis_number))
+
         if target["name"] == grp_name:
             targets = [target]
             break
@@ -64,14 +72,13 @@ if __name__ == "__main__":
 
     # INITIALIZATION OF CONTEXT
     #------------------------------------------------------
-    grp_name, test_number = parseArgs(sys.argv[1::])
-    targets = getTargets(grp_name)
+    defis_number, grp_name, test_number = parseArgs(sys.argv[1::])
+    targets = getTargets(defis_number, grp_name)
 
     INIT_TEST = ["make_target"]
     CLEANUP_TEST = ["make_mrproper"]
 
     TEST_LIST = getTestList()
-    nb_tests_total = len(TEST_LIST) - len(CLEANUP_TEST)
     TEST_LIST = [t for t in TEST_LIST if t not in INIT_TEST and t not in CLEANUP_TEST]
 
     if test_number != None:
@@ -97,5 +104,5 @@ if __name__ == "__main__":
 
         total_exec_time = test_report.get_total_exec_time()[1]
 
-        colortotal = "green" if test_report.NB_PASSED == nb_tests_total else "yellow"
-        print (colored("\n [{}/{}] {}s => {:0.1f}/20 avec félicitations du jury\n".format(test_report.NB_PASSED, nb_tests_total, total_exec_time, (test_report.NB_PASSED / nb_tests_total) * 20 ), colortotal))
+        colortotal = "green" if test_report.NB_PASSED == test_report.NB_TEST else "yellow"
+        print (colored("\n [{}/{}] {}s => {:0.1f}/20 avec félicitations du jury\n".format(test_report.NB_PASSED, test_report.NB_TEST, total_exec_time, (test_report.NB_PASSED / test_report.NB_TEST) * 20 ), colortotal))

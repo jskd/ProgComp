@@ -13,6 +13,7 @@ class TestReport():
         self.report_name = report_name
         self.logs = []
         self.target = target
+        self.NB_TEST = 0
         self.NB_PASSED = 0
 
         try:
@@ -44,6 +45,7 @@ class TestReport():
             "commit" : self.commit
         }
 
+        self.NB_TEST += 1
         if log["result"] == "PASS": self.NB_PASSED += 1
         self.logs.append(log)
 
@@ -109,7 +111,7 @@ class TestReport():
                     log["test_info"]["name"],
                     log["result"],
                     log["exec_time"],
-                    log["output"])
+                    log["output"].replace("\"", "\'"))
 
                 cursor.execute(qry)
                 conn.commit()

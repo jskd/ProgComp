@@ -4,6 +4,7 @@
       "name":"Test 1: calculation of one formula",
       "exec": ["python3", "test.py"],
       "expected": ["changes_expected.txt", "view0_expected.csv"],
-      "comment" : "view0 contains the result of formula"
+      "comment" : "view0 contains the result of formula",
+      "timeout": "60"
     }
 }
