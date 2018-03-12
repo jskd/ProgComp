@@ -110,25 +110,32 @@ func toFormula(s string, p string) *formula {
    It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
-func Evaluate(bin_repo string, doWriteFinalValue bool) int {
+func Evaluate(bin_repo string, do_write_final_value bool) int {
+	formula_list, err := getBinFormulaList(bin_repo)
+	if err == nil {
+		formula_list = SortByDependency(formula_list)
+		var wg sync.WaitGroup
+		for _, f := range formula_list {
+			wg.Add(1)
+			go EvaluateFormula(bin_repo, f, do_write_final_value, &wg)
+		}
+		wg.Wait()
+	}
+	return len(formula_list)
+}
+
+func getBinFormulaList(bin_repo string) ([]string, error) {
 	files, err := ioutil.ReadDir(bin_repo + "/FORMULAS/")
 	if err != nil {
 		log.Fatal(err)
+		return []string{}, err
 	}
 
 	formula_list := make([]string, len(files))
 	for idx, f := range files {
 		formula_list[idx] = f.Name()
 	}
-
-	formula_list = SortByDependency(formula_list)
-	var wg sync.WaitGroup
-	for _, f := range formula_list {
-		wg.Add(1)
-		go EvaluateFormula(bin_repo, f, doWriteFinalValue, &wg)
-	}
-	wg.Wait()
-	return len(files)
+	return formula_list, nil
 }
 
 //TODO: To sort fomulas with dependency algorithm
@@ -160,8 +167,26 @@ func FromFile(filename string, sep rune) string {
 	//		fmt.Printf("Processing %d\n", len(l))
 	//	}
 	//2nd implementation to process CSV with customized parser.
-	csvParser := parse.NewCsvParser(filename, sep, '"')
+	formula_count := PreprocessFileToBin(filename, bin_dir, sep, nil)
+	if formula_count > uint32(0) {
+		log.Printf("Found %d formulas in %s", formula_count, filename)
+		m := make(map[string]int)
+		formula_list, err := getBinFormulaList(bin_dir)
+		if err == nil {
+			for _, f := range formula_list {
+				form := BinFileToFormula(f)
+				m[fmt.Sprint(form.value)]++
+			}
+		}
+		PreprocessFileToBin(filename, bin_dir, sep, m)
+	}
+	parse.BinFileManager().SaveAndCloseAll()
+	return bin_dir
+}
 
+func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[string]int) uint32 { //When target is nil, extract only formulas
+	count := uint32(0)
+	csvParser := parse.NewCsvParser(filename, sep, '"')
 	for {
 		str, x, y, err := csvParser.ReadOneCell()
 		//fmt.Printf("%d,%d: '%s'\n", x, y, str)
@@ -169,21 +194,37 @@ func FromFile(filename string, sep rune) string {
 			break
 		}
 
-		saveOneCellToBin(bin_dir, str, x, y)
+		if target == nil {
+			if saveOneFormulaToBin(bin_dir, str, x, y) {
+				count++
+			}
+		} else {
+			if target[str] > 0 {
+				if saveOneCellToBin(bin_dir, str, x, y) {
+					count++
+				}
+			}
+		}
 	}
-
-	parse.BinFileManager().SaveAndCloseAll()
-	return bin_dir
+	return count
 }
 
-func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) {
+func saveOneFormulaToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bool {
 	if strings.HasPrefix(txt, "=") {
 		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToFileName(txt))
 		bf.WritePair(pos_x, pos_y)
-	} else {
+		return true
+	}
+	return false
+}
+
+func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bool {
+	if !strings.HasPrefix(txt, "=") {
 		bf := parse.NewBinFile(bin_dir + "/" + txt)
 		bf.WritePair(pos_x, pos_y)
+		return true
 	}
+	return false
 }
 
 func processOneLineOfCsv(bin_dir string, line []string, sep rune, pos_x int) {
@@ -273,11 +314,11 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func EvaluateFormula(bin_repo string, formulaName string, doWriteFinalValue bool, wg *sync.WaitGroup) uint32 {
+func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value bool, wg *sync.WaitGroup) uint32 {
 	if wg != nil { //When WaitGroup is not provided, nothing to notify
 		defer wg.Done()
 	}
-	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + formulaName)
+	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + formula_name)
 	formulaPos, err := formulaBin.ReadAll()
 	if err != nil {
 		panic(err)
@@ -286,7 +327,7 @@ func EvaluateFormula(bin_repo string, formulaName string, doWriteFinalValue bool
 		//If this formula has been evaluated, return its value directly
 		return formulaPos[0]
 	}
-	f := BinFileToFormula(formulaName)
+	f := BinFileToFormula(formula_name)
 	binFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(f.value))
 	pos, err := binFile.ReadAll()
 	if err != nil {
@@ -317,7 +358,7 @@ func EvaluateFormula(bin_repo string, formulaName string, doWriteFinalValue bool
 		panic(err)
 	}
 
-	if doWriteFinalValue {
+	if do_write_final_value {
 		err = formulaBin.SetFinalValue(count)
 		if err != nil {
 			panic(err)
