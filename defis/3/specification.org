@@ -48,7 +48,8 @@ Sorties:
   qui contenaient des entiers contiennent les mêmes entiers et les cellules qui
   contenaient des formules contiennent maintenant l'évaluation des formules.
   Ce fichier contiendra uniquement les cellules du rectangle défini par (r1, c1)
-  et (r2, c2).
+  et (r2, c2) dans la première commande de la forme "t: ! r1 c1 r2 c2". Un
+  fichier view1.csv sera créé pour la commande de visualisation suivante, etc.
 
 - un fichier changes.txt formés de lignes de la forme:
   r0 c0 v0 t0
