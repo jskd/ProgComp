@@ -19,7 +19,7 @@ if [ $# -eq 4 ] ; then
 
 	# Copy input arguments
 	docker cp $1 $CONTAINER:"$D_DATA"
-	docker cp $1 $CONTAINER:"$D_USERS"
+	docker cp $2 $CONTAINER:"$D_USERS"
 
 	# Run application
 	docker exec $CONTAINER sh -c "$RUN $D_DATA $D_USERS $D_VIEW0 $D_CHANGES"
