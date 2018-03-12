@@ -23,7 +23,7 @@ class UserActionEvaluator(matrix: Matrix, val source : UserData, var resultMatri
       fun match{
         case Some(f) =>{
           if(isInRange(coord, f.from, f.to) && !lstfun.contains(i) ){
-            functionStack.append(fun)
+            functionStack.+=:(fun)
             lstfun = i :: lstfun
           }
         }
@@ -75,8 +75,9 @@ class UserActionEvaluator(matrix: Matrix, val source : UserData, var resultMatri
         }
       }
       eliminateCycle()
-      functionStack = (testFunctionChanges(coord)).++=:(functionStack)
-      actionChanges = (evalFunctionStack(functionStack)).++:(actionChanges)
+      functionStack.++=:(testFunctionChanges(coord))
+      actionChanges.++=:(evalFunctionStack(functionStack))
+      actionChanges = actionChanges.sortBy(x => x._1)
       changesData.modificationList.+=:((coord,v), actionChanges)
     }
     changesData

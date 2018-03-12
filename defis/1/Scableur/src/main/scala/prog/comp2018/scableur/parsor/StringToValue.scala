@@ -8,11 +8,11 @@ object StringToValue {
   def stv(str: String, i : Int, j: Int) : Value = {
 
 
-    if (str(0) == '#') {
+    if (str(0) == '=') {
 
       val pattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
 
-      if(str(1)=='='){
+      if(str(1)=='#'){
         val parts=pattern.findAllIn(str)
         val i1=parts.group(1)
         val j1=parts.group(2)
@@ -20,7 +20,8 @@ object StringToValue {
         val j2=parts.group(4)
         val value=parts.group(5)
         try{
-          new NbrIteration((i,j),(i1.toInt,j1.toInt),(i2.toInt,j2.toInt), ConstantType(Some(value.toInt)))
+          new NbrIteration((i,j),(i1.toInt,j1.toInt),(i2.toInt,j2.toInt),
+                                               ConstantType(Some(value.toInt)))
         }catch {
           case _ : Exception => ConstantType(None)
         }
@@ -33,8 +34,6 @@ object StringToValue {
     else{
       ConstantType(Some(str.toInt))
     }
-
-
 
   }
 
