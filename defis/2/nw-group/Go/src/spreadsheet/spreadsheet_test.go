@@ -7,20 +7,22 @@ import (
 )
 
 func TestToFormula(t *testing.T) {
-	f := ToFormula("=#(0,0,50,50,1)")
+	f := ToFormula("=#(0,1,30,50,1)")
 	share.AssertEqual(t, f.xSource, uint32(0), "xSource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.ySource, uint32(0), "ySource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.ySource, uint32(1), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.xDestination, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
 	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
 	share.AssertEqual(t, f.value, uint32(1), "value is not uint32 1 from parsing formula string.")
 }
 
 func TestBinFileToFormula(t *testing.T) {
-	f := ToFormula("0_0_50_50_1")
+	f := ToFormula("0_1_30_50_1")
 	share.AssertEqual(t, f.xSource, uint32(0), "xSource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.ySource, uint32(0), "ySource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.xDestination, uint32(50), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.ySource, uint32(1), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.xDestination, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
 	share.AssertEqual(t, f.yDestination, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
+	formula_bin_path := FormulaToBinFileName("0_1_30_50_1")
+	share.AssertEqual(t, formula_bin_path, "1/0_1_30_50_1", "Formula bin path is not correct.")
 }
 
 func TestFromFile(t *testing.T) {

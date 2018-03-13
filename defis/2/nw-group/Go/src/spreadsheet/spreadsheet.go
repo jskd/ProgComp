@@ -231,7 +231,7 @@ func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bo
 
 func FormulaToBinFileName(s string) string {
 	f := ToFormula(s)
-	return fmt.Sprintf("%d/%d_%d_%d_%d_%d", f.value, f.ySource, f.xSource, f.yDestination, f.xDestination, f.value)
+	return fmt.Sprintf("%d/%d_%d_%d_%d_%d", f.value, f.xSource, f.ySource, f.xDestination, f.yDestination, f.value)
 }
 
 type Command struct {
