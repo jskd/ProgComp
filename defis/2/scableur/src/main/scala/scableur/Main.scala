@@ -25,18 +25,35 @@ object Scableur {
     Conf.logger.info("Launching Scableur")
     check_args(args)
     config_environment()
-    parse_input() 
-    val file = spark_data_load(Conf.Arguments.dataFile)
-    val mapped_data = map_data(file)
-
+    parse_input()
+    // Load data in Spark
+    val csvFile = sc.textFile(Conf.Arguments.dataFile)
+    //Split data
+    val splitedRDD = csvFile.map(line => line.split(";").map(elem => elem.trim))
+    //Parse data to Objects
+    val mapped_data = splitedRDD.map(line => line.map(elem => mapPValue(elem)))
     //TODO: cycle_detection()
-    val result_data = eval_mapped_data(mapped_data)
+    //Evaluate data
+    //TODO: val evaluated_data = mapped_data.map(line => line.map((p,elem) => eval(elem)))
 
-    print_view_csv(file)
-    print_changes()
+    //DEBUG PRINTS
+    mapped_data.foreach(line => line.foreach(v => println(v.toString())))
+    FlowController.printFormulaList()
+
+    
+    //TODO: eval
 
     //TODO: users
-    
+
+    //Print the data in result csv file
+    val res_file = splitedRDD.map(line => line.reduce((accum,c) => accum + ";" + c))
+    /*TODO: format output file*/
+    res_file.coalesce(1).saveAsTextFile(Conf.Arguments.viewFile)
+
+    //Print the user changes in changes file
+    val pw = new PrintWriter(new File(Conf.Arguments.changesFile))
+    pw.write("Hello, world")
+    pw.close
     Conf.logger.info("Scableur : done.")
   }
 
@@ -47,55 +64,14 @@ object Scableur {
     Conf.Arguments.dataFile(Conf.positionDataCSV)
   }
 
-
-  def spark_data_load(filename: String) : Data = {
-    // Load data in spark file system
-    val csvFile = sc.textFile(filename)
-    csvFile.map(line => line.split(";").map(elem => elem.trim))
-  }
-
-
-  def map_data(file : Data) : MapedData = {
-    //Map all the data to create formula list
-    val mapped_data = file.map(line => line.map(elem => mapPValue(elem)))
-    /*
-    println("mapped data : " + mapped_data)
-    val functionList = evaluator.getFormulasList()
-    println("functionList : " + functionList)
-    */
-    return mapped_data
-  }
-
-  def print_view_csv(file : ResultData): Unit = {
-    //Print the data in result csv file
-    val writable_file = file.map(line => line.reduce((accum,c) => accum + ";" + c))
-    /*TODO: format output file*/
-    writable_file.coalesce(1).saveAsTextFile(Conf.Arguments.viewFile)
-  }
-
-  def print_changes() : Unit = {
-    //Print the user changes in changes file
-    val pw = new PrintWriter(new File(Conf.Arguments.changesFile))
-    pw.write("Hello, world")
-    pw.close
-  }
-
-
-  def eval_mapped_data(data: MapedData) : ResultData = {
-    //Evaluate all the cells and the formulas
-    null
-  }
-
   def config_environment(){
     //Set up spark and other enviroment values 
     val conf = new SparkConf().setAppName(Conf.AppName)
-    conf.set("spark.scheduler.mode", "FAIR")
+    //conf.set("spark.scheduler.mode", "FAIR")
     sc = new SparkContext(conf)
-    
-    val dir1 = new File(Conf.outputFolder)
-    var dir2 = new File(Conf.inputFolder)
-    dir1.mkdir()
-    dir2.mkdir()
+  
+    val dir = new File(Conf.outputFolder)
+    dir.mkdir()
   }
 
   def check_args(args : Array[String]) : Unit = {

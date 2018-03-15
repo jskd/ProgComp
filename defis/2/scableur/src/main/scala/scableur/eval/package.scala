@@ -14,35 +14,19 @@ package object eval {
 
 	// Evaluate a Count Formula
 	def evalFCount(formula: PCountFormula) : Option[Int] = {
-		/* Future & Promise do not work with spark ??
-		val f: Future[Option[Int]] = Future {
-  			
-		}
-		val res = f onComplete {
-		  case Success(result) => {
-		  	//FlowController.sendFunctionResult(....)
-		  	result
-		  }
-		  case Failure(error) => {
-		  	//FlowController.sendFunctionResult(....)
-		  	None
-		  }
-		}
-		Await.result(f, Duration.Inf)
-		*/
 		return FlowController.getResultOf(formula.p)
 	}
 
 	def evalConstant(c: PConstant) : Option[Int] = {
-		None
+		c.value
 	}
 
 	def eval(pValue: PValue) : Option[Int] = {
-		/*
+
 		pValue match {
-			...
+			case c:PConstant => evalConstant(c)
+			case f:PCountFormula => evalFCount(f)
 		}
-		*/
 		None
 	}
 }

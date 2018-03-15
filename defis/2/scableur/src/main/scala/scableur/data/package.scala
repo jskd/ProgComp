@@ -27,22 +27,26 @@ package object data {
 
 
 	def addPositionsToCSV(filename_source:String,filename_dest: String): Unit = {
-	    val file = Source.fromFile(filename_source)
-	    val outputFile = new File(filename_dest)
-	    val writer = new BufferedWriter(new FileWriter(outputFile))
-	    for ( (line,index) <- file.getLines().zipWithIndex){
-		
-	      var lin = line.split(";")
-	      var i=lin.length-1
-	      for( a <- 0 to lin.length-2){
-	        writer.write("("+ (index) + ","+a+")" +" " +lin(a)+";")
-	      }
-	      writer.write("("+ (index) + ","+i+")" +" " +lin(i))
-	      writer.newLine()     
+		try{
+		    val file = Source.fromFile(filename_source)
+		    val outputFile = new File(filename_dest)
+		    val writer = new BufferedWriter(new FileWriter(outputFile))
+		    for ( (line,index) <- file.getLines().zipWithIndex){
+			
+		      var lin = line.split(";")
+		      var i=lin.length-1
+		      for( a <- 0 to lin.length-2){
+		        writer.write("("+ (index) + ","+a+")" +" " +lin(a)+";")
+		      }
+		      writer.write("("+ (index) + ","+i+")" +" " +lin(i))
+		      writer.newLine()     
 
-	    }
+		    }
 
-	    writer.flush()
-	    writer.close()
+		    writer.flush()
+		    writer.close()
+		}catch{
+			case e: java.io.FileNotFoundException => println("#file not found: " + filename_source)
+		}
 	} 
 }

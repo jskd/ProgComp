@@ -16,9 +16,9 @@ object FlowController {
 	}
 
 
-	def addNewCountFormula(position: Point, f: PCountFormula) : Unit = {
+	def addNewCountFormula(f: PCountFormula) : Unit = {
 		formulaList.synchronized {
-			formulaList.put(position, f)
+			formulaList.put(f.p, f)
 		}
 	}
 	
@@ -27,5 +27,10 @@ object FlowController {
 			case Some(f) => f.getResult()
 			case None => None
 		}
+	}
+
+	def printFormulaList() : Unit = {
+		println("Formula list :: ")
+		formulaList foreach {case (key, value) => println (key + "-->" + value)}
 	}
 }

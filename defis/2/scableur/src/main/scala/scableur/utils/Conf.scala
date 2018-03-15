@@ -7,15 +7,15 @@ object Conf {
 	val MAX_VALUE : Int = 255
   	val MIN_VALUE : Int = 0
   	var logger : Logger = _
-  	val outputFolder : String = "ressources/output"
-  	val inputFolder : String = "ressources/input"
-  	val positionDataCSV : String = inputFolder + "/positionData.csv"
+  	val outputFolder : String = "output"
+  	val positionDataCSV : String = outputFolder + "/positionData.csv"
 
 	object Arguments {
 	    private var _dataCSVPath:String = ""
 	    private var _userTXTPath:String = ""
 	    private var _viewCSVPath:String = ""
 	    private var _changesTXTPath:String = ""
+
 
 	    def dataFile (filepath : String): Unit = {
 	      _dataCSVPath = filepath
@@ -49,12 +49,11 @@ object Conf {
 	    }
 	}
 
-
 	object Patterns {
 		/* Regex pattern to match count formula in a string*/
-		val countFormulaPattern = """^.*[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)].*$""".r
+		val countFormulaPattern = """[#=(](\d+),(\d+),(\d+),(\d+),(\d+)[)]""".r
 		/* Regex to match point Value pair in a string */ 
-		val pointValuePattern = """^.*\((\d+),(\d+)\) (.+).*$""".r
+		val pointValuePattern = """\((\d+),(\d+)\) (.+)""".r
 	}
 
 }
