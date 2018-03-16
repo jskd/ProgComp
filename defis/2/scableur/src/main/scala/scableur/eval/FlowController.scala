@@ -9,10 +9,25 @@ object FlowController {
 	@volatile var formulaList = scala.collection.mutable.Map[Point,PCountFormula]()
 
 
+	//si dans toutes les formules , le point - option(value ) en parametre est dans
+	//l'une des formule de la formula list, si c'est le cas , faire receive des parametre
+
 	def receiveValue(position: Point, value:Option[Int]): Unit = {
-		//TODO: map list of formulas to send them the value ,voire 
-		//si dans toutes les formules , le point - option(value ) en parametre est dans 
-		//l'une des formule de la formula list, si c'est le cas , faire receive des parametre
+
+	for ( f <- formulaList ) {
+
+		var actualfun : PCountFormula = f._2
+
+		var a : Area = f._2.defArea
+
+		if(isPointInArea(position,a)) {
+
+			actualfun.receive(position,value)
+
+		}
+
+	}
+
 	}
 
 	def addNewCountFormula(f: PCountFormula) : Unit = {
