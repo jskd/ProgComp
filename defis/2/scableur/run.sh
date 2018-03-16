@@ -17,6 +17,8 @@ if [ "$1" == "--test" ]; then
 elif [ "$1" == "--clean" ]; then
 	echo "Cleaning old output..."
 	rm -rf output
+elif [ "$1" == "--docker" ]; then
+	spark-submit target/scala-2.11/test_spark_2.11-0.1.jar "input/data.csv" "input/users.txt" "output/view0.csv" "output/changes.txt"
 else
 	spark-submit target/scala-2.11/test_spark_2.11-0.1.jar $@
 fi

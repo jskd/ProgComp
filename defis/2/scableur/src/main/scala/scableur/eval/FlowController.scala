@@ -2,19 +2,16 @@ package scableur.eval
 
 import scableur.data._
 import scableur.utils._
-
+/**
+	Object controlling the flow of data towards a list of formulas
+*/
 object FlowController {
 	@volatile var formulaList = scala.collection.mutable.Map[Point,PCountFormula]()
 
 
-	def receiveValueCell(position: Point, value:Option[Int]): Unit = {
+	def receiveValue(position: Point, value:Option[Int]): Unit = {
 		//TODO: map list of formulas to send them the value 
 	}
-
-	def receiveResult(position: Point, value:Option[Int]): Unit = {
-		//TODO map list of formulas to send them the value
-	}
-
 
 	def addNewCountFormula(f: PCountFormula) : Unit = {
 		formulaList.synchronized {

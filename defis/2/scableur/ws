@@ -2,35 +2,28 @@
 
 if [ $# -eq 4 ] ; then
 	# Entrypoint
-	RUN="/scableur/run.sh"
-
-	# Start container
-	CONTAINER=$(docker run -it -d "scableur-spark-img" /bin/sh)
+	RUN="/scableur/run.sh --docker"
+	IMG="scableur-spark-img:latest"
 
 	# Format filenames
-	DATA=$(basename "$1")
-	USERS=$(basename "$2")
-	VIEW0=$(basename "$3")
-	CHANGES=$(basename "$4")
-	D_DATA="/scableur/resources/input/$DATA"
-	D_USERS="/scableur/resources/input/$USERS"
-	D_VIEW0="/scableur/resources/output/$VIEW0"
-	D_CHANGES="/scableur/resources/output/$CHANGES"
+	DATA=$1 #$(basename "$1")
+	USERS=$2 #$(basename "$2")
+	VIEW0=$3 #$(basename "$3")
+	CHANGES=$4 #$(basename "$4")
 
-	# Copy input arguments
-	docker cp $1 $CONTAINER:"$D_DATA"
-	docker cp $1 $CONTAINER:"$D_USERS"
+	# Create output files
+	touch $VIEW0
+	touch $CHANGES
+	
+	# Run application (-v allows file mounting)
+##TODO: test file mounting
+	docker run -i -t $IMG  \
+	-v "$DATA:/scableur/input/data.csv" \
+	-v "$USERS:/scableur/input/users.txt" \
+	-v "$VIEW0:/scableur/output/view0.csv" \
+	-v "$CHANGES:/scableur/output/changes.csv" \
+	sh -c "$RUN $D_VIEW0 $D_CHANGES"
 
-	# Run application
-	docker exec $CONTAINER sh -c "$RUN $D_DATA $D_USERS $D_VIEW0 $D_CHANGES"
-
-	# Copy results
-	docker cp $CONTAINER:"$D_VIEW0" $3
-	docker cp $CONTAINER:"$D_CHANGES" $4
-
-	# Stop docker
-	docker stop $CONTAINER
-	docker rm $CONTAINER
 else 
 	echo "sh: use: ./ws <data.csv> <user.txt> <view0.csv> <changes.txt>"
 fi

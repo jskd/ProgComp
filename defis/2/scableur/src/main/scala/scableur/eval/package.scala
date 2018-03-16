@@ -12,20 +12,11 @@ import scala.util.{Success, Failure}
 
 package object eval {
 
-	// Evaluate a Count Formula
-	def evalFCount(formula: PCountFormula) : Option[Int] = {
-		return FlowController.getResultOf(formula.p)
-	}
-
-	def evalConstant(c: PConstant) : Option[Int] = {
-		c.value
-	}
-
+	// Evaluate a PValue
 	def eval(pValue: PValue) : Option[Int] = {
-
 		pValue match {
-			case c:PConstant => evalConstant(c)
-			case f:PCountFormula => evalFCount(f)
+			case c:PConstant => c.value
+			case f:PCountFormula => f.getResult()
 		}
 		None
 	}

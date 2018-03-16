@@ -2,10 +2,6 @@ IMG="scableur-spark-img"
 
 all: image
 
-
-compile:
-	sbt compile
-
 package:
 	sbt package
 

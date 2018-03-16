@@ -69,9 +69,6 @@ object Scableur {
     val conf = new SparkConf().setAppName(Conf.AppName)
     //conf.set("spark.scheduler.mode", "FAIR")
     sc = new SparkContext(conf)
-  
-    val dir = new File(Conf.outputFolder)
-    dir.mkdir()
   }
 
   def check_args(args : Array[String]) : Unit = {
