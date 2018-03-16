@@ -24,11 +24,15 @@ case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extend
 		@volatile private var invalid = false
 
 
-		def receice(cell: PConstant) : Unit = {
-			if(!(invalid) && isPointInArea(cell.p, defArea)){
+		def receive(p: Point, v:Option[Int]) : Unit = {
+			if(!(invalid) && isPointInArea(p, defArea)){
 				NbrPoints += 1 //Increment number of received cells
-				cell.value match { 
-					case Some(v) => if(v == value) result += 1
+				v match { 
+					case Some(v1) => 
+						if(v1 == value){
+							this.synchronized{
+							 result += 1	
+							}	
 					case None => //do nothing
 				}
 				countDownLatch.countDown();

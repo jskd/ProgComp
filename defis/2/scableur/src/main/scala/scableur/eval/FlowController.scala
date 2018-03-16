@@ -10,7 +10,9 @@ object FlowController {
 
 
 	def receiveValue(position: Point, value:Option[Int]): Unit = {
-		//TODO: map list of formulas to send them the value 
+		//TODO: map list of formulas to send them the value ,voire 
+		//si dans toutes les formules , le point - option(value ) en parametre est dans 
+		//l'une des formule de la formula list, si c'est le cas , faire receive des parametre
 	}
 
 	def addNewCountFormula(f: PCountFormula) : Unit = {

@@ -11,12 +11,12 @@ package object data {
 
 
 	def getNumberOfCells(a: Area) : Int = {
-		//TODO
+		//TODO hocine
 		0
 	}
 
 	def isPointInArea(p: Point, a:Area ) : Boolean = {
-		//TODO
+		//TODO hocine
 		false
 	}
 

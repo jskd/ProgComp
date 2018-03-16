@@ -15,8 +15,13 @@ package object eval {
 	// Evaluate a PValue
 	def eval(pValue: PValue) : Option[Int] = {
 		pValue match {
-			case c:PConstant => c.value
-			case f:PCountFormula => f.getResult()
+			case c:PConstant => 
+				FlowController.receiveValue(c.p, c.value)
+				c.value
+			case f:PCountFormula => 
+				val res = f.getResult()
+				FlowController.receiveValue(f.p,res)
+				res
 		}
 		None
 	}

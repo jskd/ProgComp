@@ -17,6 +17,7 @@ object Scableur {
   type Data = RDD[Array[String]]
   type MapedData = RDD[Array[(Point,PValue)]]
   type ResultData = RDD[Array[String]]
+ 
   var sc : SparkContext = null
 
   
