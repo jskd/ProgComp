@@ -11,13 +11,38 @@ package object data {
 
 
 	def getNumberOfCells(a: Area) : Int = {
-		//TODO hocine
-		0
+
+		val x1 : Int = (a._1)._1
+		val y1 : Int = (a._1)._2
+
+		val x2 : Int = (a._2)._1
+		val y2 : Int = (a._2)._2
+
+
+		var ratiox : Int = x2 - x1
+		var ratioy : Int = y2 - y1
+
+		return (ratiox*ratioy)
+
+
 	}
 
 	def isPointInArea(p: Point, a:Area ) : Boolean = {
-		//TODO hocine
-		false
+
+		val x = p._1
+		val y = p._2
+
+		val x1 : Int = (a._1)._1
+		val y1 : Int = (a._1)._2
+
+		val x2 : Int = (a._2)._1
+		val y2 : Int = (a._2)._2
+
+
+
+		return (  x >= x1 && x <= x2 && y >= y1 && y <= y2)
+
+
 	}
 
 
