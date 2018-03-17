@@ -1,0 +1,63 @@
+I. Historique
+
+	-But de Rust : programmes rapides, concurrents, sûrs. Se destine à la programmation système.
+	-Projet originel nommé Rust d'après les champignons du même nom.
+	-Soutenu par Mozilla depuis 2009 (officiellement 2010), mais sous licence Apache 2.0 ou MIT.
+	-Deux ans de développement interne, alpha en janvier 2012, version 1.0 en mai 2015. Depuis, nouvelle version stable toutes les six semaines (1.24.1 actuellement).
+	-Utilisait un compilateur écrit en Ocaml, passe à un compilateur (rustc) écrit en Rust en 2011. rustc s'occupe du front-end et LLVM du backend.
+	
+	Le langage est encore jeune, mais il comprend de nombreuses fonctionnalités. Nous allons vous présenter les principales.
+
+II. Caractéristiques et avantages de Rust
+
+	-Rust est multi-paradigme
+		Rust est inspiré de nombreux langages, notamment C++ et Haskell. C'est un langage impératif avec des éléments fonctionnels. C'est un langage au typage fort, statique (comme en Java) avec de l'inférence de type (comme en OCaml).
+		EXPLICITER LES EXEMPLES DES SLIDES.
+	
+	-rustc, le compilateur, effectue un grand nombre de tests pour s'assurer que le code est correct. De nombreux warnings en C, par exemple des casts, sont des erreurs en Rust.
+	
+	-rust est memory safe
+		pourquoi ? comemnter du code exemple.
+		Comment ? => ownership
+		Chaque variable a un unique propriétaire et hérite de sa portée.
+		Lors de la compilation, rustc vérifie que chaque variable reste dans sa portée, ce qui permet d'éviter qu'elle accède à une zone qu'elle ne devrait pas toucher et qu'elle est détruite dès qu'elle n'est plus utile.
+		=> pas de garbage collector, moins de ressources utilisées lors de l'exécution.
+		Gestion de mémoire en deux structures : pile et tas.
+		Par défaut, toute la mémoire est sur la pile :
+	
+	-data race safe
+		RAPPEL : data race arrive quand:
+			-deux threads ou plus accèdent en même temps à une zone mémoire
+			-l'un d'entre eux essaie d'écrire
+			-l'un d'entre eux n'est pas synchronisé
+		En Rust, il est par défaut impossible de d'être dans ce cas : il est impossible de partager une référence mutable entre deux threads.
+		Deux structures permettent de communiquer : les variables atomiques et les mutex. Chaque structure empêche, par définition, les data races.
+		NOTE : Rust empêche les data races mais pas les race condition (deux threads accèdent en même temps à stdout).
+    
+	-macros
+        Quelle est la différence ?
+		Une macro est un morceau de code proche d'une fonction : elle prend des paramètres (ou pas) et fait quelque chose.
+		Une macro est en quelque sorte un raccourci vers du code, et chaque macro est étendue lors de la compilation.
+		POurquoi utiliser des macros ?
+			-Ne pas se répéter (code similaire mais types differents)
+			-Utiliser un nombre variable d'arguments
+			
+	-un ecosysteme solide
+		-cargo
+			-Outil de gestion des dépendances : montrer notre Cargo.toml
+			-Fonctionnalités similaires à make : cargo build, cargo check, cargo run
+			
+		-crates.io
+			-Hébergeur offficiel des paquets de la communauté
+			-Utilisé avec cargo, permet d'utiliser simplement des librairies non incluses de base
+
+		-Rustbook & Rustonomicon
+			-Rustbook : tutoriel des fonctionnalités de base, maintenu par les développeurs. Des ressources avancées existent, notamment le Rustonomicon, le manuel avancé.
+			
+		-Rust Documentation
+			-Documentation officielle semblable à l'API Java, maintenue là encore par les développeurs.
+	
+
+IV. Dans quels cas utiliser Rust ?
+	-Navigateurs, obviously
+	-Des applications a hautes performances : drivers, OS (ie system programming)
