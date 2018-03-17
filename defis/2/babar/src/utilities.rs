@@ -7,6 +7,7 @@ use std::str;
 use std::thread;
 // mod parser;
 use cell;
+use searchTree;
 // mod treatment;
 
 
@@ -15,8 +16,6 @@ pub const BUFF_SIZE: usize = 16384;
 ///count bytes by lines, & get all formula in formula tab rmove counting
 pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 {
-
-        let mut form = Vec::new();
  	let file = File::open(path).expect("fail to open");
 	let mut buff = Vec::with_capacity(BUFF_SIZE);
 	let mut reader = std::io::BufReader::new(file);
@@ -38,7 +37,7 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 					formula.push(*byte);
 				}
 			}
-                form.push(String::from_utf8(formula).unwrap());
+        formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 		/*Ca marche mais c'est pas bon*/
 		/*let thread = thread::spawn(move ||
 		{create_formula(String::from_utf8(formula).unwrap())});
@@ -118,4 +117,30 @@ pub fn create_formula(form_string: String) -> cell::Formula
             .expect("Erreur format"),
     };
     return formula
+}
+
+pub fn get_area(formula: cell::Formula, path: &str ,buff_target: &mut Vec<u8>){
+	let file = File::open(path).expect("fail to open");
+	let mut reader = std::io::BufReader::new(file);
+	let mut jump = String::new();
+	for i in 0..formula.r1-1{
+		reader.read_line(&mut jump).expect("jumping to r1");
+	}
+	for i in 0..formula.c1-1{
+		reader.read_until(b';', buff_target);
+	}
+	buff_target.clear();
+	if formula.r2!=formula.r1{
+		for i in 0..formula.r2-formula.r1{
+			reader.read_until(b'\n', buff_target);
+		}
+		for i in 0..formula.c2-1{
+			reader.read_until(b';', buff_target);	
+		}
+	}
+	else{
+		for i in 0..formula.c2-formula.c1{
+			reader.read_until(b';', buff_target);
+		}
+	}
 }
