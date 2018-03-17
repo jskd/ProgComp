@@ -3,6 +3,7 @@ mod treatment;
 mod cell;
 mod graph;
 mod utilities;
+mod searchTree;
 use std::env;
 
 fn main()
@@ -19,7 +20,7 @@ fn main()
     /* START READING FILE */
 
     parser::read_file(&args[1], &mut formulas);
-
+    println!("nombre de formules: {}", formulas.len());
 
     /*
     let data = parser::read_file(&args[1]);
