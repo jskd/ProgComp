@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"parse"
+	"share"
 	"spreadsheet"
 )
 
@@ -19,12 +20,6 @@ func main() {
 	} else {
 		print_usage()
 		os.Exit(1)
-	}
-}
-
-func checkError(err error) {
-	if err != nil {
-		panic(err)
 	}
 }
 
@@ -64,8 +59,8 @@ func writeChanges(filename string,
 //TODO: To write view to file_output from original file_input CSV with formula values in bin_repo
 func writeView(file_output string, file_input string, bin_repo string) {
 	file_in, err := os.OpenFile(file_input, os.O_RDONLY, 0644)
-	checkError(err)
-	checkError(err)
+	share.CheckError(err)
+	share.CheckError(err)
 	defer file_in.Close()
 	reader := bufio.NewReader(file_in)
 	reader2 := csv.NewReader(reader)
@@ -78,7 +73,7 @@ func writeView(file_output string, file_input string, bin_repo string) {
 			println("fin de fichier")
 			break
 		} else if err != nil {
-			checkError(err) // if you return error
+			share.CheckError(err) // if you return error
 		}
 		parse.WriteOneLineCsv(file_output, line, ';')
 	}
