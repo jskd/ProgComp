@@ -28,25 +28,8 @@ type data interface {
 	data()
 }
 
-/* Strucure of a formula */
-type formula struct {
-	xSource      uint32
-	ySource      uint32
-	xDestination uint32
-	yDestination uint32
-	value        uint32
-}
-
 type immediate struct {
 	value int
-}
-
-type FormulaError struct {
-	msg string
-}
-
-func (e *FormulaError) Error() string {
-	return fmt.Sprintf("FormulaError: %v", e.msg)
 }
 
 /*
@@ -55,11 +38,6 @@ func (e *FormulaError) Error() string {
  */
 func (*formula) data()   {}
 func (*immediate) data() {}
-
-func (f *formula) String() string {
-	return fmt.Sprintf("=#(%d,%d,%d,%d,%d)",
-		f.xSource, f.ySource, f.xDestination, f.yDestination, f.value)
-}
 
 func (i *immediate) String() string {
 	return fmt.Sprintf("%d", i.value)
@@ -79,30 +57,6 @@ func toImmediate(s string) *immediate {
 		return nil
 	}
 	return &immediate{i}
-}
-
-func ToFormula(s string) *formula {
-	if strings.HasPrefix(s, "=") {
-		return toFormula(s, "=#(%d,%d,%d,%d,%d)")
-	} else {
-		return toFormula(s, "%d_%d_%d_%d_%d")
-	}
-}
-
-//s: input string
-//p: pattern string
-func toFormula(s string, p string) *formula {
-	var xSrc, ySrc, xDst, yDst, val uint32
-	count, _ :=
-		fmt.Sscanf(s, p,
-			&xSrc, &ySrc, &xDst, &yDst, &val)
-	if count != 5 {
-		panic(FormulaError{"Incorrect formula format:" + s + "(" + p + ")"})
-	}
-	if xSrc > xDst || ySrc > yDst {
-		panic(FormulaError{"Source x or y must greater than destination x or y."})
-	}
-	return &formula{xSrc, ySrc, xDst, yDst, val}
 }
 
 /**
@@ -229,11 +183,6 @@ func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bo
 	return false
 }
 
-func FormulaToBinFileName(s string) string {
-	f := ToFormula(s)
-	return fmt.Sprintf("%d/%d_%d_%d_%d_%d", f.value, f.xSource, f.ySource, f.xDestination, f.yDestination, f.value)
-}
-
 type Command struct {
 	Row     int
 	Column  int
@@ -336,8 +285,7 @@ func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value 
 		if indx/2 == 1 {
 			y = val
 			//fmt.Printf("(%d, %d) vs (%d, %d, %d, %d)\n", x, y, f.xSource, f.ySource, f.xDestination, f.yDestination)
-			if x <= f.xDestination && x >= f.xSource &&
-				y <= f.yDestination && y >= f.ySource {
+			if f.area.contains(position{row: y, col: x}) {
 				count++
 			}
 		} else {
