@@ -1,6 +1,7 @@
 package scableur.data
 
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.atomic.AtomicInteger
 
 trait PValue{
 	def toString() : String
@@ -19,7 +20,7 @@ case class PConstant(val p:Point, val value:Option[Int]) extends PValue {
 case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extends PValue {
 		private var NbrPoints = 0
 		private var MAX_POINTS = getNumberOfCells(defArea)
-		@volatile private var result = 0
+		@volatile private var result = new AtomicInteger(0)
 		@volatile private var countDownLatch = new CountDownLatch(MAX_POINTS);
 		@volatile private var invalid = false
 
@@ -30,9 +31,8 @@ case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extend
 				v match { 
 					case Some(v1) => 
 						if(v1 == value){
-							this.synchronized{
-							 result += 1	
-							}	
+							result.incrementAndGet() 	
+						}
 					case None => //do nothing
 				}
 				countDownLatch.countDown();
@@ -50,7 +50,7 @@ case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extend
 		def getResult() : Option[Int] = {
 			if(invalid) return None
 			countDownLatch.await();
-			return Some(result)
+			return Some(result.get())
 		}
 
 	}
