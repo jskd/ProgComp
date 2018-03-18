@@ -78,8 +78,10 @@ func (g *markedDigraph) pickNewNode() (interface{}, error) {
 }
 
 // Perform a depth-first search on the given digraph from the given
-// node.  [acc] accumulates the visited nodes in the topological order.
-func (g *markedDigraph) visit(u interface{}, acc *list.List) error {
+// node.  [done] accumulates the visited nodes in the topological order.
+// [doing] contains the nodes that are being visited.
+func (g *markedDigraph) visit(u interface{}, done *list.List,
+	doing *list.List) error {
 	switch g.status[u] {
 	case visited:
 		return nil
@@ -87,33 +89,34 @@ func (g *markedDigraph) visit(u interface{}, acc *list.List) error {
 		return errors.New("Cycle detected")
 	default:
 		g.status[u] = visiting
+		doing.PushFront(u)
 	}
 	for _, v := range g.digraph.neighbors[u] {
-		err := g.visit(v, acc)
-		if err != nil {
+		if err := g.visit(v, done, doing); err != nil {
 			return err
 		}
 	}
 	g.status[u] = visited
-	acc.PushFront(u)
+	if doing.Remove(doing.Front()) != u {
+		panic("Assertion failed")
+	}
+	done.PushFront(u)
 	return nil
 }
 
 // If there are several topological sorts of the digraph, this function
 // is non-deterministic because of the underlying structure of map.
-func (g *Digraph) TopologicalSort() ([]interface{}, bool) {
-	res := list.New()
-	complete := true
+func (g *Digraph) TopologicalSort() ([]interface{}, []interface{}) {
+	visited := list.New()
+	visiting := list.New()
 	h := g.initMark()
 	for u, err := h.pickNewNode(); err == nil; u, err = h.pickNewNode() {
-		if h.visit(u, res) != nil {
-			complete = false
-			// NB: We don't clear the accumulator so that we
-			// can obtain a partial topological sort of the
-			// digraph.
-		}
+		h.visit(u, visited, visiting)
 	}
-	return share.ArrayFromList(res), complete
+
+	// Here, [visiting] contains the list of the nodes of [g] that
+	// have a path to a cycle of [g].
+	return share.ArrayFromList(visited), share.ArrayFromList(visiting)
 }
 
 // TODO: Add a function to check if a given sort is a topological one
