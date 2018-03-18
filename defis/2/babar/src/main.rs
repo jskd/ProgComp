@@ -16,11 +16,9 @@ fn main()
 
     /* VARIABLE DECLARATIONS */
     let mut formulas: Vec<cell::Formula> = Vec::new();
-
     /* START READING FILE */
-
     parser::read_file(&args[1], &mut formulas);
-    println!("nombre de formules: {}", formulas.len());
+    //println!("nombre de formules: {}", formulas.len());
 
     /*
     let data = parser::read_file(&args[1]);
