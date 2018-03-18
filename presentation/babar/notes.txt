@@ -22,6 +22,7 @@ II. Caractéristiques et avantages de Rust
 		Chaque variable a un unique propriétaire et hérite de sa portée.
 		Lors de la compilation, rustc vérifie que chaque variable reste dans sa portée, ce qui permet d'éviter qu'elle accède à une zone qu'elle ne devrait pas toucher et qu'elle est détruite dès qu'elle n'est plus utile.
 		=> pas de garbage collector, moins de ressources utilisées lors de l'exécution.
+		Il est possible d'avoir plusieurs references immutables mais une seule mutable peut exister : en gros, plusieurs acces en lecture mais un unique en ecriture.
 		Gestion de mémoire en deux structures : pile et tas.
 		Par défaut, toute la mémoire est sur la pile :
 	
