@@ -1,7 +1,7 @@
 CC     = g++
-CFLAGS = -DCHICKEN_MODE -Wall -O2 -std=c++11
+CFLAGS = -DCHICKEN_MODE -Wall -O2
 
-OBJS   = rtree.o formulanode.o area.o parser.o formula.o
+OBJS   = parser.o formula.o
 
 ifeq ($(OS),Windows_NT)
 	LIB = C:\Windows\System32\OpenCL.dll
@@ -11,7 +11,7 @@ else
 	WS  = ws
 endif
 
-$(WS): $(OBJS)
+$(WS): $(OBJS) main.cpp
 	$(CC) $(CFLAGS) main.cpp -o $(WS) $(STATIC) $(OBJS) $(LIB)
 
 %.o: %.c %.h
