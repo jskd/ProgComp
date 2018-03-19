@@ -12,6 +12,7 @@ with open("data/config.json") as data:
     config = json.load(data)
 
 def parseArgs(args):
+    """ Parse arguments from line """
     defis_number = None
     grp_name = None
     test_number = None
@@ -30,6 +31,7 @@ def parseArgs(args):
     return defis_number, grp_name, test_number
 
 def getTargets(defis_number, grp_name = None):
+    """ Get groups in config.json """
     targets = config["target"]
     for target in targets:
         target["path"] = target["path"].replace("${DEFIS_NUMBER}", str(defis_number))
@@ -40,6 +42,7 @@ def getTargets(defis_number, grp_name = None):
     return targets
 
 def getTestList():
+    """ Get all tests """
     TEST_LIST = []
 
     for test_dir in os.listdir("tests/"):
@@ -49,11 +52,14 @@ def getTestList():
     return TEST_LIST
 
 def createDirLogs(target):
+    """ Create output dir for reports """
     result_file = "results/" + target["name"]
     if not os.path.exists(result_file):
         os.makedirs(result_file)
 
 def executeTestList(test_list, test_report=None, wait=True):
+    """ Execute a test list """
+
     running_tests = []
 
     for test in test_list:
