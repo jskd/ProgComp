@@ -1,6 +1,7 @@
 package spreadsheet
 
 import (
+	"math/rand"
 	"parse"
 	"share"
 	"testing"
@@ -60,4 +61,48 @@ func TestEvaluateFormula(t *testing.T) {
 	share.AssertEqual(t, out, uint32(0), "Count formula 1110_7572_3186_17282_3 should be 0")
 	out = EvaluateFormula("../../dataset/bin/", "236_0_236_611_3", false, nil)
 	share.AssertEqual(t, out, uint32(2), "Count formula 236_0_236_611_3 should be 2")
+}
+
+func formulas(n int) []*formula {
+	src := position{0, 0}
+	dst := src
+	res := make([]*formula, n)
+	for i := uint32(1); i <= uint32(len(res)); i++ {
+		pos := position{i, i}
+		res[i-1] = &formula{area: area{src, dst}, pos: pos, value: i}
+		dst = pos
+	}
+	shuffle := func(fs []*formula) []*formula {
+		perm := rand.Perm(len(fs))
+		res := make([]*formula, len(fs))
+
+		for i := 0; i < len(fs); i++ {
+			res[i] = fs[perm[i]]
+		}
+		return res
+	}
+	return shuffle(res)
+}
+
+func TestDependencyGraph(t *testing.T) {
+	n := 10
+	g := dependencyGraph(formulas(n))
+	expectedNbEdges := func() int {
+		s := 0
+		for i := 0; i < n; i++ {
+			s += i
+		}
+		return s
+	}
+	share.AssertEqual(t, g.NbNodes(), n, "")
+	share.AssertEqual(t, g.NbEdges(), expectedNbEdges(), "")
+}
+
+func TestSplitFormulas(t *testing.T) {
+	n := 10
+	fs, invalids := splitFormulas(formulas(n))
+	share.AssertEqual(t, len(invalids), 0, "")
+	for i, f := range fs {
+		share.AssertEqual(t, f.value, uint32(i)+1, "")
+	}
 }

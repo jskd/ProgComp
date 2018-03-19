@@ -2,6 +2,7 @@ package spreadsheet
 
 import (
 	"bufio"
+	"digraph"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -307,4 +308,29 @@ func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value 
 		}
 	}
 	return count
+}
+
+func dependencyGraph(formulas []*formula) *digraph.Digraph {
+	graph := digraph.New()
+	for _, f1 := range formulas {
+		graph.AddNode(f1)
+		for _, f2 := range formulas {
+			if f1.dependsOf(f2) {
+				graph.AddEdge(f2, f1)
+			}
+		}
+	}
+	return graph
+}
+
+func splitFormulas(formulas []*formula) ([]*formula, []*formula) {
+	asFormulas := func(array []interface{}) []*formula {
+		fs := make([]*formula, len(array))
+		for i := 0; i < len(fs); i++ {
+			fs[i] = array[i].(*formula)
+		}
+		return fs
+	}
+	valids, invalids := dependencyGraph(formulas).TopologicalSort()
+	return asFormulas(valids), asFormulas(invalids)
 }
