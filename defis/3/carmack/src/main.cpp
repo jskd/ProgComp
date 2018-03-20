@@ -30,8 +30,6 @@ void preval(Parser &p) {
     while(!p.eof) {
         p.next_cell(&c);
 
-        if(c.type == Value)
-        cout << "x = " << x << " y = " << y << " value = " << c.value << endl;
         if(c.type == Value && push_value(x, y, c.value))
             launch_calculation();
 

@@ -1,5 +1,5 @@
 CC     = g++
-CFLAGS = -DCHICKEN_MODE -Wall -O2
+CFLAGS = -Wall -O2
 
 OBJS   = parser.o formula.o
 
