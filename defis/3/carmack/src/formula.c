@@ -71,7 +71,7 @@ typedef struct {
     int x, y, v;
 } value;
 
-#define VALUE_MAX_CAPACITY 256
+size_t VALUE_MAX_CAPACITY;
 
 value *vs;
 size_t v_size;
@@ -121,6 +121,10 @@ void init_opencl() {
 
     queue = clCreateCommandQueue(context, device, 0, &error);
     CHECK_ERROR("Unable to create command-queue.");
+
+    error = clGetDeviceInfo(device, CL_DEVICE_MAX_WORK_GROUP_SIZE,
+                            sizeof(size_t), &VALUE_MAX_CAPACITY, NULL);
+    CHECK_ERROR("Unable to retrieve maximal work group size.");
 
     vs = malloc(VALUE_MAX_CAPACITY * sizeof *vs);
     if(!vs) {
