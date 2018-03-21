@@ -29,9 +29,9 @@ __kernel void preval(__global formula *fs, __global value *vs,
         one_value_res[local_id] = 0;
 
     for(offset = 1; offset < group_size; offset *= 2) {
-        //mask = 2 * offset - 1;
+        mask = 2 * offset - 1;
         barrier(CLK_LOCAL_MEM_FENCE);
-        if(/*!(local_id & mask) &&*/ local_id + offset < group_size)
+        if(!(local_id & mask) && local_id + offset < group_size)
             one_value_res[local_id] += one_value_res[local_id + offset];
     }
 
