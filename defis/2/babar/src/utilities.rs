@@ -58,36 +58,42 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 
 // 	let file = File::open(path).expect("fail to open");
 // 	let mut buff = BufReader::with_capacity(BUFF_SIZE,file);
+// 	let mut forms = Vec::new();
 //         loop {
-//         let length  = {
-//             let mut buffer = buff.fill_buf().expect("err read_first_time");
-//             let mut line = vec![];
-//             let mut num_byte = 0;
-//             loop{
-//                 let mut n = buffer.read_until(b'=',&mut line).expect("err");
-//                 num_byte = num_byte + n;
-//                 let mut formula = vec![];
-//                 formula.push(b'=');
-//                 n = buffer.read_until(b')',&mut formula).expect("err");
-//                 match formula.last(){
-//                     Some(&b')') => {
-//                     num_byte = num_byte + n;
-//                     },
-//                     _ => { break},
-//                 }
-//                  let s  = String::from_utf8(formula).expect("err converting [u8] to string");
-//                 formulas.push(create_formula(s));
-//               
-//                 
-//             }
-//             num_byte
-//         };
+//          let n  = {
+//              let mut buffer = buff.fill_buf().expect("err read_first_time");
+//              if buffer.len()==0{break}
+//              let mut line = vec![];
+//              let mut num_bytes = 0;
+// //             loop{
+// //                 let mut n = buffer.read_until(b'=',&mut line).expect("err");
+// //                 num_byte = num_byte + n;
+// //                 let mut formula = vec![];
+// //                 formula.push(b'=');
+// //                 n = buffer.read_until(b')',&mut formula).expect("err");
+// //                  match formula.last(){
+// //                     Some(&b')') => {
+// //                     num_byte = num_byte + n;
+// //                     },
+// //                     _ => {num_byte -= n;break},
+// //                 }
+// //                
+// //                 num_byte = num_byte + n;
+// //                  let s  = String::from_utf8(formula).expect("err converting [u8] to string");
+// //                // formulas.push(create_formula(s));
+// //                forms.push(s);
+// //               
+// //                 
+// //             }
+// //             num_byte
+// //         };
+// //         
+// 
 //         
-//         
-//         if length == 0 { break; }
-//         buff.consume(length);
+//          if length == 0 { break;}
+//         buff.consume(n);
 //    }
-    println!("len: {}",formulas.len());
+//     println!("len: {}",forms.len());
         
 }
 
