@@ -184,5 +184,7 @@ void launch_calculation() {
                                 0, NULL, NULL);
     CHECK_ERROR("Unable to enqueue to buffer.");
 
+    clReleaseMemObject(f_buffer);
+    clReleaseMemObject(v_buffer);
     v_size = 0;
 }

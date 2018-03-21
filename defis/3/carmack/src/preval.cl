@@ -10,8 +10,6 @@ typedef struct {
 
 __kernel void preval(__global formula *fs, __global value *vs,
                      __local int *one_value_res) {
-
-    //int global_id = get_global_id(0);
     int group_size = get_local_size(0);
     int local_id = get_local_id(0);
     int group_id = get_group_id(0);
