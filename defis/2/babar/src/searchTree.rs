@@ -2,9 +2,9 @@
 
 #[derive(PartialEq)]
 pub struct NodeST<'a>{
-	value: &'a str,
-	left: Option<Box<NodeST<'a>>>,
-	right: Option<Box<NodeST<'a>>>,
+	pub value: &'a str,
+	pub left: Option<Box<NodeST<'a>>>,
+	pub right: Option<Box<NodeST<'a>>>,
 }
 
 

@@ -5,6 +5,7 @@ use std::fs;
 use std::io::prelude::*;
 use std::str;
 use std::thread;
+use graph;
 // mod parser;
 use cell;
 use searchTree;
@@ -21,7 +22,6 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 	let mut reader = std::io::BufReader::new(file);
 	let mut num_bytes = reader.read_until(b'=',&mut buff).expect("read until formula");
 	buff.clear();
-	buff.clear();
 	num_bytes=reader.read_until(b')',&mut buff).expect("read formula");
 	while num_bytes!=0 //Buffer not empty0
 	{
@@ -37,7 +37,7 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 					formula.push(*byte);
 				}
 			}
-        formulas.push(create_formula(String::from_utf8(formula).unwrap()));
+                formulas.push(create_formula(String::from_utf8(formula).unwrap()));
 		/*Ca marche mais c'est pas bon*/
 		/*let thread = thread::spawn(move ||
 		{create_formula(String::from_utf8(formula).unwrap())});
@@ -55,45 +55,6 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>)
 		
 	}
 	
-
-// 	let file = File::open(path).expect("fail to open");
-// 	let mut buff = BufReader::with_capacity(BUFF_SIZE,file);
-// 	let mut forms = Vec::new();
-//         loop {
-//          let n  = {
-//              let mut buffer = buff.fill_buf().expect("err read_first_time");
-//              if buffer.len()==0{break}
-//              let mut line = vec![];
-//              let mut num_bytes = 0;
-// //             loop{
-// //                 let mut n = buffer.read_until(b'=',&mut line).expect("err");
-// //                 num_byte = num_byte + n;
-// //                 let mut formula = vec![];
-// //                 formula.push(b'=');
-// //                 n = buffer.read_until(b')',&mut formula).expect("err");
-// //                  match formula.last(){
-// //                     Some(&b')') => {
-// //                     num_byte = num_byte + n;
-// //                     },
-// //                     _ => {num_byte -= n;break},
-// //                 }
-// //                
-// //                 num_byte = num_byte + n;
-// //                  let s  = String::from_utf8(formula).expect("err converting [u8] to string");
-// //                // formulas.push(create_formula(s));
-// //                forms.push(s);
-// //               
-// //                 
-// //             }
-// //             num_byte
-// //         };
-// //         
-// 
-//         
-//          if length == 0 { break;}
-//         buff.consume(n);
-//    }
-//     println!("len: {}",forms.len());
         
 }
 
@@ -154,9 +115,36 @@ pub fn create_formula(form_string: String) -> cell::Formula
 
             val: form_dec_vec[4].trim().parse()
             .expect("Erreur format"),
+            strForm: form_string,
     };
     return formula
 }
+
+
+// pub fn create_graph(path:&str,formulas:&mut Vec<cell::Formula>){
+//     
+//     let mut tree = searchTree::NodeST{
+// 	value: &formulas[0].strForm.clone(),
+// 	left: None,
+// 	right:None,
+//     };
+// 
+//     for i in 1..formulas.len() {
+//         if tree.insert(&formulas[i].strForm) {
+//             graph::Node{
+//                 value: Box::new(&formulas[i]),
+//                 c: graph::Color::White,
+//                 child_list: Vec::new(),
+//             };
+//            // let mut buff = vec![];
+//             //get_area(&formulas[i],path,&mut buff);
+//             
+//         }
+//             
+//         
+//     }
+// 
+// }
 
 pub fn get_area(formula: cell::Formula, path: &str ,buff_target: &mut Vec<u8>){
 	let file = File::open(path).expect("fail to open");

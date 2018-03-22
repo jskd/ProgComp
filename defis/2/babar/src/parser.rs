@@ -17,7 +17,7 @@ pub fn read_file(f: &str, formulas : &mut Vec<cell::Formula>)
 }
 
 ///Creates a new cell containing the formula given in parameter.
-pub fn init_formula(form_dec_vec: Vec<&str>) -> Box<cell::Cell>
+pub fn init_formula(form_dec_vec: Vec<&str>,formula:String) -> Box<cell::Cell>
 {
     let cell = cell::Formula{
             num: 0,
@@ -35,6 +35,7 @@ pub fn init_formula(form_dec_vec: Vec<&str>) -> Box<cell::Cell>
 
             val: form_dec_vec[4].trim().parse()
             .expect("Erreur format"),
+            strForm: formula
     };
     Box::new(cell)
 }
@@ -50,7 +51,7 @@ pub fn create_cell(str:String) -> Box<cell::Cell>
             panic!("Erreur format");
          }
          
-        init_formula(form_dec_vec)
+        init_formula(form_dec_vec,str)
     }else {
         let val : i32 = str.trim().parse()
         .expect("Erreur format");

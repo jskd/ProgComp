@@ -3,7 +3,7 @@
 use cell;
 
 
-enum Color
+pub enum Color
 {
     White,
     Black,
@@ -11,10 +11,10 @@ enum Color
     Red,
 }
 
-struct Node{
-    value: Box<cell::Formula>,
-    c: Color,
-    child_list: Vec<Node>,
+pub struct Node<'a>{
+    pub value: Box<&'a cell::Formula>,
+    pub c: Color,
+    pub child_list: Vec<Node<'a>>,
 }
 
 

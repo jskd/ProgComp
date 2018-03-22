@@ -42,6 +42,9 @@ pub struct Formula
     pub r2: i32,
     pub c2: i32,
     pub val: i32,
+    pub strForm : String,
+
+
 }
 
 impl Cell for Number
@@ -130,6 +133,7 @@ impl Cell for Formula
             r2: self.r2,
             c2: self.c2,
             val: self.val,
+            strForm:self.strForm.clone(),
         };
         Box::new(cell)
     }
