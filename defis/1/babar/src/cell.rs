@@ -2,7 +2,7 @@
 //!The cell crate is meant to be used as a way to manipulate raw data from the files.
 
 use std::collections::BTreeMap;
-use treatment;
+use processing;
 
 ///A Cell contains data, either as a Number or as a Formula.
 ///Defines a set of operations on its content.
@@ -114,10 +114,10 @@ impl Cell for Formula
     -> (i32, BTreeMap<(i32, i32),Vec<(i32, i32)>>)
     {
         current_evaluation.push((row, col));
-        if !treatment::is_dependency_ok(self, current_evaluation) {
+        if !processing::is_dependency_ok(self, current_evaluation) {
             return (-1, BTreeMap::new());
         }
-        treatment::calcul_occ(self, spreadsheet, current_evaluation, row, col)
+        processing::calcul_occ(self, spreadsheet, current_evaluation, row, col)
     }
 
     ///Returns a Box containing a copy of the current Formula.
@@ -154,7 +154,7 @@ impl Cell for Formula
 
     fn print_cell(&self)
     {
-        println!("b evaluateCell: {} {} {} {} {} {}", self.r1, self.c1, self.r2, self.c2, self.val, self.num);
+        println!("cell: {} {} {} {} {} {}", self.r1, self.c1, self.r2, self.c2, self.val, self.num);
     }
 
     ///Returns four integers corresponding to the edges of the field the current Formula applies to.
