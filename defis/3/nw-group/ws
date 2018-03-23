@@ -1,0 +1,48 @@
+#!/bin/sh
+
+exported_name() {
+    printf "%s" /tmp/$(basename $1)
+}
+
+exported_names() {
+    local names
+
+    for file in $@; do
+        names=$(printf "%s %s" "$names" $(exported_name $file))
+    done
+    printf "%s" "$names"
+}
+
+import_files() {
+    for file in $@; do
+        local exported_file=$(exported_name $file)
+
+        docker exec $CONTAINER test -e $exported_file &&        \
+            docker cp $CONTAINER:$exported_file $file
+    done
+}
+
+export_files() {
+    for file in $@; do
+        if [ -e $file ]; then
+            docker cp $file $CONTAINER:$(exported_name $file)
+        fi
+    done
+}
+
+quiet() {
+    $@ > /dev/null
+}
+
+main() {
+    CONTAINER=$(docker run -td nw-group/ws)
+    export_files $@
+    docker exec $CONTAINER Go/main.exe $(exported_names $@)
+    status=$?
+    import_files $3 $4
+    $(quiet docker stop $CONTAINER)
+    $(quiet docker rm $CONTAINER)
+    return $status
+}
+
+main $@
