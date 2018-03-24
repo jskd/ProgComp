@@ -1,0 +1,11 @@
+## Logical Clock
+    The logical time allows linearization of computations, used to provide safe concurrency. With linearization of events the happened-before relation is usefull to prevent race-conditions.
+## IO
+    Operations on the sheet Both read and write functions have a logical time parameter. This time is given by the clock service. As well, to enable a multi-agent interaction each agent identifies itself with a tag. So, a cell is identified by three parameters. Its coordinates, an agent tag and a logical time. In BLACS we describe a grid in a different format. Instead of using the conventional sequence between two coordinates like A1;B2 we describe it by the dimensions of the grid. Describing grids by comprehension, allows to describe easily all kinds of grids. In particular one could describe infinite grids using special parameters, i.e. 0 lenght or width. Useful when a user doesn't know how many cells are in a given grid.
+## Evaluation of a formula
+    The evaluation of a given formula can be achieved by a single process or rather in parallel by many processes in an asynchronous way. To express this, a cell defined by a formula is as well defined by a collection of promises. A promise is formed of a date, a grid description and a constant value. Therefore, a promise of evaluation can be on a part of the formula. This allows having a collection of evaluators trying to compute the formula. The date, indicates when a promise will be valid. Before this date, the value of the promise shall not be considered. Should an evaluator fail to fulfill its promise the value data should be null, to indicate that an evaluation is still needed.
+## Types
+    ### API Types
+        In this API types are used to describe the arguments of a function. In particular read and write requests.
+    ### BLACS Types
+        BLACS itself has three kind of types to describe definitions, values, none, constants (integers) and formulas (count). This types are used to ensure safety as well as make programming easier. 
