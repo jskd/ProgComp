@@ -7,13 +7,16 @@ With linearization of events the happened-before relation is usefull to prevent 
 
 Both read and write functions have a logical time parameter.
 This time is given by the clock service. As well, to enable a multi-agent interaction,
-each agent identifies itself with a tag. So, a cell is identified by three parameters.
-Its coordinates, an agent tag and a logical time.
+each agent identifies itself with a tag. So, a cell is identified by three parameters:
+- Its coordinates
+- An agent tag
+- and a logical time.
+
 In BLACS we describe a grid in a different format.
 Instead of using the conventional sequence between two coordinates like A1;B2
 we describe it by the dimensions of the grid. Describing grids by comprehension,
- allows to describe easily all kinds of grids. In particular one could describe infinite grids using special parameters,
- i.e. 0 lenght or width. Useful when a user doesn't know how many cells are in a given grid.
+allows to describe easily all kinds of grids. In particular one could describe infinite grids using special parameters,
+i.e. 0 length or width. Useful when a user doesn't know how many cells are in a given grid.
 
 
 ## Evaluation of a formula
@@ -39,4 +42,4 @@ In particular read and write requests.
 ### BLACS Types
 
 BLACS itself has three kind of types to describe definitions, values, none, constants (integers) and formulas (count).
-This types are used to ensure safety as well as make programming easier. 
+This types are used to ensure safety as well as make programming easier.
