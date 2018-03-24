@@ -1,8 +1,11 @@
-On prend la feuille avec valeurs ou formules.
-On indexe les positions aux valeurs.
-On cree un fichier par valeur. On parcourt le fichier et on ajoute les coordonnees des cases contenant une valeur au fichier valeur correspondant.
-On cree un fichier par formule.
-On cree un graphe a partir des formules, a partir duquel on determine un ordre d'evaluation et on elimine les les cycles et les formules mal formatees.
-Renvoie deux listes de formules : formules valides et invalides.
-On evalue ensuite les formules valides de maniere parallele.
-Chaque formule s'evalue. Si une case pose probleme (evaluation non terminee), on passe a la suivante et on reviendra plus tard sur cette case.
+- On prend la feuille avec valeurs ou formules.
+- On indexe les positions aux valeurs.
+- On cree un fichier par valeur. On parcourt le fichier et on ajoute les coordonnees
+des cases contenant une valeur au fichier valeur correspondant.
+- On cree un fichier par formule.
+- On cree un graphe a partir des formules,
+a partir duquel on determine un ordre d'evaluation et on elimine les les cycles et les formules mal formatees.
+- Renvoie deux listes de formules : formules valides et invalides.
+- On evalue ensuite les formules valides de maniere parallele.
+- Chaque formule s'evalue. Si une case pose probleme (evaluation non terminee),
+on passe a la suivante et on reviendra plus tard sur cette case.
