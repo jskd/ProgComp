@@ -68,8 +68,6 @@ char *load_cl_source() {
 
 typedef cl_int4 value;
 
-#define VALUE_MAX_CAPACITY 256
-
 value *vs;
 size_t v_size;
 
@@ -134,7 +132,7 @@ int push_value(int x, int y, int v) {
     vs[v_size].y = y;
     vs[v_size].z = v;
 
-    return (v_size++) == VALUE_MAX_CAPACITY;
+    return (++v_size) == VALUE_MAX_CAPACITY;
 }
 
 void launch_calculation() {
