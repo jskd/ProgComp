@@ -25,7 +25,7 @@ case class ConstantType(var value: Option[Int]) extends Value {
   }
 
 }
-//Type for functions
+//Type for formulas
 abstract case class FunctionType(var coordinates  : (Int, Int),
                                  var from : (Int,Int),
                                  var to: (Int, Int),

@@ -14,19 +14,19 @@ object FlowController {
 
 	def receiveValue(position: Point, value:Option[Int]): Unit = {
 
-	for ( f <- formulaList ) {
+		for ( f <- formulaList ) {
 
-		var actualfun : PCountFormula = f._2
+			var actualfun : PCountFormula = f._2
 
-		var a : Area = f._2.defArea
+			var a : Area = f._2.defArea
 
-		if(isPointInArea(position,a)) {
+			if(isPointInArea(position,a)) {
 
-			actualfun.receive(position,value)
+				actualfun.receive(position,value)
+
+			}
 
 		}
-
-	}
 
 	}
 

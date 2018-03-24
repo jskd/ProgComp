@@ -2,6 +2,7 @@ package prog.comp2018.scableur.data.functions
 
 import prog.comp2018.scableur.data._
 
+// Count formula
 class NbrIteration(coordinates  : (Int, Int),
                    from : (Int,Int),
                    to: (Int, Int),
