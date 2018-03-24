@@ -8,13 +8,30 @@
 #include "formulanode.hpp"
 #include "parser.hpp"
 
+////////////////////////////////////////////////////////////////
+///
+///  This is a direct R-tree implementation, if you have some
+///  questions, it means that either:
+///      1. You don't know something about r-trees, or
+///      2. There is an error in this implementation.
+///  In any of this two cases, it's better to pretend that you
+///  have no questions.
+///
+///  This structure contains all formulas read from file,
+///  it helps accelerate formula search by the given position.
+///
+////////////////////////////////////////////////////////////////
+
+/*
+  There are two types of node: Internal Node (INode) and Leaf.
+  Internal Node can contain any other node, while Leaf
+  contains formulas. */
 class INode;
 
 class Leaf;
 
 class Node {
 public:
-    /* Bounding Box */
     Area bb;
     INode *parent = NULL;
     virtual void insert(FormulaNode &f) = 0;
@@ -57,6 +74,13 @@ public:
     void foreach(std::function<void(FormulaNode &)> fun);
 };
 
+////////////////////////////////////////////////////////////////
+///
+///  [roots(p, out)] return head of the given r-tree, constructed
+///  from [p], and fill [out] vector with independant formulas
+///  (formulas of the level 0).
+///
+////////////////////////////////////////////////////////////////
 INode *roots(Parser &p, std::vector<FormulaNode *> &out);
 
 #endif

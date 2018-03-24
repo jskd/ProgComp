@@ -1,5 +1,5 @@
 CC     = g++
-CFLAGS = -DCHICKEN_MODE -Wall -O2 -std=c++11
+CFLAGS = -DCHICKEN_MODE -Wall -O2
 
 OBJS   = rtree.o formulanode.o area.o parser.o formula.o
 
@@ -18,7 +18,7 @@ $(WS): $(OBJS)
 	gcc $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp %.hpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -std=c++11 -c $< -o $@
 
 clean:; rm -rf $(OBJS)
 
