@@ -3,14 +3,12 @@ mod treatment;
 mod cell;
 mod graph;
 mod utilities;
-mod searchTree;
+mod search_tree;
 use std::env;
 
-fn main()
-{
+fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() != 5
-    {
+    if args.len() != 5 {
         panic!("Erreur d'arguments, nombre : {}", args.len());
     }
 
@@ -31,5 +29,4 @@ fn main()
     treatment::write_view0(&args[3],&grid);
     treatment::write_change(&args[2],&args[4],&mut grid,&mut dependences);
 */
-    
-}    
+}

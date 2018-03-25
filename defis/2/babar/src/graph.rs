@@ -2,58 +2,52 @@
 
 use cell;
 
-
-pub enum Color
-{
+pub enum Color {
     White,
     Black,
     Grey,
     Red,
 }
 
-pub struct Node<'a>{
+pub struct Node<'a> {
     pub value: Box<&'a cell::Formula>,
     pub c: Color,
     pub child_list: Vec<Node<'a>>,
 }
 
+fn evaluate(mut node: Node) {
+    match node.c {
+        Color::White => {
+            node.c = Color::Grey;
+            for mut n in node.child_list {
+                match n.c {
+                    Color::White => {
+                        println!("child white, evaluate(child)");
+                        evaluate(n);
+                    }
+                    Color::Black => {
+                        println!("child black");
+                    }
+                    _ => {
+                        node.c = Color::Red;
+                        println!("child red or grey, this node goes red");
+                    }
+                }
+            }
+        }
+        _ => println!("this node red or black -> no look children"),
+    }
 
-fn evaluate(mut node: Node)
-{	
-	match node.c{
-	Color::White =>{
-		node.c = Color::Grey;
-		for mut n in node.child_list{
-			match n.c{
-				Color::White => {
-					println!("child white, evaluate(child)");
-					evaluate(n);
-				},
-				Color::Black => {
-					println!("child black");
-				},
-				_ =>{
-					node.c = Color::Red;
-					println!("child red or grey, this node goes red");
-				},
-			}
-		}
-	},
-	_ => println!("this node red or black -> no look children"),
-	}
-
-	//evaluate content of cell if not already done
-	match node.c{
-
-		Color::Grey | Color::White => {
-			println!("evaluate this node value"); // charger en mémoire la zone de la formule on est pas rouge donc on peut la calculer 
-			node.c=Color::Black;         // on, a évaluer on passe le node en noir
-		},
-		Color::Red => println!("this node value = P"),
-		_ => println!("already evaluate"), //normalement case inaccessible.
-	}
-	
-	
+    //evaluate content of cell if not already done
+    match node.c {
+        Color::Grey | Color::White => {
+            // charger en mémoire la zone de la formule on est pas rouge donc on peut la calculer
+            println!("evaluate this node value");
+            node.c = Color::Black; // on, a évaluer on passe le node en noir
+        }
+        Color::Red => println!("this node value = P"),
+        _ => println!("already evaluate"), //normalement case inaccessible.
+    }
 }
 
 /*fn main(){
