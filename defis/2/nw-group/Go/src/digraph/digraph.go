@@ -54,25 +54,26 @@ const (
 )
 
 type markedDigraph struct {
-	digraph Digraph
-	status  map[interface{}]status
+	digraph  Digraph
+	status   map[interface{}]status
+	worklist *list.List
 }
 
 func (g *Digraph) initMark() *markedDigraph {
 	statuses := make(map[interface{}]status)
+	worklist := list.New()
 	for u, _ := range g.neighbors {
 		statuses[u] = notVisited
+		worklist.PushFront(u)
 	}
-	return &markedDigraph{*g, statuses}
+	return &markedDigraph{*g, statuses, worklist}
 }
 
 // Return a not yet visited node.  Return an error if there is no such
 // node.
 func (g *markedDigraph) pickNewNode() (interface{}, error) {
-	for u, _ := range g.digraph.neighbors {
-		if g.status[u] == notVisited {
-			return u, nil
-		}
+	if u := g.worklist.Front(); u != nil {
+		return g.worklist.Remove(u), nil
 	}
 	return nil, errors.New("No such node")
 }
