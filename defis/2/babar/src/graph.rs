@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 /// The dependency graph.
 /// We insert a formula and check if another formula appears in its range.
 /// If that is the case, we add this formula as a daughter of the first one in the graph.
@@ -6,8 +8,6 @@
 /// Note that we intended to use a color code to mark the formulas as we built the graph,
 /// but we are still not sure on the proper time to do it. See the comment in the main for
 /// more details.
-
-#![allow(dead_code)]
 
 use cell;
 
