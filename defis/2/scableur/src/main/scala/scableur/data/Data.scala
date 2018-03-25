@@ -3,11 +3,14 @@ package scableur.data
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicInteger
 
-// On définit un trait pour nos cellules ,c'est toutes des Pvalue de type PConstant(valeur) ou PCountFormula(formule)
+// On définit un trait pour nos cellules ,c'est toutes des Pvalue de 
+//type PConstant(valeur) ou PCountFormula(formule)
 trait PValue{
 	def toString() : String
 }
-//Nous avons des classes Pconstant et PcountFormula (qui sont de Pvalue )pour représenter nos valeurs et nos formules
+
+//Nous avons des classes Pconstant et PcountFormula (qui sont de Pvalue )
+//pour représenter nos valeurs et nos formules
 case class PConstant(val p:Point, val value:Option[Int]) extends PValue {
 
 	override def toString() : String = {
@@ -27,7 +30,8 @@ case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extend
 
 //la méthode receive reçoie un point (ses coordonnées et sa valeur)
 	//s'il n'est pas invalide et qu'il est dans sa zone de "juridication" :p
-	//il regarde si sa valeur correspond à la valeur concernée par la formule (si c'est le cas on incrémente le résultat
+	//il regarde si sa valeur correspond à la valeur concernée par la formule 
+    //(si c'est le cas on incrémente le résultat
 	//de la formule)
 
 		def receive(p: Point, v:Option[Int]) : Unit = {
