@@ -1,7 +1,21 @@
+/// The dependency graph.
+/// We insert a formula and check if another formula appears in its range.
+/// If that is the case, we add this formula as a daughter of the first one in the graph.
+/// We then do the same thing for the daughter.
+///
+/// Note that we intended to use a color code to mark the formulas as we built the graph,
+/// but we are still not sure on the proper time to do it. See the comment in the main for
+/// more details.
+
 #![allow(dead_code)]
 
 use cell;
 
+/// The colors used to detect cycles :
+/// White: this formula has not been evaluated yet
+/// Black: this formula has been evaluated and returned aresult
+/// Grey: this formula is currently being evaluated
+/// Red: this formula has been evaluated and is part of a cycle or not properly formatted
 pub enum Color {
     White,
     Black,
@@ -9,12 +23,14 @@ pub enum Color {
     Red,
 }
 
+/// The structure representing the nodes in the graph.
 pub struct Node<'a> {
     pub value: Box<&'a cell::Formula>,
     pub c: Color,
     pub child_list: Vec<Node<'a>>,
 }
 
+/// Parses the graph from the Node node.
 fn evaluate(mut node: Node) {
     match node.c {
         Color::White => {
@@ -26,6 +42,7 @@ fn evaluate(mut node: Node) {
                         evaluate(n);
                     }
                     Color::Black => {
+                        // TODO : get value and do the appropriate tests with it
                         println!("child black");
                     }
                     _ => {
@@ -35,35 +52,19 @@ fn evaluate(mut node: Node) {
                 }
             }
         }
-        _ => println!("this node red or black -> no look children"),
+        _ => println!("this node is red or black -> we do nothing"),
     }
 
-    //evaluate content of cell if not already done
+    // Evaluates the Node if not already done (ie it was not Balck or White).
     match node.c {
         Color::Grey | Color::White => {
-            // charger en mémoire la zone de la formule on est pas rouge donc on peut la calculer
+            // TODO: load the memory zone the formula applies to, since the Node is not Red
             println!("evaluate this node value");
-            node.c = Color::Black; // on, a évaluer on passe le node en noir
+            node.c = Color::Black;
         }
         Color::Red => println!("this node value = P"),
-        _ => println!("already evaluate"), //normalement case inaccessible.
+
+        // Should never be accessed
+        _ => println!("already evaluated"),
     }
 }
-
-/*fn main(){
-	let mut child = Vec::new();
-	for i in 0..10{
-		if i < 4 {
-			child.push(Node{value:i, c:Color::White, child_list: Vec::new()});
-		}
-		else if i < 7 {
-			child.push(Node{value:i, c:Color::Red, child_list: Vec::new()});
-		}
-		else {
-			child.push(Node{value:i, c:Color::Black, child_list: Vec::new()});
-		}
-	}
-	let mut node = Node {value: 11, c:Color::White, child_list: child};
-
-	evaluate(node);
-}*/
