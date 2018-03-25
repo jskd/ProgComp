@@ -19,7 +19,7 @@ func TestInitMark(t *testing.T) {
 	g.AddEdge(1, 2)
 	g.AddEdge(1, 3)
 	g.AddEdge(1, 4)
-	h := g.initMark()
+	h := g.initMarking()
 	share.AssertEqual(t, g.NbNodes(), h.digraph.NbNodes(), "")
 	share.AssertEqual(t, g.NbEdges(), h.digraph.NbEdges(), "")
 }

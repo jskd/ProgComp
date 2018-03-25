@@ -85,7 +85,7 @@ func formulas(n int) []*formula {
 }
 
 func TestDependencyGraph(t *testing.T) {
-	n := 10
+	n := 1000
 	g := dependencyGraph(formulas(n))
 	expectedNbEdges := func() int {
 		s := 0
@@ -99,7 +99,7 @@ func TestDependencyGraph(t *testing.T) {
 }
 
 func TestSplitFormulas(t *testing.T) {
-	n := 10
+	n := 1000
 	fs, invalids := splitFormulas(formulas(n))
 	share.AssertEqual(t, len(invalids), 0, "")
 	for i, f := range fs {
