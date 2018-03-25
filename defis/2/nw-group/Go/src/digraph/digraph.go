@@ -59,14 +59,14 @@ type markedDigraph struct {
 	worklist *list.List
 }
 
-func (g *Digraph) initMark() *markedDigraph {
-	statuses := make(map[interface{}]status)
+func (g *Digraph) initMarking() *markedDigraph {
+	status := make(map[interface{}]status)
 	worklist := list.New()
 	for u, _ := range g.neighbors {
-		statuses[u] = notVisited
+		status[u] = notVisited
 		worklist.PushFront(u)
 	}
-	return &markedDigraph{*g, statuses, worklist}
+	return &markedDigraph{*g, status, worklist}
 }
 
 // Return a not yet visited node.  Return an error if there is no such
@@ -107,12 +107,12 @@ func (g *markedDigraph) visit(u interface{}, done *list.List,
 
 // If there are several topological sorts of the digraph, this function
 // is non-deterministic because of the underlying structure of map.
-func (g *Digraph) TopologicalSort() ([]interface{}, []interface{}) {
+func (graph *Digraph) TopologicalSort() ([]interface{}, []interface{}) {
 	visited := list.New()
 	visiting := list.New()
-	h := g.initMark()
-	for u, err := h.pickNewNode(); err == nil; u, err = h.pickNewNode() {
-		h.visit(u, visited, visiting)
+	g := graph.initMarking()
+	for u, err := g.pickNewNode(); err == nil; u, err = g.pickNewNode() {
+		g.visit(u, visited, visiting)
 	}
 
 	// Here, [visiting] contains the list of the nodes of [g] that
