@@ -1,0 +1,18 @@
+Note preliminaire: nous nous sommes rendu compte tres recemment (mercredi) que notre modelisation posait des problemes de paralellisation et surtout qu'elle etait incorrecte. Si vous trouvez des problemes dans la description qui suit, c'est normal.
+
+Deroulement:
+Premier passage sur le fichier: on ecrit les valeurs numeriques dans view0, on met de cote les formules.
+On cree un arbre binaire de recherche (ABR) et un graphe.
+Pour chaque formule, on regarde si elle est dans l'ABR.
+    Si c'est le cas, on l'ignore pour le moment.
+    Si ce n'est pas le cas, on l'insere.
+Si la formule n'etait pas dans l'ABR, on l'insere dans le graphe.
+Si elle y etait, on met a jour le noeud du graphe correspondant pour refleter le fait qu'elle apparait a un endroit supplementaire dans le fichier.
+Quand le graphe est construit, on evalue chaque noeud:
+    -s'il est blanc, on regarde s'il a des fils
+        -si c'est le cas, on le passe en gris puis on evalue les fils.
+        -sinon, on calcule le resultat de la formule et on le passe en noir.
+    -s'il est noir, on regarde le resultat.
+    -s'il est gris, c'est qu'on est deja en train de l'evaluer (il est en attente), et donc qu'il y a cycle. On le passe en rouge et on n'evalue pas ses eventuels fils.
+    -s'il est rouge, c'est qu'il fait partie d'un cycle ou qu'il contient une formule mal formatee. On n'evalue pas ses fils et on passe son pere en rouge.
+On met enfin a jour view0 avec les resultats des formules.
