@@ -31,7 +31,6 @@ object Scableur {
       Debug.i("Loading data file...")
       val builder = new BuildMatrix(Conf.Arguments.dataFile)
       matrix = builder.load()
-      //PrintTableType.print("=== CSV Parsed File === ","===================", matrix, Debug.d(_))
     }catch {
       case _ : FileNotFoundException =>
         Debug.e("Data file Not Found")
@@ -53,14 +52,11 @@ object Scableur {
 
   def load_users_txt() : Unit = {
     userData = new UserData(UserActionsParsor.buildList(Conf.Arguments.userFile))
-    //TODO DEBEG.print
-
   }
 
   def evaluate_user_actions() : Unit = {
     val userActionEvaluator = new UserActionEvaluator(matrix, userData, resultMatrix)
     resultChanges = userActionEvaluator.eval
-    //TODO DeBUG.print
   }
 
   def print_user_actions() : Unit = {

@@ -5,6 +5,10 @@ import prog.comp2018.scableur.data.functions.NbrIteration
 
 import scala.collection.mutable.ListBuffer
 
+
+/**
+* Evaluator Class for the UserAction command list
+*/
 class UserActionEvaluator(matrix: Matrix, val source : UserData, var resultMatrix: EvaluatedMatrix)
     extends Evaluator[ChangesData](matrix) {
 

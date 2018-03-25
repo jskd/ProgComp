@@ -1,0 +1,97 @@
+
+# Carmack (brouillon) #
+
+## Idée générale ##
+
+On va faire trois parcours de fichiers
+
+> 1er parcours
+
+On récupère toutes les formules et on génère un graphe de formules.
+Ce graphe sera traité de manière à ce que d'une part, les cycles soient retirés,
+et d'autre part, on fasse un tri topologique.
+A l'issue de ce tri, on aura la liste des formules telle que les formules
+soient triées par ordre de dépendence.
+
+> 2ème parcours (@FIXME)
+
+On evalue chaque formule "tant qu'on peut".
+C'est-à-dire que l'on va évaluer partiellement les formules, en considérant
+les cellules contenant un entier. Si une case contient une formule, ou bien si elle
+fait partie d'une autre zone de calcul, on ne la prend pas en compte tout de suite (@FIXME)
+
+> 3ème parcours
+
+L'idée de cette dernière étape est de faire en sorte à ce que les cellules qui n'ont
+pas pu être traitées puissent l'être afin de finaliser l'évaluation des formules.
+
+
+## A propos du défi 3 ##
+
+L'idée pour le défi 3 est de ne faire que la collecte des formules, puis de lire
+les commandes dans *user.txt*.
+
+Le programme aura une horloge logique qui commencera juste après la collecte, afin
+d'assurer la cohérence de la feuille de calcul.
+
+A partir de ce moment là, on lit le fichier *user.txt*.
+
+> Point important
+
+Il faut savoir que les commandes de *user.txt* sont exécutées directement sur le GPU.
+De plus, il faut savoir que dès lors qu'un code "noyau" est lancé sur GPU, on ne peut
+pas l'arrêter. Il faudra donc, dans le cas d'une évaluation d'une formule,
+jouer sur la taille des blocs à traiter côté GPU.
+
+Exemples:
+
+```
+Supposons qu'on ait une formule de type {0, 0, 100, 100, 5}, on a donc 10000
+cellules à traiter.
+On peut traiter séparément des blocs de 10/100/1000 cellules côté GPU,
+en fonction du temps que l'on veut consacrer.
+```
+
+> Principes
+
+Pour chaque commande, on vérifie si l'instant *t* de la commande est supérieur à
+la durée logique du programme depuis son démarrage.
+
+- Si une commande *user* consiste à visualiser une zone, le programme va évaluer
+toutes les formules de cette zone (de la moins dépendante à la plus dépendante).
+
+- Concernant la commande d'écriture dans une cellule/zone,
+s'il suffit de mettre un entier, aucun problème...
+En fait cela peut être problématique si la cellule est évaluée par une autre formule.
+
+> Cas génant connu
+
+Si toutes les millisecondes, ou dans un interval trop petit
+(par exemple en dessous de 10 ms), l'utilisateur change de zone de lecture,
+il faudra réduire la taille des blocs à envoyer en GPU à traiter
+(si des formules doivent être évaluées dans chaque zone à afficher),
+ou bien ne pas traiter ces formules (si elles n'ont pas été évaluées) jusqu'à ce que
+le changement de vue soit stable.
+
+En gros, on fait un peu dans le style des navigateurs web/logiciels bureautique
+(le prof nous a filé le tuyau).
+
+Exemple (les lignes commencant par '*#*' ne sont pas dans le fichier *user.txt*) :
+
+```
+1: ! 0 10 20 20         # OK ...
+2: ! 4 0 20 24          # (-_-*)
+3: ! 5 1 28 91          # (-_-*)
+4: ! 8 11 42 52         # (-_-*)
+5: ! 1 10 5 12          # (-_-*)
+6: ! 1 42 1 1024        # (-_-*)
+7: ! 31 11 33 22        # (-_-*)
+8: ! 9 64 16 256        # (-_-*)
+9: ! 10 21 12 42        # (-_-*)
+10: ! 128 128 512 512   # (-_-*)
+12: ! 64 64 128 256     # (-_-*)
+# Ici, l'utilisateur s'est calmé, on peut faire l'évaluation
+# des formules dans la zone, s'il y en a
+1024: 80 72 8           # (.^.)
+
+```

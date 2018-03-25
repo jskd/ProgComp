@@ -14,9 +14,7 @@ trait TableType[T]  {
 }
 
 /**
-  * Data Structure that containing parsed CSV file
-  * @param h (height)
-  * @param w (width)
+  * Data Structure that contains a parsed CSV file
   */
 class Matrix(private var h : Int, private var w : Int) extends TableType[Value] {
   private val matrix = Array.ofDim[Value](h,w)
@@ -27,6 +25,9 @@ class Matrix(private var h : Int, private var w : Int) extends TableType[Value] 
   override def set(v: Value, i: Int, j: Int): Unit ={ matrix(i)(j) = v}
 }
 
+/**
+* Data Structure containing an Evaluated Matrix Object
+*/
 class EvaluatedMatrix(private var h: Int, private var w : Int) extends TableType[Option[Int]] {
   private val matrix = Array.ofDim[Option[Int]](h,w)
   override def height : Int = h
@@ -35,9 +36,10 @@ class EvaluatedMatrix(private var h: Int, private var w : Int) extends TableType
   override def set(v: Option[Int], i: Int, j: Int): Unit = { matrix(i)(j) = v}
 }
 
-
+/**
+* Data Structure Debug Print Methods 
+*/
 object PrintTableType{
-
   def print(intro : String, outro: String, table : Matrix, printer: String => Unit ) : Unit = {
     var str = "\n" + intro + "\n"
     for{

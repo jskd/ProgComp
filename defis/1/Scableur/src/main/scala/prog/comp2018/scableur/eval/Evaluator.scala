@@ -14,14 +14,16 @@ abstract class Evaluator[T](private var matrix: Matrix) {
   def eval : T
 
 
-  /*find_cycle: Calculates the list of the functions of the cycle
-   arguments:
-    f: is the calling function 
-    g: is the called function
-    m: the matrix to evaluate
-    dep: dependency list between function indexes on function_stack
-   for each call to the function find_cycle we add the index of the 
-   calling function to the dependency list*/
+  /*
+    Find_cycle: Calculates the list of the functions 
+    of the cycle arguments:
+      f: is the calling function 
+      g: is the called function
+      m: the matrix to evaluate
+      dep: dependency list between function indexes on function_stack
+   For each call to the function find_cycle we add the index of the 
+   calling function to the dependency list
+   */
   def find_cycle(f:FunctionType,matrix:Matrix, dep: List[Int]): Unit = {
 
     for{

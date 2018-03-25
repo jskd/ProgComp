@@ -12,7 +12,9 @@ trait FunctionEval[T] {
 }
 
 
-
+/**
+* Count formula evaluator object
+*/
 object NbrIterationEval extends FunctionEval[Matrix] {
  
   def eval(f: NbrIteration, m: Matrix): Option[Int] = {

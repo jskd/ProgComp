@@ -2,7 +2,9 @@ package prog.comp2018.scableur.data
 
 import scala.collection.mutable.ListBuffer
 
-
+/**
+* Data Structure Containing the parsed UserAction file
+*/
 class UserData(var userActionStack : ListBuffer[((Int,Int), Value)]) {
 
   def length(): Int = userActionStack.length
@@ -15,7 +17,10 @@ class UserData(var userActionStack : ListBuffer[((Int,Int), Value)]) {
 }
 
 
-
+/**
+* Data Structure containing the changes to apply to Matrix
+* after userActions
+*/
 class ChangesData(){
   type EvalCell = ((Int,Int), Option[Int])
   type ChangesList = ListBuffer[EvalCell]
