@@ -43,7 +43,9 @@ case class PCountFormula(val p:Point, val defArea: Area, val value: Int ) extend
 
 
 		override def toString() : String = {
-			val f = "=#(%d,%d,%d,%d,%d)".format(defArea._1._1, defArea._1._2, defArea._2._1, defArea._2._2, this.value)
+			val f = "=#(%d,%d,%d,%d,%d)".format(defArea._1._1, defArea._1._2, defArea._2._1, 
+              defArea._2._2, this.value)
+
 			"(%d,%d) %s".format(p._1,p._2,f)
 		}
 

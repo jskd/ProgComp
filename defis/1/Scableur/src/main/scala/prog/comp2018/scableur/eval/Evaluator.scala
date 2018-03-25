@@ -35,7 +35,7 @@ abstract class Evaluator[T](private var matrix: Matrix) {
         case g:FunctionType => {
           if(dep.exists(i => i==(matrix.functionStack.indexOf(Some(g))))){
 
-            for(i<-(dep.+: (matrix.functionStack.indexOf(Some(f))))) 
+           // for(i<-(dep.+: (matrix.functionStack.indexOf(Some(f))))) 
               cycle_functions =
               (cycle_functions.:::(
                 dep.+:(matrix.functionStack.indexOf(Some(f))))).distinct
