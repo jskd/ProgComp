@@ -7,8 +7,7 @@ use cell;
 
 pub const BUFF_SIZE: usize = 16384;
 
-///count bytes by lines, & get all formula in formula tab rmove counting
-#[allow(unused_assignments)]
+/// Parses the file line by line and puts every formula in a list.
 pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>) {
     let file = File::open(path).expect("fail to open");
     let mut buff = Vec::with_capacity(BUFF_SIZE);
@@ -17,8 +16,8 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>) {
         .read_until(b'=', &mut buff)
         .expect("read until formula");
     buff.clear();
-    let mut num_bytes = reader.read_until(b')', &mut buff).expect("read formula");
-    while num_bytes != 0
+    let mut _num_bytes = reader.read_until(b')', &mut buff).expect("read formula");
+    while _num_bytes != 0
     //Buffer not empty0
     {
         let mut formula: Vec<u8> = Vec::new();
@@ -31,26 +30,30 @@ pub fn read_first_time(path: &str, formulas: &mut Vec<cell::Formula>) {
             }
         }
         formulas.push(create_formula(String::from_utf8(formula).unwrap()));
-        num_bytes = reader
+        _num_bytes = reader
             .read_until(b'=', &mut buff)
             .expect("read until formula or end file");
         buff.clear();
-        num_bytes = reader.read_until(b')', &mut buff).expect("read file");
+        _num_bytes = reader.read_until(b')', &mut buff).expect("read file");
     }
 }
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
+/// Writes into view0.csv.
 #[allow(dead_code)]
 pub fn write_view(path: &str, formulas: &mut Vec<String>) {
     let mut count: i32 = 0;
     let mut view = File::create("view0.csv").expect("Error creating file");
     let file = File::open(path).expect("fail to open");
     let mut buff = BufReader::with_capacity(BUFF_SIZE, file);
+
+    //Checks if formula list is empty
     let mut f = match formulas.pop() {
         Some(x) => x,
         None => return,
     };
+
     loop {
         let length = {
             let mut buffer = buff.fill_buf().expect("err read_first_time");
@@ -64,7 +67,6 @@ pub fn write_view(path: &str, formulas: &mut Vec<String>) {
                 };
             }
             write!(view, "{}", line).expect("Error Writing into the view0");
-
             num_byte
         };
         count = count + 1;
@@ -74,6 +76,8 @@ pub fn write_view(path: &str, formulas: &mut Vec<String>) {
         buff.consume(length);
     }
 }
+
+/// Extracts the data used to create a Formula from a raw string
 pub fn create_formula(form_string: String) -> cell::Formula {
     let form: String = form_string
         .trim_matches(|c| c == '(' || c == ')' || c == '=' || c == '#')
@@ -84,14 +88,12 @@ pub fn create_formula(form_string: String) -> cell::Formula {
         panic!("Erreur format");
     }
 
+    /// Check the cell.rs file for the parameters.
     let formula = cell::Formula {
         num: 0,
         r1: form_dec_vec[0].trim().parse().expect("Erreur format"),
-
         c1: form_dec_vec[1].trim().parse().expect("Erreur format"),
-
         r2: form_dec_vec[2].trim().parse().expect("Erreur format"),
-
         c2: form_dec_vec[3].trim().parse().expect("Erreur format"),
 
         val: form_dec_vec[4].trim().parse().expect("Erreur format"),
@@ -122,11 +124,12 @@ pub fn create_graph(path:&str,formulas:&mut Vec<cell::Formula>){
 }
 */
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
+/// Reads a specific area of the source file.
 #[allow(dead_code)]
 pub fn get_area(formula: cell::Formula, path: &str, buff_target: &mut Vec<u8>) {
-    let file = File::open(path).expect("fail to open");
+    let file = File::open(path).expect("failed to open file");
     let mut reader = std::io::BufReader::new(file);
     let mut jump = String::new();
     for _i in 0..formula.r1 - 1 {
