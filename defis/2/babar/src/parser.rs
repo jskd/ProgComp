@@ -1,12 +1,14 @@
+/// Handles the parsing of the data file.
+
 use utilities;
 use cell;
 
-///Opens the file f and returns its content as a String.
+/// Opens the file f and returns its content as a String.
 pub fn read_file(f: &str, formulas: &mut Vec<cell::Formula>) {
     utilities::read_first_time(f, formulas);
 }
 
-///Creates a new cell containing the formula given in parameter.
+/// Creates a new cell containing the formula given in parameter.
 pub fn init_formula(form_dec_vec: Vec<&str>, formula: String) -> Box<cell::Cell> {
     let cell = cell::Formula {
         num: 0,
@@ -24,6 +26,7 @@ pub fn init_formula(form_dec_vec: Vec<&str>, formula: String) -> Box<cell::Cell>
     Box::new(cell)
 }
 
+/// Creates a Formula or a Number from raw string data.
 pub fn create_cell(str: String) -> Box<cell::Cell> {
     if Some('=') == str.chars().next() {
         //TODO : what happens if trim_matches does not return a string ?
@@ -43,9 +46,9 @@ pub fn create_cell(str: String) -> Box<cell::Cell> {
     }
 }
 
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
 ///Generates a cell matrix from the data contained in the string passed in parameter.
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
 #[allow(dead_code)]
 pub fn gen_table(data: String) -> Vec<Vec<Box<cell::Cell>>> {
     let mut table = Vec::new();
@@ -64,8 +67,8 @@ pub fn gen_table(data: String) -> Vec<Vec<Box<cell::Cell>>> {
     return table;
 }
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
 #[allow(dead_code)]
 pub fn print_table(table: &Vec<Vec<Box<cell::Cell>>>) {
     let mut i: i32 = 0;
