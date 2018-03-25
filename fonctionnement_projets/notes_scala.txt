@@ -1,19 +1,21 @@
-> Lecture ligne par ligne du fichier.
-
-On construit une liste de valeurs/formules, dans laquelle on associe la position
-de chaque cellule au contenu de la cellule.
-On en extrait une liste de formules (en même temps).
-
-Pour chaque formule, on construit le liste des dependances valides et invalides
-(on place un flag sur chaque dependance).
+> Lecture du fichier pour ajouter les Position (Position, Value)
+> Creation d'une structure de donne distribue (RDD[Array]) et chargement du fichier (data.csv) dans cette structure.
+> Transformation de cette structure (en utilisant la fonction map) en (Position, Value) (Value = fomula/Constant) 
+> En meme temps que la transformation on construit la liste des formules
+> Pour chaque formule, on construit le liste des dependances valides et invalides (on place un flag sur chaque dependance).
 Dans la liste des formules, chaque formule qui a au moins un flag invalide est marquee invalide.
 
 > Evaluation
 
-On fournit la liste valeur/formules a un controleur.
-Pour chaque valeur/formule:
-- si la valeur appartient a la plage de donnees d'une formule,
-elle compare la valeur et la valeur attendue par la formule et renvoie un resultat coherent.
+> On parcours notre structure distribue (RDD) pour evalue chaque cellule
+> Le resultat de cette evaluation est passer a un FlowController.
 
-- si c'est une formule, on demande le resultat du calcul (et on l'attend au besoin),
-qu'il soit correct ou incorrect (auquel cas elle renvoie P).
+> Chaque appel de eval a une formule est bloquant tant que notre formule n'a pas fini de calculer son resultat.
+>> eval est gerer par Spark donc toutes les cellules sont evalue paralellement par notre reseaux distribue.
+
+> FlowControlleur sert a distrubue les resultats des evaluation des cellules au formules qui en on besoin pour evalue leurs resultat.
+
+TODO:
+> Pour la partie evaluation (data.csv et changes.txt) :
+
+- Separer nos donnees distribue (RDD[Array]) dans des sous structures pour permetre d'evite de reparcourir toutes les donnees quand on veut reevalue des formules de facon a ce que chaque formule a access une version des donnees besoin pour son calcul.
