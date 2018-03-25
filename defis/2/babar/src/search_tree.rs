@@ -1,3 +1,8 @@
+/// This module is used when the dependency graph is created to avoid inserting a formula twice.
+/// We first check if the formula is in this tree.
+/// If it is,we do nothing.
+/// If it is not, we add it to the tree and then to the graph.
+
 #[derive(PartialEq)]
 pub struct NodeSearchTree<'a> {
     pub value: &'a str,
@@ -6,10 +11,12 @@ pub struct NodeSearchTree<'a> {
 }
 
 impl<'a> NodeSearchTree<'a> {
-    ///insert return false if value already in tree.
-    /// /!\ WARNING /!\
-    /// NOT CURRENTLY USED, BUT WILL BE SOON™
+    // /!\ WARNING /!\
+    // NOT CURRENTLY USED, BUT WILL BE SOON™
     #[allow(dead_code)]
+    /// Attempts to insert str into the tree.
+    /// If str is into the tree, returns false.
+    /// If str is not into the tree, inserts it and returns true.
     pub fn insert(&mut self, new_value: &'a str) -> bool {
         if self.value == new_value {
             return false;
