@@ -1,3 +1,5 @@
+/// Processes the data extracted with parser.
+
 use std::collections::BTreeMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -5,6 +7,7 @@ use std::io::Write;
 use cell;
 use parser;
 
+/// Checks if the cell is within the range of the current evaluation.
 pub fn is_dependency_ok(cell: &cell::Formula, current_evaluation: &Vec<(i32, i32)>) -> bool {
     for &(row, col) in current_evaluation {
         if row >= cell.r1 && row <= cell.r2 && col >= cell.c1 && col <= cell.c2 {
@@ -14,6 +17,7 @@ pub fn is_dependency_ok(cell: &cell::Formula, current_evaluation: &Vec<(i32, i32
     true
 }
 
+/// TODO
 pub fn calcul_occ(
     cell: &cell::Formula,
     spreadsheet: &Vec<Vec<Box<cell::Cell>>>,
@@ -48,8 +52,9 @@ pub fn calcul_occ(
     (val_num, dependencies)
 }
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
+/// Evaluates all the Formula in the list of formulas.
 #[allow(dead_code)]
 pub fn evaluate(
     spreadsheet: &Vec<Vec<Box<cell::Cell>>>,
@@ -82,8 +87,9 @@ pub fn evaluate(
     (new_grid, dependencies)
 }
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
+/// Supposed to handle view0.csv, but somehow does not work very well.
 #[allow(dead_code)]
 pub fn write_view0(view0: &str, t: &Vec<Vec<Box<cell::Cell>>>) {
     let mut file = File::create(view0).expect("Error writing file");
@@ -104,8 +110,9 @@ pub fn write_view0(view0: &str, t: &Vec<Vec<Box<cell::Cell>>>) {
     write!(file, "{}", mystring).expect("Error Writing into the view0");
 }
 
-/// /!\ WARNING /!\
-/// NOT CURRENTLY USED, BUT WILL BE SOON™
+// /!\ WARNING /!\
+// NOT CURRENTLY USED, BUT WILL BE SOON™
+/// Supposed to handle changes.txt, but we are VERY far from that, so juste ignore that
 #[allow(dead_code)]
 pub fn write_change(
     user: &str,
