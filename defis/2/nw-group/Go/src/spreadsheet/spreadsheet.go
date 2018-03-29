@@ -143,25 +143,31 @@ func FromFile(filename string, sep rune) string {
 
 func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[string]int) uint32 { //When target is nil, extract only formulas
 	count := uint32(0)
-	csvParser := parse.NewCsvParser(filename, sep, '"')
+	x := uint32(0) // row
+	file, err := os.Open(filename)
+	defer file.Close()
+	share.CheckError(err)
+	csvReader := parse.NewCsvReader(file, sep)
 	for {
-		str, x, y, err := csvParser.ReadOneCell()
-		//fmt.Printf("%d,%d: '%s'\n", x, y, str)
+		line, err := csvReader.Read()
 		if err == io.EOF {
 			break
 		}
-
-		if target == nil {
-			if saveOneFormulaToBin(bin_dir, str, x, y) {
-				count++
-			}
-		} else {
-			if target[str] > 0 {
-				if saveOneCellToBin(bin_dir, str, x, y) {
+		for col, str := range line {
+			y := uint32(col)
+			if target == nil {
+				if saveOneFormulaToBin(bin_dir, str, x, y) {
 					count++
+				}
+			} else {
+				if target[str] > 0 {
+					if saveOneCellToBin(bin_dir, str, x, y) {
+						count++
+					}
 				}
 			}
 		}
+		x++
 	}
 	return count
 }

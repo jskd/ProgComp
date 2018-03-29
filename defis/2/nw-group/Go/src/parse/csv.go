@@ -126,3 +126,11 @@ func WriteOneLineCsv(filename string, data []string, sep rune) {
 	share.CheckError(err)
 	csvWriter.Flush()
 }
+
+func NewCsvReader(r io.Reader, sep rune) *csv.Reader {
+	csvReader := csv.NewReader(r)
+	csvReader.Comma = sep
+	csvReader.FieldsPerRecord = -1
+	csvReader.TrimLeadingSpace = true
+	return csvReader
+}
