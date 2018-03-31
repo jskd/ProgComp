@@ -46,7 +46,7 @@ func (i *immediate) String() string {
 
 func toData(s string) data {
 	if data := toImmediate(s); data == nil {
-		return ToFormula(s)
+		return nil // ToFormula(s)
 	} else {
 		return data
 	}
@@ -65,18 +65,25 @@ func toImmediate(s string) *immediate {
    It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
-func Evaluate(bin_repo string, do_write_final_value bool) int {
-	formula_list, _, err := getBinFormulaList(bin_repo)
+func Evaluate(bin_repo string, do_write_final_value bool) []*formula {
+	formula_list_str, _, err := getBinFormulaList(bin_repo)
+	var formula_list []*formula
 	if err == nil {
-		formula_list = SortByDependency(formula_list)
+		formula_list = setupChannels(toFormulas(bin_repo, formula_list_str))
 		var wg sync.WaitGroup
 		for _, f := range formula_list {
 			wg.Add(1)
-			go EvaluateFormula(bin_repo, f, do_write_final_value, &wg)
+			// We *must* pass f to the following anonymous
+			// function, see:
+			// https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
+			go func(f *formula) {
+				defer wg.Done()
+				f.evaluate(bin_repo, do_write_final_value)
+			}(f)
 		}
 		wg.Wait()
 	}
-	return len(formula_list)
+	return formula_list
 }
 
 //Return list of formula files and list of formula's target value, and error if occured
@@ -124,7 +131,7 @@ func FromFile(filename string, sep rune) string {
 	src_name := filepath.Base(filename)
 	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
-	parse.PurgeAndRecreateDir(bin_dir)
+	parse.PurgeAndRecreateDir(bin_dir + "/FORMULAS")
 	formula_count := PreprocessFileToBin(filename, bin_dir, sep, nil)
 	if formula_count > uint32(0) {
 		log.Printf("Found %d formulas in %s", formula_count, filename)
@@ -156,14 +163,15 @@ func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[s
 		for col, str := range line {
 			y := uint32(col)
 			if target == nil {
-				if saveOneFormulaToBin(bin_dir, str, x, y) {
+				if strings.HasPrefix(str, "=") {
 					count++
 				}
 			} else {
-				if target[str] > 0 {
-					if saveOneCellToBin(bin_dir, str, x, y) {
-						count++
-					}
+				if strings.HasPrefix(str, "=") {
+					saveOneFormulaToBin(bin_dir, str, x, y)
+					count++
+				} else {
+					saveOneCellToBin(bin_dir, str, x, y)
 				}
 			}
 		}
@@ -264,65 +272,13 @@ func Changes(commands []*Command, spreadSheetBefore [][]Cell,
 	return res
 }
 
-func EvaluateFormula(bin_repo string, formula_name string, do_write_final_value bool, wg *sync.WaitGroup) uint32 {
-	if wg != nil { //When WaitGroup is not provided, nothing to notify
-		defer wg.Done()
-	}
-	formulaBin := parse.NewBinFile(bin_repo + "/FORMULAS/" + FormulaToBinFileName(formula_name))
-	formulaPos, err := formulaBin.ReadAll()
-	if err != nil {
-		panic(err)
-	}
-	if len(formulaPos) == 1 {
-		//If this formula has been evaluated, return its value directly
-		return formulaPos[0]
-	}
-	f := ToFormula(formula_name)
-	binFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(f.value))
-	pos, err := binFile.ReadAll()
-	if err != nil {
-		panic(err)
-	}
-
-	//Count from position range
-	count := uint32(0)
-	var x uint32
-	var y uint32
-	for indx, val := range pos {
-		if indx/2 == 1 {
-			y = val
-			//fmt.Printf("(%d, %d) vs (%d, %d, %d, %d)\n", x, y, f.xSource, f.ySource, f.xDestination, f.yDestination)
-			if f.area.contains(position{row: y, col: x}) {
-				count++
-			}
-		} else {
-			x = val
-		}
-	}
-
-	//Write position to value bin file
-	valueBinFile := parse.NewBinFile(bin_repo + "/" + fmt.Sprint(count))
-	err = valueBinFile.WriteAll(formulaPos)
-	if err != nil {
-		panic(err)
-	}
-
-	if do_write_final_value {
-		err = formulaBin.SetFinalValue(count)
-		if err != nil {
-			panic(err)
-		}
-	}
-	return count
-}
-
 func dependencyGraph(formulas []*formula) *digraph.Digraph {
 	graph := digraph.New()
 	for _, f1 := range formulas {
 		graph.AddNode(f1)
 		for _, f2 := range formulas {
 			if f1.dependsOf(f2) {
-				graph.AddEdge(f2, f1)
+				graph.AddEdge(f1, f2)
 			}
 		}
 	}
@@ -339,4 +295,26 @@ func splitFormulas(formulas []*formula) ([]*formula, []*formula) {
 	}
 	valids, invalids := dependencyGraph(formulas).TopologicalSort()
 	return asFormulas(valids), asFormulas(invalids)
+}
+
+func setupChannels(formulas []*formula) []*formula {
+	valids, _ := splitFormulas(formulas)
+	for _, f1 := range formulas {
+		for _, f2 := range formulas {
+			if f1.dependsOf(f2) {
+				f1.nbParents++
+				f2.children = append(f2.children, f1)
+			}
+		}
+		f1.channel = make(chan uint32, f1.nbParents)
+	}
+	return valids
+}
+
+func toFormulas(bin_repo string, formulas []string) []*formula {
+	res := make([]*formula, len(formulas))
+	for i := 0; i < len(res); i++ {
+		res[i] = ToFormula(bin_repo, formulas[i])
+	}
+	return res
 }

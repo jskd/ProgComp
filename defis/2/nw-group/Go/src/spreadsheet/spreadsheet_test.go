@@ -8,20 +8,20 @@ import (
 )
 
 func TestToFormula(t *testing.T) {
-	f := ToFormula("=#(0,1,30,50,1)")
-	share.AssertEqual(t, f.area.src.col, uint32(0), "xSource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.area.src.row, uint32(1), "ySource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.area.dst.col, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
-	share.AssertEqual(t, f.area.dst.row, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
-	share.AssertEqual(t, f.value, uint32(1), "value is not uint32 1 from parsing formula string.")
+	f := ToFormula("", "=#(0,1,30,50,1)")
+	share.AssertEqual(t, f.area.src.row, uint32(0), "xSource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.src.col, uint32(1), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.row, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.col, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.valueToCount, uint32(1), "value is not uint32 1 from parsing formula string.")
 }
 
 func TestBinFileToFormula(t *testing.T) {
-	f := ToFormula("0_1_30_50_1")
-	share.AssertEqual(t, f.area.src.col, uint32(0), "xSource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.area.src.row, uint32(1), "ySource is not uint32 0 from parsing formula string.")
-	share.AssertEqual(t, f.area.dst.col, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
-	share.AssertEqual(t, f.area.dst.row, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
+	f := ToFormula("", "0_1_30_50_1")
+	share.AssertEqual(t, f.area.src.row, uint32(0), "xSource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.src.col, uint32(1), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.row, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.col, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
 	formula_bin_path := FormulaToBinFileName("0_1_30_50_1")
 	share.AssertEqual(t, formula_bin_path, "1/0_1_30_50_1", "Formula bin path is not correct.")
 }
@@ -52,15 +52,8 @@ func Test10LinesBigmamaFile(t *testing.T) {
 }
 
 func TestEvaluate(t *testing.T) {
-	out := Evaluate("../../dataset/bin/", false)
-	share.AssertEqual(t, out, 2, "")
-}
-
-func TestEvaluateFormula(t *testing.T) {
-	out := EvaluateFormula("../../dataset/bin/", "1110_7572_3186_17282_3", false, nil)
-	share.AssertEqual(t, out, uint32(0), "Count formula 1110_7572_3186_17282_3 should be 0")
-	out = EvaluateFormula("../../dataset/bin/", "236_0_236_611_3", false, nil)
-	share.AssertEqual(t, out, uint32(2), "Count formula 236_0_236_611_3 should be 2")
+	Evaluate("../../dataset/bin/", false)
+	// share.AssertEqual(t, out, 2, "")
 }
 
 func formulas(n int) []*formula {
@@ -69,7 +62,11 @@ func formulas(n int) []*formula {
 	res := make([]*formula, n)
 	for i := uint32(1); i <= uint32(len(res)); i++ {
 		pos := position{i, i}
-		res[i-1] = &formula{area: area{src, dst}, pos: pos, value: i}
+		res[i-1] = &formula{
+			area:         area{src, dst},
+			positions:    []position{pos},
+			valueToCount: i,
+		}
 		dst = pos
 	}
 	shuffle := func(fs []*formula) []*formula {
@@ -103,6 +100,6 @@ func TestSplitFormulas(t *testing.T) {
 	fs, invalids := splitFormulas(formulas(n))
 	share.AssertEqual(t, len(invalids), 0, "")
 	for i, f := range fs {
-		share.AssertEqual(t, f.value, uint32(i)+1, "")
+		share.AssertEqual(t, f.valueToCount, 1000 - uint32(i), "")
 	}
 }
