@@ -135,25 +135,27 @@ func createFileIfNotexists(path string) {
 func (b *BinFile) ReadAll() ([]uint32, error) {
 	b.mut.Lock() //Ensure that no one is writing while reading
 	defer b.mut.Unlock()
-	f, err := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDONLY, 0644)
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	br := bufio.NewReader(f)
-	for {
-		bytes := make([]byte, 4)
-		_, err := br.Read(bytes)
-		if err == io.EOF {
-			return b.data, nil
-		}
+	if len(b.data) == 0 {
+		f, err := os.OpenFile(b.file, os.O_APPEND|os.O_CREATE|os.O_RDONLY, 0644)
 		if err != nil {
-			return nil, err
+			panic(err)
 		}
+		defer f.Close()
+		br := bufio.NewReader(f)
+		for {
+			bytes := make([]byte, 4)
+			_, err := br.Read(bytes)
+			if err == io.EOF {
+				return b.data, nil
+			}
+			if err != nil {
+				return nil, err
+			}
 
-		d := binary.BigEndian.Uint32(bytes)
-		//fmt.Printf("Read %d bytes from file: %x\n", nbRead, d)
-		b.data = append(b.data, d)
+			d := binary.BigEndian.Uint32(bytes)
+			//fmt.Printf("Read %d bytes from file: %x\n", nbRead, d)
+			b.data = append(b.data, d)
+		}
 	}
 	return b.data, nil
 }
