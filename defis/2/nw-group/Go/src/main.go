@@ -24,6 +24,7 @@ func main() {
 }
 
 func main_program(args []string) {
+	spreadsheet.Cleanup()
 	log.Println("Build directory structure of binary files...")
 	bin_repo := spreadsheet.FromFile(args[0], ';')
 	log.Println("Directory structure of binary files built.")

@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+
+	"share"
 )
 
 //Singleton implementation BinFileManager in go with var
@@ -95,10 +97,7 @@ func (b *BinFileMgr) saveAndClose() error {
 func PurgeAndRecreateDir(path string) {
 	var _, err = os.Stat(path)
 	if err == nil {
-		err = os.RemoveAll(path)
-		if err != nil {
-			panic(err)
-		}
+		share.Purge(path)
 		log.Println("Purge directory:", path)
 	}
 

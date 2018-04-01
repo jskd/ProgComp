@@ -318,3 +318,7 @@ func toFormulas(bin_repo string, formulas []string) []*formula {
 	}
 	return res
 }
+
+func Cleanup() {
+	share.Purge(share.TempDir())
+}
