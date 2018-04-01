@@ -41,7 +41,7 @@ func TestCsvParser(t *testing.T) {
 }
 
 func TestCsvParserWithQuote(t *testing.T) {
-	cp2 := NewCsvParser("../../dataset/data2.csv", ',', '"')
+	cp2 := NewCsvParser("../../dataset/data2.csv", ';', '"')
 	expPos := []uint32{}
 	expPos = append(expPos, 0)
 	expPos = append(expPos, 1)
@@ -106,7 +106,7 @@ func TestReadSimpleCsvFile(t *testing.T) {
 }
 
 func TestReadCsvFileWithFormula(t *testing.T) {
-	s := ReadCsv("../../dataset/data2.csv", ',')
+	s := ReadCsv("../../dataset/data2.csv", ';')
 	exp := [][]string{}
 	exp0 := []string{"1", "0", "=#(0, 0, 1, 1, 1)"}
 	exp1 := []string{"=#(1, 0, 1, 0, 0)", "1", "0"}
