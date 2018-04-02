@@ -148,6 +148,30 @@ func FromFile(filename string, sep rune) string {
 	return bin_dir
 }
 
+func GetAllFormulasInFile(filename string, bin_dir string, sep rune) *FormulaMgr {
+	file, err := os.Open(filename)
+	defer file.Close()
+	share.CheckError(err)
+	fm := FormulaManager(bin_dir)
+	x := uint32(0) //row
+	csvReader := parse.NewCsvReader(file, sep)
+	for {
+		line, err := csvReader.Read()
+		if err == io.EOF {
+			break
+		}
+		for col, str := range line {
+			y := uint32(col) //column
+			if strings.HasPrefix(str, "=") {
+				f := fm.GetFormula(str)
+				f.positions = append(f.positions, position{x, y})
+			}
+		}
+		x++
+	}
+	return fm
+}
+
 func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[string]int) uint32 { //When target is nil, extract only formulas
 	count := uint32(0)
 	x := uint32(0) // row

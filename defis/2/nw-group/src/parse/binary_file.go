@@ -7,9 +7,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"sync"
-
 	"share"
+	"sync"
 )
 
 //Singleton implementation BinFileManager in go with var

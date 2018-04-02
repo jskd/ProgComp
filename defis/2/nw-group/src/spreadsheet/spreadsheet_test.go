@@ -7,6 +7,16 @@ import (
 	"testing"
 )
 
+func TestFormulaManager(t *testing.T) {
+	fm := FormulaManager("../../dataset/bin")
+	f := fm.GetFormula("=#(0,1,30,50,1)")
+	share.AssertEqual(t, f.area.src.row, uint32(0), "xSource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.src.col, uint32(1), "ySource is not uint32 0 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.row, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.area.dst.col, uint32(50), "yDestination is not uint32 50 from parsing formula string.")
+	share.AssertEqual(t, f.valueToCount, uint32(1), "value is not uint32 1 from parsing formula string.")
+}
+
 func TestToFormula(t *testing.T) {
 	f := ToFormula("", "=#(0,1,30,50,1)")
 	share.AssertEqual(t, f.area.src.row, uint32(0), "xSource is not uint32 0 from parsing formula string.")
@@ -102,6 +112,6 @@ func TestSplitFormulas(t *testing.T) {
 	fs, invalids := splitFormulas(formulas(n))
 	share.AssertEqual(t, len(invalids), 0, "")
 	for i, f := range fs {
-		share.AssertEqual(t, f.valueToCount, 1000 - uint32(i), "")
+		share.AssertEqual(t, f.valueToCount, 1000-uint32(i), "")
 	}
 }

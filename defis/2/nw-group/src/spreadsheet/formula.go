@@ -111,8 +111,7 @@ func toFormula(bin_repo string, s string, p string) *formula {
 	if bin_repo == "" {
 		return &formula{area, val, make([]position, 0), uint32(0), 0, make([]*formula, 0), nil}
 	} else {
-		f := parse.NewBinFile(bin_repo + "/FORMULAS/" +
-			FormulaToBinFileName(s))
+		f := parse.NewBinFile(bin_repo + "/FORMULAS/" + FormulaToBinFileName(s))
 		pos, _ := readAllPos(f)
 		return &formula{area, val, pos, uint32(0), 0, make([]*formula, 0), nil}
 	}
