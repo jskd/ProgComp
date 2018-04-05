@@ -144,6 +144,7 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 			bytes := make([]byte, 4)
 			_, err := br.Read(bytes)
 			if err == io.EOF {
+				//log.Printf("Loaded positions from %s %v:", b.file, b.data)
 				return b.data, nil
 			}
 			if err != nil {
@@ -151,7 +152,6 @@ func (b *BinFile) ReadAll() ([]uint32, error) {
 			}
 
 			d := binary.BigEndian.Uint32(bytes)
-			//fmt.Printf("Read %d bytes from file: %x\n", nbRead, d)
 			b.data = append(b.data, d)
 		}
 	}

@@ -65,45 +65,20 @@ func toImmediate(s string) *immediate {
    It will return a number which represents how many formulas we are NOT aable to count (the looping formula)
    In the normal case, it should return 0 (no looping formula). In case of error, return -1.
 **/
-func Evaluate(bin_repo string, do_write_final_value bool) []*formula {
-	formula_list_str, _, err := getBinFormulaList(bin_repo)
-	var formula_list []*formula
-	if err == nil {
-		formula_list = setupChannels(toFormulas(bin_repo, formula_list_str))
-		var wg sync.WaitGroup
-		for _, f := range formula_list {
-			wg.Add(1)
-			// We *must* pass f to the following anonymous
-			// function, see:
-			// https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
-			go func(f *formula) {
-				defer wg.Done()
-				f.evaluate(bin_repo, do_write_final_value)
-			}(f)
-		}
-		wg.Wait()
+func Evaluate(bin_repo string, do_write_final_value bool, fm *FormulaMgr) []*formula {
+	formula_list := setupChannels(fm.GetFormulaList())
+	var wg sync.WaitGroup
+	for _, f := range formula_list {
+		wg.Add(1)
+		// We *must* pass f to the following anonymous function, see:
+		// https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
+		go func(f *formula) {
+			defer wg.Done()
+			f.evaluate(bin_repo, do_write_final_value)
+		}(f)
 	}
+	wg.Wait()
 	return formula_list
-}
-
-//Return list of formula files and list of formula's target value, and error if occured
-func getBinFormulaList(bin_repo string) ([]string, []string, error) {
-	files, err := listAllFilesInDir(bin_repo + "/FORMULAS/")
-	if err != nil {
-		log.Fatal(err)
-		return []string{}, []string{}, err
-	}
-
-	var formula_list []string
-	f_value_list := make([]string, len(files))
-	for idx, d := range files {
-		f_value_list[idx] = d
-		f_names, _ := listAllFilesInDir(bin_repo + "/FORMULAS/" + d)
-		for _, f := range f_names {
-			formula_list = append(formula_list, f)
-		}
-	}
-	return formula_list, f_value_list, nil
 }
 
 func listAllFilesInDir(dir string) ([]string, error) {
@@ -127,20 +102,20 @@ func SortByDependency(f_list []string) []string {
 
 //Pre-process Csv file to value-position binary files.
 //Return a directory where value-position binary files are stored
-func FromFile(filename string, sep rune) string {
+func FromFile(filename string, sep rune) (string, *FormulaMgr) {
 	src_name := filepath.Base(filename)
 	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir + "/FORMULAS")
-	fm := GetAllFormulasInFile(filename, bin_dir, sep)
+	fm := GetAllFormulasInCsv(filename, bin_dir, sep)
 	if fm.count > uint32(0) {
-		log.Printf("Found %d formulas in %s", fm.count, filename)
+		log.Printf("Found total %d formulas in %s", fm.count, filename)
 		m := make(map[uint32]int)
 		ta_list := fm.GetFormulaList()
 		for _, f := range ta_list {
 			m[f.valueToCount]++
 		}
-		log.Printf("Preprocessing %d values for %d formulas in file %s", len(m), len(ta_list), filename)
+		log.Printf("Pre-processing %d values for %d formulas in file %s", len(m), len(ta_list), filename)
 		var wg sync.WaitGroup
 		var count = 0
 		for k, _ := range m {
@@ -153,10 +128,10 @@ func FromFile(filename string, sep rune) string {
 		}
 	}
 	parse.BinFileManager().SaveAndCloseAll()
-	return bin_dir
+	return bin_dir, fm
 }
 
-func GetAllFormulasInFile(filename string, bin_dir string, sep rune) *FormulaMgr {
+func GetAllFormulasInCsv(filename string, bin_dir string, sep rune) *FormulaMgr {
 	file, err := os.Open(filename)
 	defer file.Close()
 	share.CheckError(err)
@@ -171,7 +146,7 @@ func GetAllFormulasInFile(filename string, bin_dir string, sep rune) *FormulaMgr
 		for col, str := range line {
 			y := uint32(col) //column
 			if strings.HasPrefix(str, "=") {
-				f := fm.GetFormula(str)
+				f := fm.GetOrCreateFormula(str)
 				f.positions = append(f.positions, position{x, y})
 			}
 		}
@@ -192,7 +167,7 @@ func PreprocessFileToBin(filename string, bin_dir string, sep rune, target uint3
 	bf := parse.NewBinFile(bin_dir + "/" + txtTarget)
 	defer bf.Close()
 	share.CheckError(err)
-	fmt.Printf("Processing %s...\n", txtTarget)
+	log.Printf("Scaning value %s in %s\n", txtTarget, filename)
 	csvReader := parse.NewCsvReader(file, sep)
 	for {
 		line, err := csvReader.Read()

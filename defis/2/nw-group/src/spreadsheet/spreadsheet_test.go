@@ -9,7 +9,7 @@ import (
 
 func TestFormulaManager(t *testing.T) {
 	fm := FormulaManager("../../dataset/bin")
-	f := fm.GetFormula("=#(0,1,30,50,1)")
+	f := fm.GetOrCreateFormula("=#(0,1,30,50,1)")
 	share.AssertEqual(t, f.area.src.row, uint32(0), "xSource is not uint32 0 from parsing formula string.")
 	share.AssertEqual(t, f.area.src.col, uint32(1), "ySource is not uint32 0 from parsing formula string.")
 	share.AssertEqual(t, f.area.dst.row, uint32(30), "xDestination is not uint32 50 from parsing formula string.")
@@ -38,14 +38,16 @@ func TestBinFileToFormula(t *testing.T) {
 
 func TestFromFile(t *testing.T) {
 	Cleanup()
-	bin_repo := FromFile("../../dataset/data2.csv", ';')
+	bin_repo, fm := FromFile("../../dataset/data2.csv", ';')
+	share.AssertEqual(t, fm.count, uint32(2), "")
 	exp := share.TempDir() + "data2.csv/bin"
 	share.AssertEqual(t, bin_repo, exp, "Incorrect repository path")
 }
 
 func Test10LinesBigmamaFile(t *testing.T) {
 	Cleanup()
-	bin_repo := FromFile("../../dataset/bigmama_10.csv", ';')
+	bin_repo, fm := FromFile("../../dataset/bigmama_10.csv", ';')
+	share.AssertEqual(t, fm.count, uint32(2696), "")
 	exp_repo := share.TempDir() + "bigmama_10.csv/bin"
 	share.AssertEqual(t, bin_repo, exp_repo, "Incorrect repository path")
 
@@ -64,8 +66,10 @@ func Test10LinesBigmamaFile(t *testing.T) {
 }
 
 func TestEvaluate(t *testing.T) {
-	Evaluate("../../dataset/bin/", false)
-	// share.AssertEqual(t, out, 2, "")
+	fm := FormulaManager("../../dataset/bin/")
+	fm.GetOrCreateFormula("=#(7,6963,7,7409,3)")
+	out := Evaluate("../../dataset/bin/", false, fm)
+	share.AssertEqual(t, out[0].evaluation, uint32(2), "Error evaluating formula")
 }
 
 func formulas(n int) []*formula {

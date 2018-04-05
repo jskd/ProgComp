@@ -26,9 +26,9 @@ func main() {
 func main_program(args []string) {
 	spreadsheet.Cleanup()
 	log.Println("Build directory structure of binary files...")
-	bin_repo := spreadsheet.FromFile(args[0], ';')
+	bin_repo, fm := spreadsheet.FromFile(args[0], ';')
 	log.Println("Directory structure of binary files built.")
-	spreadsheet.Evaluate(bin_repo, false)
+	spreadsheet.Evaluate(bin_repo, false, fm)
 	// writeView(args[2], args[0], bin_repo)
 	//commands := spreadsheet.CommandsFromFile(args[1])
 	//changes := spreadsheet.Changes(commands, spreadSheet, [][]int{})

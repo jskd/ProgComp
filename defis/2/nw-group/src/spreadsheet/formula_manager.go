@@ -19,7 +19,7 @@ func FormulaManager(bin_dir string) *FormulaMgr {
 	return &mgr
 }
 
-func (f *FormulaMgr) GetFormula(key string) *formula {
+func (f *FormulaMgr) GetOrCreateFormula(key string) *formula {
 	f.mut.Lock()
 	defer f.mut.Unlock()
 	bf := f.path2instance[key]
@@ -49,4 +49,24 @@ func (b *FormulaMgr) Remove(key string) {
 		delete(b.path2instance, key)
 		b.count -= 1
 	}
+}
+
+//Return list of formula files and list of formula's target value, and error if occured
+func (b *FormulaMgr) getBinFormulaList() ([]string, []string, error) {
+	files, err := listAllFilesInDir(b.bin_dir + "/FORMULAS/")
+	if err != nil {
+		log.Fatal(err)
+		return []string{}, []string{}, err
+	}
+
+	var formula_list []string
+	f_value_list := make([]string, len(files))
+	for idx, d := range files {
+		f_value_list[idx] = d
+		f_names, _ := listAllFilesInDir(b.bin_dir + "/FORMULAS/" + d)
+		for _, f := range f_names {
+			formula_list = append(formula_list, f)
+		}
+	}
+	return formula_list, f_value_list, nil
 }
