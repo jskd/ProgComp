@@ -132,17 +132,25 @@ func FromFile(filename string, sep rune) string {
 	bin_dir := share.TempDir() + src_name + "/bin"
 	//TODO: Skip if directory already exist
 	parse.PurgeAndRecreateDir(bin_dir + "/FORMULAS")
-	formula_count := PreprocessFileToBin(filename, bin_dir, sep, nil)
-	if formula_count > uint32(0) {
-		log.Printf("Found %d formulas in %s", formula_count, filename)
-		m := make(map[string]int)
-		_, ta_list, err := getBinFormulaList(bin_dir)
-		if err == nil {
-			for _, v := range ta_list {
-				m[v]++
+	fm := GetAllFormulasInFile(filename, bin_dir, sep)
+	if fm.count > uint32(0) {
+		log.Printf("Found %d formulas in %s", fm.count, filename)
+		m := make(map[uint32]int)
+		ta_list := fm.GetFormulaList()
+		for _, f := range ta_list {
+			m[f.valueToCount]++
+		}
+		log.Printf("Preprocessing %d values for %d formulas in file %s", len(m), len(ta_list), filename)
+		var wg sync.WaitGroup
+		var count = 0
+		for k, _ := range m {
+			wg.Add(1)
+			count += 1
+			go PreprocessFileToBin(filename, bin_dir, sep, k, &wg)
+			if count == len(m) || count%100 == 0 {
+				wg.Wait() //Wait every 100 process to avoid too many opened files
 			}
 		}
-		PreprocessFileToBin(filename, bin_dir, sep, m)
 	}
 	parse.BinFileManager().SaveAndCloseAll()
 	return bin_dir
@@ -172,12 +180,19 @@ func GetAllFormulasInFile(filename string, bin_dir string, sep rune) *FormulaMgr
 	return fm
 }
 
-func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[string]int) uint32 { //When target is nil, extract only formulas
+func PreprocessFileToBin(filename string, bin_dir string, sep rune, target uint32, wg *sync.WaitGroup) uint32 {
+	if wg != nil {
+		defer wg.Done()
+	}
 	count := uint32(0)
 	x := uint32(0) // row
 	file, err := os.Open(filename)
 	defer file.Close()
+	txtTarget := fmt.Sprint(target)
+	bf := parse.NewBinFile(bin_dir + "/" + txtTarget)
+	defer bf.Close()
 	share.CheckError(err)
+	fmt.Printf("Processing %s...\n", txtTarget)
 	csvReader := parse.NewCsvReader(file, sep)
 	for {
 		line, err := csvReader.Read()
@@ -186,16 +201,9 @@ func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[s
 		}
 		for col, str := range line {
 			y := uint32(col)
-			if target == nil {
-				if strings.HasPrefix(str, "=") {
-					count++
-				}
-			} else {
-				if strings.HasPrefix(str, "=") {
-					saveOneFormulaToBin(bin_dir, str, x, y)
-					count++
-				} else {
-					saveOneCellToBin(bin_dir, str, x, y)
+			if !strings.HasPrefix(str, "=") {
+				if str == txtTarget {
+					bf.WritePair(x, y)
 				}
 			}
 		}
@@ -207,15 +215,6 @@ func PreprocessFileToBin(filename string, bin_dir string, sep rune, target map[s
 func saveOneFormulaToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bool {
 	if strings.HasPrefix(txt, "=") {
 		bf := parse.NewBinFile(bin_dir + "/FORMULAS/" + FormulaToBinFileName(txt))
-		bf.WritePair(pos_x, pos_y)
-		return true
-	}
-	return false
-}
-
-func saveOneCellToBin(bin_dir string, txt string, pos_x uint32, pos_y uint32) bool {
-	if !strings.HasPrefix(txt, "=") {
-		bf := parse.NewBinFile(bin_dir + "/" + txt)
 		bf.WritePair(pos_x, pos_y)
 		return true
 	}

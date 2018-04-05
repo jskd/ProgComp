@@ -7,14 +7,14 @@ import (
 
 type FormulaMgr struct {
 	path2instance map[string]*formula
-	count         int
+	count         uint32
 	bin_dir       string
 	mut           sync.Mutex
 }
 
 func FormulaManager(bin_dir string) *FormulaMgr {
 	dir2instance_map := make(map[string]*formula)
-	mgr := FormulaMgr{dir2instance_map, 0, bin_dir, sync.Mutex{}}
+	mgr := FormulaMgr{dir2instance_map, uint32(0), bin_dir, sync.Mutex{}}
 	log.Printf("FormulaMgr initialed for: %s \n", mgr.bin_dir)
 	return &mgr
 }
