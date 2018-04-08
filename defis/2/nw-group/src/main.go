@@ -10,6 +10,7 @@ import (
 	"parse"
 	"share"
 	"spreadsheet"
+	"strings"
 )
 
 /* TODO: Check that output files are different from input ones.  */
@@ -29,7 +30,7 @@ func main_program(args []string) {
 	bin_repo, fm := spreadsheet.FromFile(args[0], ';')
 	log.Println("Directory structure of binary files built.")
 	spreadsheet.Evaluate(bin_repo, false, fm)
-	// writeView(args[2], args[0], bin_repo)
+	 writeView(args[2], args[0], bin_repo)
 	//commands := spreadsheet.CommandsFromFile(args[1])
 	//changes := spreadsheet.Changes(commands, spreadSheet, [][]int{})
 	//writeChanges(args[3], changes)
@@ -68,12 +69,16 @@ func writeView(file_output string, file_input string, bin_repo string) {
 	reader2.FieldsPerRecord = -1
 	for {
 		line, err := reader2.Read() // 0x0A separator = newline
-
 		if err == io.EOF {
 			println("fin de fichier")
 			break
 		} else if err != nil {
 			share.CheckError(err) // if you return error
+		}
+		for i,val:= range line {
+			if strings.HasPrefix(val, "="){
+				line[i] = "?"
+			}
 		}
 		parse.WriteOneLineCsv(file_output, line, ';')
 	}
