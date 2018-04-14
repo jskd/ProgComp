@@ -37,8 +37,8 @@ func main_program(args []string) {
 }
 
 func print_usage() {
-	fmt.Println("Usage: ")
-	fmt.Println("ws <data-file> <user-file> <view-file> <changes-file>")
+	fmt.Println("Usage:", "ws", "<data-file>", "<user-file>", "<view-file>",
+		"<changes-file>")
 }
 
 //TODO: To write view to file_output from original file_input CSV with formula values in bin_repo
