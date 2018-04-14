@@ -77,7 +77,9 @@ func writeView(file_output string, file_input string, bin_repo string) {
 		}
 		for i,val:= range line {
 			if strings.HasPrefix(val, "="){
-				line[i] = "?"
+				fm := spreadsheet.FormulaManager("../../dataset/bin")
+				f := fm.GetOrCreateFormula(val)
+				line[i] = spreadsheet.GetEvaluation(f)
 			}
 		}
 		parse.WriteOneLineCsv(file_output, line, ';')
