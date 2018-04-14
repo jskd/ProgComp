@@ -30,7 +30,7 @@ func main_program(args []string) {
 	bin_repo, fm := spreadsheet.FromFile(args[0], ';')
 	log.Println("Directory structure of binary files built.")
 	spreadsheet.Evaluate(bin_repo, false, fm)
-	 writeView(args[2], args[0], bin_repo)
+	writeView(args[2], args[0], bin_repo)
 	//commands := spreadsheet.CommandsFromFile(args[1])
 	//changes := spreadsheet.Changes(commands, spreadSheet, [][]int{})
 	//writeChanges(args[3], changes)
@@ -59,8 +59,8 @@ func writeView(file_output string, file_input string, bin_repo string) {
 		} else if err != nil {
 			share.CheckError(err) // if you return error
 		}
-		for i,val:= range line {
-			if strings.HasPrefix(val, "="){
+		for i, val := range line {
+			if strings.HasPrefix(val, "=") {
 				fm := spreadsheet.FormulaManager("../../dataset/bin")
 				f := fm.GetOrCreateFormula(val)
 				line[i] = spreadsheet.GetEvaluation(f)

@@ -23,7 +23,7 @@ func (f *formula) accumulateValue(val uint32) {
 	}
 }
 
-func GetEvaluation(f *formula) string{
+func GetEvaluation(f *formula) string {
 	return string(int(f.evaluation))
 }
 
