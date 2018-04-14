@@ -10,54 +10,9 @@ import (
 	"parse"
 	"path/filepath"
 	"share"
-	"strconv"
 	"strings"
 	"sync"
 )
-
-type Cell struct {
-	data       data
-	evaluating bool
-}
-
-/*
- * Data may be an immediate value (an integer literal) or formula to
- * evaluate.
- */
-type data interface {
-	data()
-}
-
-type immediate struct {
-	value int
-}
-
-/*
- * Ensure that a data is either a formula or an immediate value and
- * nothing else.
- */
-func (*formula) data()   {}
-func (*immediate) data() {}
-
-func (i *immediate) String() string {
-	return fmt.Sprintf("%d", i.value)
-}
-
-func toData(s string) data {
-	if data := toImmediate(s); data == nil {
-		return nil // ToFormula(s)
-	} else {
-		return data
-	}
-}
-
-func toImmediate(s string) *immediate {
-	i, err := strconv.Atoi(s)
-	if err != nil {
-		return nil
-	}
-	return &immediate{i}
-}
 
 /**
    TODO: Here the new Evaluate will process the formulas in the bin_repo
@@ -92,11 +47,6 @@ func listAllFilesInDir(dir string) ([]string, error) {
 		file_names[idx] = f.Name()
 	}
 	return file_names, nil
-}
-
-//TODO: To sort fomulas with dependency algorithm
-func SortByDependency(f_list []string) []string {
-	return f_list
 }
 
 //Pre-process Csv file to value-position binary files.
