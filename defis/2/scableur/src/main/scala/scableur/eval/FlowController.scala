@@ -35,7 +35,7 @@ object FlowController {
 	//ajoute une nouvelle formule dans la liste des formules
 	def addNewCountFormula(f: PCountFormula) : Unit = {
 		formulaList.synchronized {
-			//formulaList-=(f.p)
+			formulaList-=(f.p)
 			formulaList.put(f.p, f)
 		}
 	}

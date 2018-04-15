@@ -13,6 +13,8 @@ import scableur.eval._
 import java.io._
 import scableur.map._
 import scableur.cycles._
+import scableur.eval.FlowController
+
 
 object Scableur {
   type Data = RDD[Array[String]]
@@ -20,7 +22,6 @@ object Scableur {
   type ResultData = RDD[Array[String]]
  
   var sc : SparkContext = null
-
   
   def main(args: Array[String]): Unit = {
     Conf.logger = Logger.getLogger("DEBUG");
@@ -36,7 +37,7 @@ object Scableur {
     val mapped_data = splitedRDD.map(line => line.map(elem => mapPValue(elem)))
     //TODO: build formulaList in Flowcontroller
     cycles.setFormulaList(FlowController.formulaList)
-    cycles.cycle_removal()
+    FlowController.formulaList = cycles.cycle_removal()
     //Evaluate data
     //TODO: val evaluated_data = mapped_data.map(line => line.map((p,elem) => eval(elem)))
 
