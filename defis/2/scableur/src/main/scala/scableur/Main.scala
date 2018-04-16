@@ -35,11 +35,10 @@ object Scableur {
     val splitedRDD = csvFile.map(line => line.split(";").map(elem => elem.trim))
     //Parse data to Objects
     val mapped_data = splitedRDD.map(line => line.map(elem => mapPValue(elem)))
-    //TODO: build formulaList in Flowcontroller
     cycles.setFormulaList(FlowController.formulaList)
     FlowController.formulaList = cycles.cycle_removal()
     //Evaluate data
-    //TODO: val evaluated_data = mapped_data.map(line => line.map((p,elem) => eval(elem)))
+    val evaluated_data = mapped_data.map(line => line.map(elem => eval.eval(elem._2)))
 
     //DEBUG PRINTS
     mapped_data.foreach(line => line.foreach(v => println(v.toString())))
